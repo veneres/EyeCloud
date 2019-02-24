@@ -1,0 +1,32 @@
+# Run docker-compose build
+# Run docker-compose up
+
+version: '3.3'
+
+services:
+
+  flask:
+    restart: always
+    build: 
+      context: ./server
+      dockerfile: Dockerfile
+    ports:
+     - "5000:5000"
+    volumes:
+     - ./server:/app
+    depends_on:
+      - mongodb
+    links:
+      - mongodb
+   # env_file:
+   # - .env
+  mongodb:
+    image: mongo:latest
+    container_name: "mongodb"
+    environment:
+      - MONGO_DATA_DIR=/usr/data/db
+    volumes:
+      - ./data/db:/usr/data/db
+    ports:
+      - 27017:27017
+    command: mongod
