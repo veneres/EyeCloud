@@ -4,8 +4,8 @@ RUN apt-get update \
     && cd /usr/local/bin \
     && ln -s /usr/bin/python3 python \
     && pip3 install --upgrade pip
-COPY . /app
-WORKDIR /app
+ADD . /usr/src/app
+WORKDIR /usr/src/app
 RUN pip install -r requirements.txt
 EXPOSE 5000
-CMD ["python", "app.py"]
+ENTRYPOINT ["python", "index.py"]
