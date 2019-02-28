@@ -1,0 +1,3 @@
+Venice(71), Gothenburg(72), Hong Kong(94), Lubljana(97), Antwerp(100), Krakow (101), Frankfurt(113), Hamburg(121)
+Bordeaux(123), Warsaw(124), Dusseldorf(128), Pisa(129), Bologna(131), Riga(132), Cologne(134), Moskow(150)
+Zurich(158), Barcelona(168), Brussels(179), Berlin(208), Tokyo(211), Budapest(223), Paris(308), New York(314)
