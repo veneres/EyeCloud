@@ -33,6 +33,7 @@ def clear_all_data():
             mongo.db.fixations.remove({})
             mongo.db.complexity.remove({})
             mongo.db.resolution.remove({})
+            mongo.db.user.remove({})
             return jsonify({'ok': True, 'message': 'All documents in collections are removed!'}), 200
         else:
             return jsonify({'ok': False, 'message': 'Wrong username and password!'}), 400
@@ -44,6 +45,7 @@ def clear_fixation_data():
     if request.method == 'POST':
         if is_valid_credentials(credentials):
             mongo.db.fixations.remove({})
+            mongo.db.user.remove({})
             return jsonify({'ok': True, 'message': 'All fixation data are removed!'}), 200
         else:
             return jsonify({'ok': False, 'message': 'Wrong username and password!'}), 400
@@ -87,6 +89,7 @@ def recover_fixation_data():
 
 def recover_fixation_data_impl():
     try:
+        users = set()
         with open(get_data_filepath(FIXATION_DATA_FILENAME), 'r', encoding='iso-8859-1') as csv_file:
             csv_reader = csv.reader(csv_file, delimiter='\t')
             line_count = 0
@@ -94,12 +97,18 @@ def recover_fixation_data_impl():
                 if line_count == 0:
                     line_count += 1
                 else:
+                    users.add(row[6])
+                    station_name = row[1].split('_')[1]
                     data = {'timestamp': row[0], 'stimuliName': row[1], 'fixationIndex': row[2],
                             'fixationDuration': row[3], 'mappedFixationPointX': row[4], 'mappedFixationPointY': row[5],
-                            'user': row[6], 'description': row[7]}
+                            'user': row[6], 'description': row[7], 'station': station_name}
                     json_data = json.dumps(data)
                     mongo.db.fixations.insert_one(json.loads(json_data))
                     line_count += 1
+        for user in sorted(users):
+            data = {'user': user}
+            json_data = json.dumps(data)
+            mongo.db.user.insert_one(json.loads(json_data))
         return 'OK'
     except Exception as e:
         return str(e)
