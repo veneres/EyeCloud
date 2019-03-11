@@ -5,6 +5,8 @@ import { NgModule } from '@angular/core';
 import { AppComponent } from './app.component';
 import { AttentionCloudComponent } from './attention-cloud/attention-cloud.component';
 import { AttentionHeatmapComponent } from './attention-heatmap/attention-heatmap.component';
+import { HttpClientModule } from '@angular/common/http';
+
 
 
 @NgModule({
@@ -14,7 +16,8 @@ import { AttentionHeatmapComponent } from './attention-heatmap/attention-heatmap
     AttentionHeatmapComponent
   ],
   imports: [
-    BrowserModule
+    BrowserModule,
+    HttpClientModule
   ],
   providers: [],
   bootstrap: [AppComponent]

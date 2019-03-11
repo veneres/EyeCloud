@@ -1,3 +1,4 @@
-<p>
-  {{something}}
-</p>
+<div class="thumbnail"
+  *ngFor="let thumbnail of thumbnails">
+  <div style="background: url({{thumbnail.getImageBackground}})"></div>
+</div>
