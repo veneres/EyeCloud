@@ -45,3 +45,6 @@ Thumbs.db
 
 # Client ignore
 client/node_modules
+
+#Ignore pychache
+__pycache__

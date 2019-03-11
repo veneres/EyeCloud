@@ -4,7 +4,7 @@ RUN apt-get update \
     && cd /usr/local/bin \
     && ln -s /usr/bin/python3 python \
     && pip3 install --upgrade pip
-ADD . /usr/src/app
+COPY . /usr/src/app
 WORKDIR /usr/src/app
 RUN pip install -r requirements.txt
 EXPOSE 5000
