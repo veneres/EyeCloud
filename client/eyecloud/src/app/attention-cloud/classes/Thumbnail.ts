@@ -7,23 +7,35 @@ export class Thumbnail {
   private static maxImageWidth: number;
   private static maxImageHeight: number;
   private static maxDuration: number;
-  private static imageBackground: Url;
+  static imageBackground: Url;
   private fixationPoint: FixationPoint;
-  private imageWidth: number;
-  private imageHeight: number;
-  constructor(fixationPoint: FixationPoint) {
+  imageWidth: number;
+  imageHeight: number;
+  thumbnailPortionWidth: number;
+  thumbnailPortionHeight: number;
+  styleX: number;
+  styleY: number;
+  constructor(fixationPoint: FixationPoint, thumbnailPortionWidth: number, thumbnailPortionHeight: number) {
     this.fixationPoint = fixationPoint;
     const sizeFactor = fixationPoint.getDuration() / Thumbnail.maxDuration;
     this.imageHeight = Thumbnail.maxImageHeight * sizeFactor;
     this.imageWidth = Thumbnail.maxImageWidth * sizeFactor;
+    console.log(thumbnailPortionHeight);
+    this.thumbnailPortionHeight = thumbnailPortionHeight;
+    this.thumbnailPortionWidth = thumbnailPortionWidth;
+    this.styleX = this.fixationPoint.getX() - thumbnailPortionWidth / 2;
+    this.styleY = this.fixationPoint.getY() - thumbnailPortionHeight / 2;
 
   }
 
-  public static get_all_thumbnails(imageWidth: number, imageHeight: number, fixationPoints: FixationPoint[], imageBackground: Url) {
+  public static get_all_thumbnails(imageWidth: number,
+    imageHeight: number,
+    fixationPoints: FixationPoint[],
+    thumbnailPortionWidth: number,
+    thumbnailPortionHeight: number) {
     Thumbnail.fixationPoints = fixationPoints;
     Thumbnail.maxImageWidth = imageHeight;
     Thumbnail.maxImageHeight = imageWidth;
-    Thumbnail.imageBackground = imageBackground;
 
     // Get the max duration to calculate the size of the thumbnail
     let max_duration = fixationPoints[0].getDuration();
@@ -37,23 +49,19 @@ export class Thumbnail {
     // create all the thumbnail from the given fixations points
     const res = [];
     fixationPoints.forEach(fixation => {
-      res.push(new Thumbnail(fixation));
+      res.push(new Thumbnail(fixation, thumbnailPortionWidth, thumbnailPortionHeight));
     }
     );
     return res;
   }
 
-  public getImageWidth() {
-    return this.imageWidth;
-  }
-
-  public getImageHeight() {
-    return this.imageHeight;
-  }
-
-  public getImageBackground() {
-    console.log(Thumbnail.imageBackground.toString());
-    return Thumbnail.imageBackground;
+  public getStyle() {
+    const styles = {
+      'background-position-x.px': this.styleX,
+      'background-position-y.px': this.styleY
+    };
+    console.log(styles);
+    return styles;
   }
 
 }

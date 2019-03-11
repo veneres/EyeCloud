@@ -1,4 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
+import {DomSanitizer, SafeStyle} from '@angular/platform-browser';
 import { Thumbnail } from './classes/Thumbnail';
 import { FixationPoint } from '../classes/FixationPoint';
 import { User } from '../classes/User';
@@ -13,14 +14,18 @@ import * as d3 from 'd3';
 export class AttentionCloudComponent implements OnInit {
   private stimulusURL: string;
   private thumbnails: Thumbnail[];
+  imageBackground: SafeStyle;
   @Input()
   private stimulusName: string;
   @Input()
   private userIds: any;
   @Input()
-  private thumbnail_size: number;
+  private max_thumbnail_size: number;
+  // TODO find a better name to this field
+  @Input()
+  private thumbnail_portion_width: number;
 
-  constructor(private attentionCloudService: AttentionCloudService) {
+  constructor(private attentionCloudService: AttentionCloudService, private sanitaizer: DomSanitizer) {
   }
 
   ngOnInit() {
@@ -42,10 +47,14 @@ export class AttentionCloudComponent implements OnInit {
         }
         this.thumbnails =
           Thumbnail.get_all_thumbnails(
-            this.thumbnail_size,
-            this.thumbnail_size,
+            this.max_thumbnail_size,
+            this.max_thumbnail_size,
             fixationPoints,
-            this.attentionCloudService.getStimulusURL(this.stimulusName));
+            this.thumbnail_portion_width,
+            this.thumbnail_portion_width
+            );
+        const image_url = this.attentionCloudService.getStimulusURL(this.stimulusName).toString();
+        this.imageBackground = this.sanitaizer.bypassSecurityTrustStyle(`url(${image_url})`);
       });
   }
 }
