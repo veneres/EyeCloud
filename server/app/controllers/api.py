@@ -111,3 +111,23 @@ def get_fixations_by_station(station_name, from_timestamp, to_timestamp):
                 data[str(data_id)] = fixation_data
                 data_id += 1
         return jsonify(data)
+
+
+@app.route('/all_fixations/stimulus=<string:stimulus_name>/from=<int:from_timestamp>-to=<int:to_timestamp>', methods=['GET'])
+def get_fixations_by_stimulus(stimulus_name, from_timestamp, to_timestamp):
+    if request.method == 'GET':
+        data = {}
+        data_id = 1
+        cursor = mongo.db.fixations.find({'stimuliName': stimulus_name})
+        for document in cursor:
+            timestamp = document['timestamp']
+            if int(from_timestamp) <= int(timestamp) <= int(to_timestamp):
+                fixation_point = {'index': document['fixationIndex'], 'timestamp': document['timestamp'],
+                                  'x': document['mappedFixationPointX'], 'y': document['mappedFixationPointY'],
+                                  'duration': document['fixationDuration']}
+                map_data = {'mapName': document['stimuliName'], 'description': document['description']}
+                fixation_data = {'station': document['station'], 'fixationPoint': fixation_point, 'mapInfo': map_data,
+                                 'user': document['user']}
+                data[str(data_id)] = fixation_data
+                data_id += 1
+        return jsonify(data)
