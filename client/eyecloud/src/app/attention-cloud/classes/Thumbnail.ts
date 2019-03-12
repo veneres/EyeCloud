@@ -15,12 +15,13 @@ export class Thumbnail {
   thumbnailPortionHeight: number;
   styleX: number;
   styleY: number;
+  positionX: number;
+  positionY: number;
   constructor(fixationPoint: FixationPoint, thumbnailPortionWidth: number, thumbnailPortionHeight: number) {
     this.fixationPoint = fixationPoint;
     const sizeFactor = fixationPoint.getDuration() / Thumbnail.maxDuration;
     this.imageHeight = Thumbnail.maxImageHeight * sizeFactor;
     this.imageWidth = Thumbnail.maxImageWidth * sizeFactor;
-    console.log(thumbnailPortionHeight);
     this.thumbnailPortionHeight = thumbnailPortionHeight;
     this.thumbnailPortionWidth = thumbnailPortionWidth;
     this.styleX = this.fixationPoint.getX() - thumbnailPortionWidth / 2;
@@ -53,15 +54,6 @@ export class Thumbnail {
     }
     );
     return res;
-  }
-
-  public getStyle() {
-    const styles = {
-      'background-position-x.px': this.styleX,
-      'background-position-y.px': this.styleY
-    };
-    console.log(styles);
-    return styles;
   }
 
 }

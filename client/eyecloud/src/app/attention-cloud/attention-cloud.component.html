@@ -1,13 +1,9 @@
-<div class="thumbnail"
-  *ngFor="let thumbnail of thumbnails">
-  <div class="thumbnail-envelop" [style.height.px]="thumbnail.imageHeight" [style.width.px]="thumbnail.imageWidth">
-      <div
-            [style.height.px] = "thumbnail.thumbnailPortionHeight"
-            [style.width.px] = "thumbnail.thumbnailPortionWidth"
-            [style.background]="imageBackground"
-            [style.background-position-x.px] = "thumbnail.styleX"
-            [style.background-position-y.px] = "thumbnail.styleY"
-            >
-      </div>
-  </div>
-</div>
+<svg [attr.width]="svgWidth" [attr.height]="svgHeight" >
+  <foreignObject  appRandomPos *ngFor="let thumbnail of thumbnails" [attr.height]="thumbnail.imageHeight"
+    [attr.width]="thumbnail.imageWidth">
+      <xhtml:div xmlns="http://www.w3.org/1999/xhtml"  [style.height.px]="thumbnail.thumbnailPortionHeight" [style.width.px]="thumbnail.thumbnailPortionWidth"
+        [style.background]="imageBackground" [style.background-position-x.px]="thumbnail.styleX"
+        [style.background-position-y.px]="thumbnail.styleY">
+      </xhtml:div>
+  </foreignObject>
+</svg>

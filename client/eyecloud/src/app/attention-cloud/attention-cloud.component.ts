@@ -4,7 +4,6 @@ import { Thumbnail } from './classes/Thumbnail';
 import { FixationPoint } from '../classes/FixationPoint';
 import { User } from '../classes/User';
 import { AttentionCloudService } from '../attention-cloud.service';
-import * as d3 from 'd3';
 
 @Component({
   selector: 'app-attention-cloud',
@@ -14,6 +13,8 @@ import * as d3 from 'd3';
 export class AttentionCloudComponent implements OnInit {
   private stimulusURL: string;
   private thumbnails: Thumbnail[];
+  svgWidth = 600;
+  svgHeight = 400;
   imageBackground: SafeStyle;
   @Input()
   private stimulusName: string;

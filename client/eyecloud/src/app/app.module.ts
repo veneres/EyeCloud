@@ -6,6 +6,7 @@ import { AppComponent } from './app.component';
 import { AttentionCloudComponent } from './attention-cloud/attention-cloud.component';
 import { AttentionHeatmapComponent } from './attention-heatmap/attention-heatmap.component';
 import { HttpClientModule } from '@angular/common/http';
+import { RandomPosDirective } from './random-pos.directive';
 
 
 
@@ -13,7 +14,8 @@ import { HttpClientModule } from '@angular/common/http';
   declarations: [
     AppComponent,
     AttentionCloudComponent,
-    AttentionHeatmapComponent
+    AttentionHeatmapComponent,
+    RandomPosDirective
   ],
   imports: [
     BrowserModule,
