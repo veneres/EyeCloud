@@ -138,3 +138,13 @@ def get_fixations_by_stimulus(stimulus_name, from_timestamp, to_timestamp):
                 data[str(data_id)] = fixation_data
                 data_id += 1
         return jsonify(data)
+
+
+@app.route('/all_users/stimulus=<string:stimulus_name>', methods=['GET'])
+def get_users_by_stimulus(stimulus_name):
+    if request.method == 'GET':
+        users = set()
+        cursor = mongo.db.fixations.find({'stimuliName': stimulus_name})
+        for document in cursor:
+                users.add(document['user'])
+        return jsonify([user_id for user_id in users])
