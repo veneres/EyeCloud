@@ -21,8 +21,6 @@ export class AttentionCloudComponent implements OnChanges {
   @Input()
   private stimulusName: string;
   @Input()
-  private representation:string;
-  @Input()
   private userIds: any;
   @Input()
   private max_thumbnail_size: number;

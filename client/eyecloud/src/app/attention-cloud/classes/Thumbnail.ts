@@ -41,7 +41,7 @@ export class Thumbnail {
 
     const res = [];
 
-    if (representationType == "circular") {
+    if (representationType === "circular") {
 
       let borderRadius = "50%";
 
