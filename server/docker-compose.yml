@@ -14,7 +14,7 @@ services:
     ports:
       - "5000:5000"
     volumes:
-      - .:/usr/src/app
+      - .:/app
     environment:
       - ENV=development
       - PORT=5000

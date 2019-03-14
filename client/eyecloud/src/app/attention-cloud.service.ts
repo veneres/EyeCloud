@@ -7,7 +7,7 @@ import { Url } from 'url';
   providedIn: 'root',
 })
 export class AttentionCloudService {
-  baseUrl = 'http://localhost:5000';
+  baseUrl = 'http://192.168.99.100:5000';
 
   constructor(private http: HttpClient) {
 

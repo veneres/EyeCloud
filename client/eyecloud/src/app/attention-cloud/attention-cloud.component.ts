@@ -13,8 +13,8 @@ import { AttentionCloudService } from '../attention-cloud.service';
 export class AttentionCloudComponent implements OnChanges {
   private stimulusURL: string;
   private thumbnails: Thumbnail[];
-  svgWidth = 600;
-  svgHeight = 400;
+  svgWidth = 800;
+  svgHeight = 600;
   imageBackground: SafeStyle;
   @Input()
   private representation: string;
@@ -52,14 +52,7 @@ export class AttentionCloudComponent implements OnChanges {
             }
           }
         }
-        this.thumbnails =
-          Thumbnail.get_all_thumbnails(
-            this.max_thumbnail_size,
-            this.max_thumbnail_size,
-            fixationPoints,
-            this.thumbnail_portion_width,
-            this.thumbnail_portion_width
-            );
+        this.thumbnails = Thumbnail.get_all_thumbnails(fixationPoints, this.representation);
         const image_url = this.attentionCloudService.getStimulusURL(this.stimulusName).toString();
         this.imageBackground = this.sanitaizer.bypassSecurityTrustStyle(`url(${image_url})`);
       });
