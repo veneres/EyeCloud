@@ -1,9 +1,10 @@
 <svg [attr.width]="svgWidth" [attr.height]="svgHeight" >
-  <foreignObject  appRandomPos *ngFor="let thumbnail of thumbnails" [attr.height]="thumbnail.imageHeight"
-    [attr.width]="thumbnail.imageWidth">
-      <xhtml:div xmlns="http://www.w3.org/1999/xhtml"  [style.height.px]="thumbnail.thumbnailPortionHeight" [style.width.px]="thumbnail.thumbnailPortionWidth"
-        [style.background]="imageBackground" [style.background-position-x.px]="thumbnail.styleX"
-        [style.background-position-y.px]="thumbnail.styleY">
+  <foreignObject appRandomPos *ngFor="let thumbnail of thumbnails" [posX]="thumbnail.positionX" [posY]="thumbnail.positionY">
+      <xhtml:div xmlns="http://www.w3.org/1999/xhtml"  [style.height.px]="thumbnail.croppingSize"
+                 [style.width.px]="thumbnail.croppingSize" [style.background]="imageBackground"
+                 [style.background-position-x.px]="thumbnail.styleX" [style.background-position-y.px]="thumbnail.styleY"
+                 [style.border-style]="'solid'" [style.border-color]="'gray'"
+                 [style.border-width]="'1px'" [style.border-radius]="thumbnail.styleBorderRadius">
       </xhtml:div>
   </foreignObject>
 </svg>

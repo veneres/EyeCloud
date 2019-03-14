@@ -4,17 +4,14 @@ import * as d3 from 'd3';
   selector: '[appRandomPos]'
 })
 export class RandomPosDirective {
-  @Input() svgWidth: string;
-  @Input() svgHeight: number;
+  @Input() posX: string;
+  @Input() posY: string;
 
-  constructor(el: ElementRef) {
-    // TODO fix problem with svgWidth and svgHeight
-    d3.select(el.nativeElement).attr('x', Math.random() * 600);
-    d3.select(el.nativeElement).attr('y', Math.random() * 400);
-  }
+  constructor(private el: ElementRef) {}
 
-  private getRndInteger(min, max) {
-    return Math.floor(Math.random() * (max - min)) + min;
+  ngOnInit() {
+    d3.select(this.el.nativeElement).attr('x', this.posX);
+    d3.select(this.el.nativeElement).attr('y', this.posY);
   }
 
 }
