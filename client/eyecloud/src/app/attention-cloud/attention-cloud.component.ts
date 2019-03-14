@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, Input, OnChanges} from '@angular/core';
 import {DomSanitizer, SafeStyle} from '@angular/platform-browser';
 import { Thumbnail } from './classes/Thumbnail';
 import { FixationPoint } from '../classes/FixationPoint';
@@ -10,12 +10,14 @@ import { AttentionCloudService } from '../attention-cloud.service';
   templateUrl: './attention-cloud.component.html',
   styleUrls: ['./attention-cloud.component.css']
 })
-export class AttentionCloudComponent implements OnInit {
+export class AttentionCloudComponent implements OnChanges {
   private stimulusURL: string;
   private thumbnails: Thumbnail[];
   svgWidth = 800;
   svgHeight = 600;
   imageBackground: SafeStyle;
+  @Input()
+  private representation: string;
   @Input()
   private stimulusName: string;
   @Input()
@@ -31,7 +33,11 @@ export class AttentionCloudComponent implements OnInit {
   constructor(private attentionCloudService: AttentionCloudService, private sanitaizer: DomSanitizer) {
   }
 
-  ngOnInit() {
+  ngOnChanges() {
+    // if there isn't a stimulus set  or a set of users return
+    if (this.stimulusName === '') {
+        return;
+    }
     this.userIds = this.userIds.split(',');
     const fixationPoints = [];
     this.attentionCloudService.getFixationPoints(new User(this.userIds[0]), this.stimulusName)

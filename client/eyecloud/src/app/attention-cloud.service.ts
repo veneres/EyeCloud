@@ -13,6 +13,16 @@ export class AttentionCloudService {
 
   }
 
+  public getAllStations() {
+    const endpoint = `${this.baseUrl}/all_stations`;
+    return this.http.get(endpoint);
+  }
+
+  public getAllUserByStimulus(stimulus: string) {
+    const endpoint = `${this.baseUrl}/all_users/stimulus=${stimulus}`;
+    return this.http.get(endpoint);
+  }
+
   public getStimulusURL(stimulusName: string): Url {
     return new URL(`${this.baseUrl}/stimuli/${stimulusName}`);
   }

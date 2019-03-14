@@ -73,6 +73,13 @@ def get_fixations_by_user_and_station(user, station_name, from_timestamp, to_tim
         return jsonify(data)
 
 
+@app.route('/all_stations', methods=['GET'])
+def get_all_stations():
+    if request.method == 'GET':
+        cursor = mongo.db.station.find()
+        data = [elem for elem in cursor]
+        return jsonify(data)
+
 @app.route('/all_fixations/user=<user>/from=<from_timestamp>-to=<to_timestamp>', methods=['GET'])
 def get_fixations_by_user(user, from_timestamp, to_timestamp):
     if request.method == 'GET':
@@ -131,3 +138,13 @@ def get_fixations_by_stimulus(stimulus_name, from_timestamp, to_timestamp):
                 data[str(data_id)] = fixation_data
                 data_id += 1
         return jsonify(data)
+
+
+@app.route('/all_users/stimulus=<string:stimulus_name>', methods=['GET'])
+def get_users_by_stimulus(stimulus_name):
+    if request.method == 'GET':
+        users = set()
+        cursor = mongo.db.fixations.find({'stimuliName': stimulus_name})
+        for document in cursor:
+                users.add(document['user'])
+        return jsonify([user_id for user_id in users])

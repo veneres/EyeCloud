@@ -1,0 +1,38 @@
+<div class="btn-group" dropdown [insideClick]="true">
+  <button id="button-basic" dropdownToggle type="button" class="btn btn-primary dropdown-toggle"
+    aria-controls="dropdown-stations">
+    Stimulus <span class="caret"></span>
+  </button>
+  <ul id="dropdown-stations" *dropdownMenu class="dropdown-menu" role="menu" aria-labelledby="button-basic">
+    <div *ngFor="let station of availableStations">
+      <li role="menuitem"><a class="dropdown-item" href="#">{{station.name}}</a></li>
+      <li class="divider dropdown-divider"></li>
+      <li role="menuitem" *ngFor="let stimulus of station.stimuli">
+          <a class="dropdown-item" href="#" (click)="changeCurrentStimulus(stimulus)">
+            {{stimulus}}
+          </a>
+      </li>
+      <li class="divider dropdown-divider"></li>
+    </div>
+  </ul>
+</div>
+<div class="btn-group" dropdown [insideClick]="true">
+  <button id="button-basic" dropdownToggle type="button" class="btn btn-primary dropdown-toggle"
+    aria-controls="dropdown-users">
+    User <span class="caret"></span>
+  </button>
+  <ul id="dropdown-users" *dropdownMenu class="dropdown-menu" role="menu" aria-labelledby="button-basic">
+    <div *ngFor="let user of availableUsers">
+      <li role="menuitem"><a class="dropdown-item" href="#" (click)="changeCurrentUsers(user)">{{user}}</a></li>
+      <li class="divider dropdown-divider"></li>
+    </div>
+  </ul>
+</div>
+<div class="btn-group btn-group-toggle" data-toggle="buttons">
+  <label class="btn btn-secondary active" (click)="changeRepresentation('circular')">
+    <input type="radio" name="options" id="option1" autocomplete="off" checked > Circular
+  </label>
+  <label class="btn btn-secondary" (click)="changeRepresentation('squared')">
+    <input type="radio" name="options" id="option2" autocomplete="off"> Squared
+  </label>
+</div>
