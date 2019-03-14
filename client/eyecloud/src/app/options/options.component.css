@@ -1,0 +1,4 @@
+#dropdown-stations, #dropdown-users {
+  max-height: 200px;
+  overflow: scroll;
+}

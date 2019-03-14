@@ -4,8 +4,8 @@ import * as d3 from 'd3';
   selector: '[appRandomPos]'
 })
 export class RandomPosDirective {
-  @Input() svgWidth: string;
-  @Input() svgHeight: number;
+  @Input() x_1: string;
+  @Input() y_1: string;
 
   constructor(el: ElementRef) {
     // TODO fix problem with svgWidth and svgHeight

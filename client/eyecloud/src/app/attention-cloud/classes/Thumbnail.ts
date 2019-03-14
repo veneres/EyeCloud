@@ -29,12 +29,8 @@ export class Thumbnail {
 
   }
 
-  public static get_all_thumbnails(imageWidth: number,
-    imageHeight: number,
-    fixationPoints: FixationPoint[],
-    thumbnailPortionWidth: number,
-    thumbnailPortionHeight: number) {
-    Thumbnail.fixationPoints = fixationPoints;
+  public static get_all_thumbnails(imageWidth: number, imageHeight: number, fixationPoints: FixationPoint[],
+                                  thumbnailPortionWidth: number, thumbnailPortionHeight: number) {
     Thumbnail.maxImageWidth = imageHeight;
     Thumbnail.maxImageHeight = imageWidth;
 

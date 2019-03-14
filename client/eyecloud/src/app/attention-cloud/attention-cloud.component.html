@@ -1,5 +1,5 @@
 <svg [attr.width]="svgWidth" [attr.height]="svgHeight" >
-  <foreignObject  appRandomPos *ngFor="let thumbnail of thumbnails" [attr.height]="thumbnail.imageHeight"
+  <foreignObject  appRandomPos [x_1]="'5'" [y_1]="'10'" *ngFor="let thumbnail of thumbnails" [attr.height]="thumbnail.imageHeight"
     [attr.width]="thumbnail.imageWidth">
       <xhtml:div xmlns="http://www.w3.org/1999/xhtml"  [style.height.px]="thumbnail.thumbnailPortionHeight" [style.width.px]="thumbnail.thumbnailPortionWidth"
         [style.background]="imageBackground" [style.background-position-x.px]="thumbnail.styleX"
