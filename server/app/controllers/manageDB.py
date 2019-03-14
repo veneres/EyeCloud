@@ -146,13 +146,14 @@ def recover_complexity_data_impl():
                     elif 121 < complexity <= 150:
                         description = 'medium'
                     if mongo.db.station.find({'name': station_name}).count() == 0:
-                        data = {'station': station_name, 'complexity': complexity, 'description': description}
+                        data = {'name': station_name, 'complexity': complexity, 'description': description}
                         mongo.db.station.insert_one(data)
                     else:
-                        mongo.db.station.update_one({'station': station_name},
+                        mongo.db.station.update_one({'name': station_name},
                                                     {"$set": {'complexity': complexity, 'description': description}})
         return 'OK'
     except Exception as e:
+        print(e)
         return str(e)
 
 
@@ -164,16 +165,14 @@ def recover_resolution_data_impl():
                 station_name = row[0].lstrip()
                 width = row[1]
                 height = row[2].rstrip()
-                print(station_name)
+                print(mongo.db.station.find({'name': station_name}).count())
                 if mongo.db.station.find({'name': station_name}).count() == 0:
-                    print("here")
-                    data = {'station': station_name,
+                    data = {'name': station_name,
                             'width': width, 'height': height}
 
                     mongo.db.station.insert_one(data)
                 else:
-                    print("there")
-                    mongo.db.station.update_one({'station': station_name}, {"$set": {'width': width, 'height': height}})
+                    mongo.db.station.update_one({'name': station_name}, {"$set": {'width': width, 'height': height}})
         return 'OK'
     except Exception as e:
         return str(e)
