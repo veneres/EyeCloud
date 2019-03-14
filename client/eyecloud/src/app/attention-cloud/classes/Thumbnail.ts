@@ -10,7 +10,7 @@ export class Thumbnail {
   croppingSize: number;
   styleX: number;
   styleY: number;
-  styleBorderRadius: string
+  styleBorderRadius: string;
   positionX: number;
   positionY: number;
   constructor(fixationPoint: FixationPoint, croppingSize: number,
@@ -89,7 +89,10 @@ export class Thumbnail {
 
       let searchPoints = [[400, 300, displaySize]];
 
+      let counter = 0;
       while (fixationPoints.length > 0) {
+
+        if (counter > 5000) break;
 
         // for each searchPoints, search up, right, down, left
         let numSearchPoints = searchPoints.length;
