@@ -34,6 +34,7 @@ export class OptionsComponent implements OnInit {
   }
 
   public sendNewStimulus() {
+    this.sendCurrentDisplayMode();
     this.currentStimulusEvent.emit(this.currentStimulus);
   }
   public sendCurrentUsersArrayEvent() {
@@ -41,6 +42,7 @@ export class OptionsComponent implements OnInit {
   }
 
   public sendCurrentDisplayMode() {
+    console.log(this.displayMode);
     this.displayModeEvent.emit(this.displayMode);
   }
 
