@@ -1,5 +1,4 @@
 import { Component, Input, OnChanges} from '@angular/core';
-import {DomSanitizer, SafeStyle} from '@angular/platform-browser';
 import { Thumbnail } from './classes/Thumbnail';
 import { FixationPoint } from '../classes/FixationPoint';
 import { User } from '../classes/User';
@@ -13,9 +12,13 @@ import { AttentionCloudService } from '../attention-cloud.service';
 export class AttentionCloudComponent implements OnChanges {
   private stimulusURL: string;
   private thumbnails: Thumbnail[];
+  private fixationPoints: FixationPoint[];
   svgWidth = 800;
   svgHeight = 600;
-  imageBackground: SafeStyle;
+  imageURL: string;
+  imageWidth: number;
+  imageHeight: number;
+  representationType: string;
   @Input()
   private representation: string;
   @Input()
@@ -28,7 +31,7 @@ export class AttentionCloudComponent implements OnChanges {
   @Input()
   private thumbnail_portion_width: number;
 
-  constructor(private attentionCloudService: AttentionCloudService, private sanitaizer: DomSanitizer) {
+  constructor(private attentionCloudService: AttentionCloudService) {
   }
 
   ngOnChanges() {
@@ -56,9 +59,12 @@ export class AttentionCloudComponent implements OnChanges {
             }
           }
         }
-        this.thumbnails = Thumbnail.get_all_thumbnails(fixationPoints, this.representation);
-        const image_url = this.attentionCloudService.getStimulusURL(this.stimulusName).toString();
-        this.imageBackground = this.sanitaizer.bypassSecurityTrustStyle(`url(${image_url})`);
+        this.fixationPoints = fixationPoints;
+        this.thumbnails = Thumbnail.get_all_thumbnails(fixationPoints);
+        this.imageURL = this.attentionCloudService.getStimulusURL(this.stimulusName).toString();
+        this.imageWidth = 1600;
+        this.imageHeight = 1200;
+        this.representationType = this.representation;
       });
   }
 }
