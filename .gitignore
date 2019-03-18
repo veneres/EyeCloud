@@ -51,3 +51,6 @@ __pycache__
 
 # Ignore docker compose due to a problem on mounting volumes on Windows
 server/docker-compose.yml
+server/output\.log
+
+server/\.idea/
