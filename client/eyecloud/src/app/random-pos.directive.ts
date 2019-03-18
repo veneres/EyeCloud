@@ -12,7 +12,7 @@ export class RandomPosDirective implements OnChanges{
   @Input() imageHeight: number;
   @Input() representation: string;
 
-  constructor(private el: ElementRef) {}
+export class RandomPosDirective implements OnChanges {
 
   ngOnChanges() {
 
@@ -155,6 +155,7 @@ export class RandomPosDirective implements OnChanges{
       simulation.on("tick", tickedSquare);
     }
   }
+  constructor(private el: ElementRef) { }
 
 
 }

@@ -23,7 +23,10 @@
       </app-attention-cloud>
     </div>
     <div class="col-md-6">
-      <app-attention-heatmap stimulusName="{{currentStimulus}}"></app-attention-heatmap>
+      <app-attention-heatmap
+        usersIds="{{usersArray}}"
+        stimulusName="{{currentStimulus}}">
+      </app-attention-heatmap>
     </div>
   </div>
 </div>

@@ -39,7 +39,6 @@ export class AttentionCloudComponent implements OnChanges {
     if (this.stimulusName === '') {
         return;
     }
-    console.log("representation: "+this.representation);
     // TODO fix this workaround
     if (typeof this.userIds  === 'string') {
       this.userIds = this.userIds.split(',');

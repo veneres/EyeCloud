@@ -7,7 +7,7 @@ import { Url } from 'url';
   providedIn: 'root',
 })
 export class AttentionCloudService {
-  baseUrl = 'http://192.168.99.100:5000';
+  baseUrl = 'http://127.0.0.1:5000';
 
   constructor(private http: HttpClient) {
 
@@ -34,6 +34,12 @@ export class AttentionCloudService {
     // TODO make this line shorter
     // tslint:disable-next-line:max-line-length
     const endpoint = `${this.baseUrl}/all_fixations/user=${user.getUserId()}/station=${station}/from=${fixed_timestamp_start}-to=${fixed_timestamp_end}`;
+    return this.http.get(endpoint);
+  }
+
+  public getHeatMap(user: User, stimulus: string) {
+    const stimulusNameCleaned = stimulus.substring(0, stimulus.length - 4);
+    const endpoint = `${this.baseUrl}/heatmap/stimulus=${stimulusNameCleaned}/user=${user.getUserId()}`;
     return this.http.get(endpoint);
   }
 

@@ -42,7 +42,6 @@ export class OptionsComponent implements OnInit {
   }
 
   public sendCurrentDisplayMode() {
-    console.log(this.displayMode);
     this.displayModeEvent.emit(this.displayMode);
   }
 

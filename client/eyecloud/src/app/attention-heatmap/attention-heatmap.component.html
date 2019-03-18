@@ -1,2 +1,9 @@
-<img src="{{stimulusName}}" class="img-fluid" />
-{{stimulusName}}
+  <div  appHeatmap [stimulusUrl]="stimulusUrl" [show]=showStimulus [usersIds]=usersIds [stimulusName]="stimulusName">
+    <div class="img-heatmap-container" *ngIf="showStimulus">
+      <img id="img-heatmap" src="{{stimulusUrl}}" class="img-fluid">
+    </div>
+    <canvas >
+
+    </canvas>
+  </div>
+

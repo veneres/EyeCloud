@@ -3,6 +3,10 @@ import os
 from flask import request, jsonify
 from app import app, mongo
 import logger
+import sys
+import math
+import numpy as np
+from tqdm import tqdm
 
 ROOT_PATH = os.environ.get('ROOT_PATH')
 LOG = logger.get_root_logger(
@@ -56,29 +60,34 @@ def get_all_users():
 @app.route('/all_fixations/user=<user>/station=<station_name>/from=<from_timestamp>-to=<to_timestamp>', methods=['GET'])
 def get_fixations_by_user_and_station(user, station_name, from_timestamp, to_timestamp):
     if request.method == 'GET':
-        data = {}
-        data_id = 1
-        cursor = mongo.db.fixations.find({'station': station_name, 'user': user})
-        for document in cursor:
-            timestamp = document['timestamp']
-            if int(from_timestamp) <= int(timestamp) <= int(to_timestamp):
-                fixation_point = {'index': document['fixationIndex'], 'timestamp': document['timestamp'],
-                                  'x': document['mappedFixationPointX'], 'y': document['mappedFixationPointY'],
-                                  'duration': document['fixationDuration']}
-                map_data = {'mapName': document['stimuliName'], 'description': document['description']}
-                fixation_data = {'station': station_name, 'fixationPoint': fixation_point, 'mapInfo': map_data,
-                                 'user': user}
-                data[str(data_id)] = fixation_data
-                data_id += 1
-        return jsonify(data)
+        return jsonify(get_fixations_by_user_and_station_aux(user, station_name, from_timestamp, to_timestamp))
 
 
-@app.route('/all_stations', methods=['GET'])
+def get_fixations_by_user_and_station_aux(user, station_name, from_timestamp, to_timestamp):
+    data = {}
+    data_id = 1
+    cursor = mongo.db.fixations.find({'station': station_name, 'user': user})
+    for document in cursor:
+        timestamp = document['timestamp']
+        if int(from_timestamp) <= int(timestamp) <= int(to_timestamp):
+            fixation_point = {'index': document['fixationIndex'], 'timestamp': document['timestamp'],
+                              'x': document['mappedFixationPointX'], 'y': document['mappedFixationPointY'],
+                              'duration': document['fixationDuration']}
+            map_data = {'mapName': document['stimuliName'], 'description': document['description']}
+            fixation_data = {'station': station_name, 'fixationPoint': fixation_point, 'mapInfo': map_data,
+                             'user': user}
+            data[str(data_id)] = fixation_data
+            data_id += 1
+    return data
+
+
+@app.route('/all_stations/', methods=['GET'])
 def get_all_stations():
     if request.method == 'GET':
         cursor = mongo.db.station.find()
         data = [elem for elem in cursor]
         return jsonify(data)
+
 
 @app.route('/all_fixations/user=<user>/from=<from_timestamp>-to=<to_timestamp>', methods=['GET'])
 def get_fixations_by_user(user, from_timestamp, to_timestamp):
@@ -120,7 +129,8 @@ def get_fixations_by_station(station_name, from_timestamp, to_timestamp):
         return jsonify(data)
 
 
-@app.route('/all_fixations/stimulus=<string:stimulus_name>/from=<int:from_timestamp>-to=<int:to_timestamp>', methods=['GET'])
+@app.route('/all_fixations/stimulus=<string:stimulus_name>/from=<int:from_timestamp>-to=<int:to_timestamp>',
+           methods=['GET'])
 def get_fixations_by_stimulus(stimulus_name, from_timestamp, to_timestamp):
     if request.method == 'GET':
         data = {}
@@ -146,5 +156,84 @@ def get_users_by_stimulus(stimulus_name):
         users = set()
         cursor = mongo.db.fixations.find({'stimuliName': stimulus_name})
         for document in cursor:
-                users.add(document['user'])
+            users.add(document['user'])
         return jsonify([user_id for user_id in users])
+
+
+def rgb_from_intensity(intensity, max_intensity):
+    max_value = 255
+    r = 0
+    b = max_value
+    scaling_factor = max_intensity * 0.25
+    if intensity <= max_intensity * 0.25:
+        g = max_value * intensity / scaling_factor
+    elif intensity <= max_intensity * 0.5:
+        g = 255
+        b = max_value * (1 - ((intensity - scaling_factor) / scaling_factor))
+    elif intensity <= max_intensity * 0.75:
+        b = 0
+        g = 255
+        r = max_value * (intensity - 2 * scaling_factor) / scaling_factor
+    else:
+        b = 0
+        r = 255
+        g = max_value * (1 - (intensity - 3 * scaling_factor)/ max_intensity)
+
+    return r, g, b
+
+
+# TODO make this function working for an array of users instead of a single user
+# TODO decide if we do the scaling on the frontend or in the backend
+@app.route('/heatmap/stimulus=<string:stimulus_name>/user=<user>', methods=['GET'])
+def get_heatmap(stimulus_name, user):
+    if request.method == 'GET':
+        all_stations = mongo.db.station.find()
+        associated_station = None
+        for station in all_stations:
+            for stimulus in station.get("stimuli_list", []):
+                # check the stimulus without the file extension
+                if stimulus[:-4] == stimulus_name:
+                    associated_station = station
+                    break
+        if associated_station is None:
+            return jsonify({'ok': False, 'message': 'Bad request parameters!'}), 400
+        map_height = int(associated_station['height'])
+        map_width = int(associated_station['width'])
+        pixel_matrix = [[0 for _ in range(map_width)] for _ in range(map_height)]
+        max_weight_for_red = 0
+        # TODO decided if want to make the visual span variable
+        visual_span_radius = 50
+        # TODO change the hardcoded timestamps
+        fixations_points = get_fixations_by_user_and_station_aux(user, associated_station['name'], 0, 9999999999999)
+        for key, fixation_point in fixations_points.items():
+            x = int(fixation_point['fixationPoint']['x'])
+            y = int(fixation_point['fixationPoint']['y'])
+            # check if the visual span is inside the pixel matrix
+            range_start_x = x - visual_span_radius if x - visual_span_radius > 0 else 0
+            range_finish_x = x + visual_span_radius if x + visual_span_radius < map_width - 1 else map_width - 1
+            range_start_y = y - visual_span_radius if y - visual_span_radius > 0 else 0
+            range_finish_y = y + visual_span_radius if y + visual_span_radius < map_height - 1 else map_height - 1
+            for row in range(range_start_y, range_finish_y + 1):
+                for column in range(range_start_x, range_finish_x + 1):
+                    distance = math.sqrt((x - column) ** 2 + (y - row) ** 2)
+                    if distance >  visual_span_radius:
+                        continue
+                    # linear scaling for the model
+                    # TODO decide if we want to add also the Gaussian option
+                    # p = probabilty that the user have seen the pixel in specificed visual span
+                    p = 1 - distance / (visual_span_radius * 2)
+                    duration = int(fixation_point['fixationPoint']['duration'])
+                    pixel_matrix[row][column] += duration * p
+                    if pixel_matrix[row][column] > max_weight_for_red:
+                        max_weight_for_red = pixel_matrix[row][column]
+        res = {}
+        for row in range(map_height):
+            for column in range(map_width):
+                if pixel_matrix[row][column] == 0:
+                    continue
+                r, g, b = rgb_from_intensity(pixel_matrix[row][column], max_weight_for_red)
+                if row in res:
+                    res[row][column]=[r,g,b]
+                else:
+                    res[row]={column: [r,g,b]}
+        return jsonify(height=map_height, width=map_width, points=res)

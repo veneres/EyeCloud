@@ -14,7 +14,6 @@ export class AppComponent implements OnInit {
 
   }
   public receiveNewUsersArray($event) {
-    console.log($event);
     this.usersArray = $event.split(',');
   }
   public receiveDisplayModeEvent($event) {

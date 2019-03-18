@@ -9,10 +9,16 @@ import { AttentionCloudService } from '../attention-cloud.service';
 export class AttentionHeatmapComponent implements OnChanges {
 
   @Input() stimulusName: string;
+  @Input() private representation: string;
+  @Input() usersIds: any;
+  stimulusUrl: string;
+  showStimulus: boolean;
   constructor(private attentionCloudService: AttentionCloudService) { }
   ngOnChanges(): void {
-    if (this.stimulusName !== '') {
-      this.stimulusName = this.attentionCloudService.getStimulusURL(this.stimulusName).toString();
+    this.stimulusUrl = this.attentionCloudService.getStimulusURL(this.stimulusName).toString();
+    this.showStimulus = this.stimulusName !== '' && this.usersIds !== '';
+    if (this.showStimulus) {
+      console.log(this.usersIds);
     }
   }
 }

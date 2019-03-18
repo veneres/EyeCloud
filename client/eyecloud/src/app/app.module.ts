@@ -8,6 +8,7 @@ import { AttentionHeatmapComponent } from './attention-heatmap/attention-heatmap
 import { HttpClientModule } from '@angular/common/http';
 import { RandomPosDirective } from './random-pos.directive';
 import { OptionsComponent } from './options/options.component';
+import { HeatmapDirective } from './heatmap.directive';
 
 
 
@@ -17,7 +18,8 @@ import { OptionsComponent } from './options/options.component';
     AttentionCloudComponent,
     AttentionHeatmapComponent,
     RandomPosDirective,
-    OptionsComponent
+    OptionsComponent,
+    HeatmapDirective
   ],
   imports: [
     BsDropdownModule.forRoot(),
