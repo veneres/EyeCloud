@@ -1,38 +1,93 @@
-<div class="btn-group" dropdown [insideClick]="true">
-  <button id="button-basic" dropdownToggle type="button" class="btn btn-primary dropdown-toggle"
-    aria-controls="dropdown-stations">
-    Stimulus <span class="caret"></span>
-  </button>
-  <ul id="dropdown-stations" *dropdownMenu class="dropdown-menu" role="menu" aria-labelledby="button-basic">
-    <div *ngFor="let station of availableStations">
-      <li role="menuitem"><a class="dropdown-item" href="#">{{station.name}}</a></li>
-      <li class="divider dropdown-divider"></li>
-      <li role="menuitem" *ngFor="let stimulus of station.stimuli">
-          <a class="dropdown-item" href="#" (click)="changeCurrentStimulus(stimulus)">
-            {{stimulus}}
-          </a>
-      </li>
-      <li class="divider dropdown-divider"></li>
+<button type="button" class="btn btn-outline-dark" (click)="openModal(template)">Settings</button>
+
+<ng-template #template>
+  <div class="modal-header">
+    <h4 class="modal-title pull-left">Settings</h4>
+    <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body container-fluid">
+    <div class="row">
+      <div class="col-md-6">
+        <h3> Option </h3>
+      </div>
+      <div class="col-md-6">
+        <h3> Current value </h3>
+      </div>
     </div>
-  </ul>
-</div>
-<div class="btn-group" dropdown [insideClick]="true">
-  <button id="button-basic" dropdownToggle type="button" class="btn btn-primary dropdown-toggle"
-    aria-controls="dropdown-users">
-    User <span class="caret"></span>
-  </button>
-  <ul id="dropdown-users" *dropdownMenu class="dropdown-menu" role="menu" aria-labelledby="button-basic">
-    <div *ngFor="let user of availableUsers">
-      <li role="menuitem"><a class="dropdown-item" href="#" (click)="changeCurrentUsers(user)">{{user}}</a></li>
-      <li class="divider dropdown-divider"></li>
+    <div class="option-entry row" id="entry-stimulus">
+      <div class="col-md-6">
+        <div class="btn-group" dropdown>
+          <button id="button-stimulus" dropdownToggle type="button" class="btn btn-outline-dark dropdown-toggle"
+            aria-controls="dropdown-stations">
+            Stimulus <span class="caret"></span>
+          </button>
+          <ul id="dropdown-stations" *dropdownMenu class="dropdown-menu" role="menu" aria-labelledby="button-stimulus">
+            <div *ngFor="let station of availableStations">
+              <li  class="disabled" role="menuitem" class="station-name"><span class="dropdown-item disabled" >{{station.name}}</span></li>
+              <li role="menuitem" *ngFor="let stimulus of station.stimuli">
+                <a class="dropdown-item" href="#" (click)="changeCurrentStimulus(stimulus)">
+                  {{stimulus}}
+                </a>
+              </li>
+            </div>
+          </ul>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <p class="active-selection" id="selected-stimulus">
+          {{currentStimulus}}
+        </p>
+      </div>
     </div>
-  </ul>
-</div>
-<div class="btn-group btn-group-toggle" data-toggle="buttons">
-  <label class="btn btn-secondary active" (click)="changeRepresentation('circular')">
-    <input type="radio" name="options" id="option1" autocomplete="off" checked > Circular
-  </label>
-  <label class="btn btn-secondary" (click)="changeRepresentation('squared')">
-    <input type="radio" name="options" id="option2" autocomplete="off"> Squared
-  </label>
-</div>
+    <div class="option-entry row">
+      <div class="col-md-6">
+        <div class="btn-group" dropdown [isDisabled]="availableUsers.length === 0" [insideClick]="true">
+          <button id="button-users" dropdownToggle type="button" class="btn btn-outline-dark dropdown-toggle"
+            aria-controls="dropdown-users">
+            User <span class="caret"></span>
+          </button>
+          <ul id="dropdown-users" *dropdownMenu class="dropdown-menu" role="menu" aria-labelledby="button-users">
+            <div *ngFor="let user of availableUsers">
+              <li role="menuitem" [class.selected]="user.isSelected()">
+                <a class="dropdown-item" href="#" (click)="toogleSelectedUser(user)">
+                  {{user.getUserId()}}
+                </a>
+              </li>
+              <li class="divider dropdown-divider"></li>
+            </div>
+          </ul>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="active-selection" id="selected-stimulus">
+          <div *ngIf="currentUsers.length !== 0">
+            <span *ngFor="let user of currentUsers; let i = index">
+              {{user.getUserId()}}
+              <span *ngIf="i !== (currentUsers.length - 1)">
+                  ,
+              </span>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  <div class="row">
+    <div class="col-md-6">
+      <div class="range-input-selectors">
+        <p>Min timestamp: <input type="number" [(ngModel)]="timestampStart"></p>
+        <p>Max timestamp: <input type="number"[(ngModel)]="timestampEnd"></p>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+      <ng5-slider [(value)]="timestampStart" [(highValue)]="timestampEnd" [options]="sliderTimeStampOptions"></ng5-slider>
+  </div>
+  <div class="row">
+    <div class="offset-md-8 col-md-4">
+      <button id="generate-button" (click)="generate()" type="button" class="btn btn-success">Generate</button>
+    </div>
+  </div>
+  </div>
+</ng-template>

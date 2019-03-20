@@ -1,4 +1,50 @@
 #dropdown-stations, #dropdown-users {
-  max-height: 200px;
+  max-height: 400px;
   overflow: scroll;
+}
+
+.divider.dropdown-divider {
+  margin-top: 0px;
+}
+
+.active-selection {
+  display: inline-flex;
+  float: right;
+}
+
+.option-entry {
+  display: block;
+}
+
+.row .col-md-6 {
+  display: inline-flex;
+  width: 50%;
+}
+
+.station-name {
+  background-color: #e53935;
+}
+
+.station-name span.disabled {
+  color: #fff;
+}
+
+#dropdown-users li.selected {
+  background-color: #e57373;
+}
+
+#generate-button {
+  display: block;
+  margin: auto;
+}
+
+.modal-body {
+  padding-bottom: 50px;
+}
+
+.range-input-selectors{
+  display: block;
+}
+.range-slider{
+  display: block;
 }

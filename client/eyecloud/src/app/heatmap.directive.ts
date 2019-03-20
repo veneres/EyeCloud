@@ -10,8 +10,9 @@ export class HeatmapDirective implements AfterViewInit, OnChanges {
 
   @Input() stimulusUrl: string;
   @Input() show: boolean;
-  @Input() usersIds: any;
+  @Input() usersIdsJSON: string;
   @Input() stimulusName: string;
+  private usersIds: User[];
   constructor(private el: ElementRef, private attentionCloudService: AttentionCloudService) {
   }
   width: number;
@@ -27,11 +28,10 @@ export class HeatmapDirective implements AfterViewInit, OnChanges {
     if (!this.show) {
       return;
     }
-    console.log(this.usersIds);
-    if (typeof this.usersIds === 'string') {
-      this.usersIds = this.usersIds.split(',');
-    }
-    this.attentionCloudService.getHeatMap(new User(this.usersIds[0]), this.stimulusName).subscribe((dataset) => {
+    console.log(this);
+    // parsing usersids, because it's only possibile to pass string to a directive
+    this.usersIds = JSON.parse(this.usersIdsJSON);
+    this.attentionCloudService.getHeatMap(this.usersIds[0], this.stimulusName).subscribe((dataset) => {
       // We append the canvas in this phase to accelerate the rendering process
       // remove the canvas if it's present
       // Append the canvas
@@ -59,8 +59,11 @@ export class HeatmapDirective implements AfterViewInit, OnChanges {
             if (dataset['points'][y].hasOwnProperty(x)) {
               const value = dataset['points'][y][x];
               data[y * canvasWidth + x] =
+                // tslint:disable-next-line:no-bitwise
                 (200 << 24) |    // alpha
+                // tslint:disable-next-line:no-bitwise
                 (value[2] / 2 << 16) |    // blue
+                // tslint:disable-next-line:no-bitwise
                 (value[1] << 8) |    // green
                 value[0];
             }

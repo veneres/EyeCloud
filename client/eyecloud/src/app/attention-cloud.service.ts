@@ -43,4 +43,10 @@ export class AttentionCloudService {
     return this.http.get(endpoint);
   }
 
+  public getMinAndMaxTimestamp(stimulus: string) {
+    const stimulusNameCleaned = stimulus.substring(0, stimulus.length - 4);
+    const endpoint = `${this.baseUrl}/timestamp/stimulus=${stimulusNameCleaned}`;
+    return this.http.get(endpoint);
+  }
+
 }

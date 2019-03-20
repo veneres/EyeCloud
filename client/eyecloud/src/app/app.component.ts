@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { DisplayConfiguration } from './classes/DisaplyConfiguration';
 import { OptionsComponent } from './options/options.component';
+import { User } from './classes/User';
 
 @Component({
   selector: 'app-root',
@@ -7,19 +9,21 @@ import { OptionsComponent } from './options/options.component';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit {
-  usersArray: string[];
+  usersArray: string;
   currentStimulus: string;
-  displayMode: string;
+  timestampStart: number;
+  timestampEnd: number;
+  showVisualizations: boolean;
+  constructor() {
+    this.showVisualizations = false;
+  }
   ngOnInit(): void {
-
   }
-  public receiveNewUsersArray($event) {
-    this.usersArray = $event.split(',');
-  }
-  public receiveDisplayModeEvent($event) {
-     this.displayMode = $event;
-  }
-  public receiveNewStimulus($event) {
-    this.currentStimulus = $event;
+  public receiveDisplayConfiguration(configuration: DisplayConfiguration) {
+    this.usersArray = JSON.stringify(configuration.getUsers());
+    this.currentStimulus = configuration.getStimulus();
+    this.timestampStart = configuration.getTimeStampStart();
+    this.timestampEnd = configuration.getTimeStampEnd();
+    this.showVisualizations = true;
   }
 }

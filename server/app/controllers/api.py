@@ -202,7 +202,7 @@ def get_heatmap(stimulus_name, user):
         pixel_matrix = [[0 for _ in range(map_width)] for _ in range(map_height)]
         max_weight_for_red = 0
         # TODO decided if want to make the visual span variable
-        visual_span_radius = 50
+        visual_span_radius = 30
         # TODO change the hardcoded timestamps
         fixations_points = get_fixations_by_user_and_station_aux(user, associated_station['name'], 0, 9999999999999)
         for key, fixation_point in fixations_points.items():
@@ -237,3 +237,15 @@ def get_heatmap(stimulus_name, user):
                 else:
                     res[row]={column: [r,g,b]}
         return jsonify(height=map_height, width=map_width, points=res)
+
+@app.route('/timestamp/stimulus=<string:stimulus_name>', methods=['GET'])
+def min_max_timestamp(stimulus_name):
+    minimum_fix = mongo.db.fixations.find({"stimuliName": "{}.jpg".format(stimulus_name)}).sort([("timestamp",-1)]).limit(1)
+    minimum_fix = list(minimum_fix)
+    max_fix = mongo.db.fixations.find({"stimuliName": "{}.jpg".format(stimulus_name)}).sort([("timestamp", 1)]).limit(1)
+    max_fix = list(max_fix)
+    res = {
+        "min": minimum_fix[0]['timestamp'],
+        "max": max_fix[0]['timestamp']
+    }
+    return jsonify(res)

@@ -1,22 +1,38 @@
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, TemplateRef } from '@angular/core';
+import { BsModalService, BsModalRef } from 'ngx-bootstrap/modal';
 import { AttentionCloudService } from '../attention-cloud.service';
 import { Station } from '../classes/Station';
+import { User } from '../classes/User';
+import { DisplayConfiguration} from '../classes/DisaplyConfiguration';
+import { FormGroup, FormControl } from '@angular/forms';
+import { Options } from 'ng5-slider';
 @Component({
   selector: 'app-options',
   templateUrl: './options.component.html',
   styleUrls: ['./options.component.css']
 })
 export class OptionsComponent implements OnInit {
-
+  modalRef: BsModalRef;
   currentStimulus: string;
-  displayMode = 'circular';
-  currentUsers: string[] = [];
-  availableStations: Station[] = [];
-  availableUsers: string[];
-  @Output() currentStimulusEvent = new EventEmitter<string>();
-  @Output() displayModeEvent = new EventEmitter<string>();
-  @Output() currentUsersArrayEvent = new EventEmitter<string>();
-  constructor(private attentionCloudService: AttentionCloudService) { }
+  currentUsers: User[];
+  availableStations: Station[];
+  availableUsers: User[];
+  sliderTimeStampOptions: Options;
+  sliderTimestamp: FormGroup;
+  timestampStart: number;
+  timestampEnd: number;
+  @Output() currentDisplayConfigurationEvent = new EventEmitter<DisplayConfiguration>();
+  constructor(private attentionCloudService: AttentionCloudService, private modalService: BsModalService) {
+    this.availableUsers = [];
+    this.availableStations = [];
+    this.currentUsers = [];
+    this.currentStimulus = '';
+    this.timestampStart = 0;
+    this.timestampEnd = 10;
+    this.sliderTimestamp = new FormGroup({
+      sliderControl: new FormControl()
+    });
+  }
 
   ngOnInit() {
     this.attentionCloudService.getAllStations().subscribe((data: Object[]) => {
@@ -33,52 +49,55 @@ export class OptionsComponent implements OnInit {
     });
   }
 
-  public sendNewStimulus() {
-    this.sendCurrentDisplayMode();
-    this.currentStimulusEvent.emit(this.currentStimulus);
-  }
-  public sendCurrentUsersArrayEvent() {
-    this.currentUsersArrayEvent.emit(this.currentUsers.toString());
-  }
-
-  public sendCurrentDisplayMode() {
-    this.displayModeEvent.emit(this.displayMode);
-  }
-
-  public changeCurrentUsers(user) {
-    this.currentUsers = [user];
-    this.sendCurrentUsersArrayEvent();
-    this.sendNewStimulus();
+  public toogleSelectedUser(user: User) {
+    if (!user.isSelected()) {
+      this.currentUsers.push(user);
+      user.setSelected(true);
+    } else {
+      const index_to_remove = this.currentUsers.indexOf(user);
+      user.setSelected(false);
+      this.currentUsers.splice(index_to_remove, 1);
+    }
   }
 
-  public changeCurrentStimulus(stimulus) {
+  public changeCurrentStimulus(stimulus: string) {
     this.currentStimulus = stimulus;
     this.attentionCloudService.getAllUserByStimulus(stimulus).subscribe((data: string[]) => {
       this.availableUsers = [];
-      data.forEach(element => {
-        this.availableUsers.push(element);
+      data.forEach(id => {
+        this.availableUsers.push(new User(id));
       });
-      if (data.length > 0) {
-        let usersFound = 0;
-        // check if the current users can be used to display the new stimulus
-        this.currentUsers.forEach((userToFound) => {
-          this.availableUsers.forEach((userAvailable) => {
-            if (userToFound === userAvailable) {
-              usersFound += 1;
-            }
-          });
-        });
-        if (usersFound !== this.currentUsers.length) {
-          this.currentUsers = [];
-          this.sendCurrentUsersArrayEvent();
-        }
-      }
+      this.currentUsers = [];
+    });
+
+    this.attentionCloudService.getMinAndMaxTimestamp(stimulus).subscribe((res: any) => {
+      this.timestampStart = parseInt(res.min, 10);
+      this.timestampEnd = parseInt(res.max, 10);
+      this.sliderTimestamp = new FormGroup({
+        sliderControl: new FormControl([this.timestampStart, this.sliderTimestamp])
+      });
+      this.sliderTimeStampOptions = {
+        floor: this.timestampStart,
+        ceil: this.timestampEnd
+      };
     });
   }
 
-  public changeRepresentation(type) {
-    this.displayMode = type;
-    this.sendCurrentDisplayMode();
+  openModal(template: TemplateRef<any>) {
+    this.modalRef = this.modalService.show(
+      template,
+      Object.assign({}, { class: 'modal-lg' }));
   }
+
+  generate() {
+    this.currentDisplayConfigurationEvent.emit(new DisplayConfiguration(
+      this.currentUsers,
+      this.currentStimulus,
+      this.timestampStart,
+      this.timestampEnd
+    ));
+  }
+
+
 
 }
