@@ -14,6 +14,8 @@ import { Options } from 'ng5-slider';
 export class OptionsComponent implements OnInit {
   modalRef: BsModalRef;
   currentStimulus: string;
+  stimulusWidth: number;
+  stimulusHeight: number;
   currentUsers: User[];
   availableStations: Station[];
   availableUsers: User[];
@@ -21,30 +23,39 @@ export class OptionsComponent implements OnInit {
   sliderTimestamp: FormGroup;
   timestampStart: number;
   timestampEnd: number;
+  stimuliStationMap: Map<String, Station>;
   @Output() currentDisplayConfigurationEvent = new EventEmitter<DisplayConfiguration>();
   constructor(private attentionCloudService: AttentionCloudService, private modalService: BsModalService) {
     this.availableUsers = [];
     this.availableStations = [];
     this.currentUsers = [];
     this.currentStimulus = '';
+    this.stimulusWidth = 0;
+    this.stimulusHeight = 0;
     this.timestampStart = 0;
     this.timestampEnd = 10;
     this.sliderTimestamp = new FormGroup({
       sliderControl: new FormControl()
     });
+    this.stimuliStationMap = new Map();
   }
 
   ngOnInit() {
     this.attentionCloudService.getAllStations().subscribe((data: Object[]) => {
       data.forEach(element => {
+        console.log(element);
         const name = element['name'];
         const width = parseInt(element['width'], 10);
         const height = parseInt(element['height'], 10);
         const complexity = parseInt(element['complexity'], 10);
         const description = element['description'];
         const stimuli = element['stimuli_list'];
-
-        this.availableStations.push(new Station(name, stimuli, complexity, height, width, description));
+        const station = new Station(name, stimuli, complexity, height, width, description);
+        // cache stations
+        for (let i = 0; i < stimuli.length; i++) {
+          this.stimuliStationMap.set(stimuli[i], station);
+        }
+        this.availableStations.push(station);
       });
     });
   }
@@ -62,6 +73,9 @@ export class OptionsComponent implements OnInit {
 
   public changeCurrentStimulus(stimulus: string) {
     this.currentStimulus = stimulus;
+    let station = this.stimuliStationMap.get(stimulus);
+    this.stimulusWidth = station.width;
+    this.stimulusHeight = station.height;
     this.attentionCloudService.getAllUserByStimulus(stimulus).subscribe((data: string[]) => {
       this.availableUsers = [];
       data.forEach(id => {
@@ -93,6 +107,8 @@ export class OptionsComponent implements OnInit {
     this.currentDisplayConfigurationEvent.emit(new DisplayConfiguration(
       this.currentUsers,
       this.currentStimulus,
+      this.stimulusWidth,
+      this.stimulusHeight,
       this.timestampStart,
       this.timestampEnd
     ));

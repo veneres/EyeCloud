@@ -24,6 +24,10 @@ export class AttentionCloudComponent implements OnChanges {
   @Input()
   private stimulusName: string;
   @Input()
+  private stimulusWidth: number;
+  @Input()
+  private stimulusHeight: number;
+  @Input()
   private userIds: any;
   @Input()
   private max_thumbnail_size: number;
@@ -61,8 +65,8 @@ export class AttentionCloudComponent implements OnChanges {
         this.fixationPoints = fixationPoints;
         this.thumbnails = Thumbnail.get_all_thumbnails(fixationPoints);
         this.imageURL = this.attentionCloudService.getStimulusURL(this.stimulusName).toString();
-        this.imageWidth = 1600;
-        this.imageHeight = 1200;
+        this.imageWidth = this.stimulusWidth;
+        this.imageHeight = this.stimulusHeight;
         this.representationType = this.representation;
       });
   }
