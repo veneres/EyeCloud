@@ -11,6 +11,8 @@ import { User } from './classes/User';
 export class AppComponent implements OnInit {
   usersArray: string;
   currentStimulus: string;
+  stimulusWidth: number;
+  stimulusHeight: number;
   timestampStart: number;
   timestampEnd: number;
   showVisualizations: boolean;
@@ -22,6 +24,8 @@ export class AppComponent implements OnInit {
   public receiveDisplayConfiguration(configuration: DisplayConfiguration) {
     this.usersArray = JSON.stringify(configuration.getUsers());
     this.currentStimulus = configuration.getStimulus();
+    this.stimulusWidth = configuration.getStimulusWidth();
+    this.stimulusHeight = configuration.getStimulusHeight();
     this.timestampStart = configuration.getTimeStampStart();
     this.timestampEnd = configuration.getTimeStampEnd();
     this.showVisualizations = true;

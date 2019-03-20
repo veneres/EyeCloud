@@ -156,8 +156,8 @@ def get_users_by_stimulus(stimulus_name):
         users = set()
         cursor = mongo.db.fixations.find({'stimuliName': stimulus_name})
         for document in cursor:
-            users.add(document['user'])
-        return jsonify([user_id for user_id in users])
+            users.add(int(document['user'][1:]))
+        return jsonify([user_id for user_id in sorted(users)])
 
 
 def rgb_from_intensity(intensity, max_intensity):
@@ -237,6 +237,7 @@ def get_heatmap(stimulus_name, user):
                 else:
                     res[row]={column: [r,g,b]}
         return jsonify(height=map_height, width=map_width, points=res)
+
 
 @app.route('/timestamp/stimulus=<string:stimulus_name>', methods=['GET'])
 def min_max_timestamp(stimulus_name):

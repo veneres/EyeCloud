@@ -13,10 +13,10 @@ Brussels	1650	1200
 Budapest	1645	1200
 Dusseldorf	872	1200
 Gothenburg	1650	1200
-Hong Kong	1648	1200
+HongKong	1648	1200
 Krakow	1649	1200
 Lubljana	1652	1200
-New York	1649	1200
+NewYork	1649	1200
 Paris	1650	1200
 Pisa	871	1200
 Venice	1650	1200
