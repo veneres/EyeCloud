@@ -3,25 +3,27 @@ import * as d3 from 'd3';
 import { Thumbnail } from './attention-cloud/classes/Thumbnail';
 
 @Directive({
-  selector: '[appRandomPos]'
+  selector: '[appAttentionCloud]'
 })
 
-export class RandomPosDirective implements OnChanges {
+export class AttentionCloudDirective implements OnChanges {
   @Input() thumbnailData: Thumbnail[];
   @Input() imageUrl; string;
   @Input() imageWidth: number;
   @Input() imageHeight: number;
-  @Input() representation: string;
+
+  constructor() { }
 
   ngOnChanges() {
 
-    const multiplier = 2;
-
-    console.log(this.thumbnailData);
-    const svg = d3.select('svg');
+    const svg = d3.select('#svg-attention-cloud');
+    const boundarySize = 50;
+    const width = parseInt(svg.attr("width"));
+    const height = parseInt(svg.attr("height"));
 
     // reset svg
     svg.selectAll('*').remove();
+
 
     // add background color
     // svg.append('rect').
@@ -37,7 +39,7 @@ export class RandomPosDirective implements OnChanges {
     for (let i = 0; i < this.thumbnailData.length; i++) {
       const thumbnail = this.thumbnailData[i];
       nodeData.push({
-        'name': thumbnail.id, 'r': thumbnail.croppingSize * multiplier,
+        'name': thumbnail.id, 'r': thumbnail.croppingSize,
         'x': thumbnail.positionX, 'y': thumbnail.positionY,
         'shiftX': thumbnail.styleX, 'shiftY': thumbnail.styleY
       });
@@ -49,11 +51,8 @@ export class RandomPosDirective implements OnChanges {
       .data(nodeData)
       .enter()
       .append('pattern')
-      .attr('width', function (d) { return d.r / multiplier; })
-      .attr('height', function (d) { return d.r / multiplier; })
-      .attr('patternTransform', function (d) {
-        return 'translate(' + -d.shiftX + ',' + -d.shiftY + ')';
-      })
+      .attr('width', 1)
+      .attr('height', 1)
       .attr('id', function (d) {
         return 'pattern_' + d.name;
       });
@@ -62,32 +61,26 @@ export class RandomPosDirective implements OnChanges {
     defs.append('image')
       .attr('xlink:href', this.imageUrl)
       .attr('width', this.imageWidth)
-      .attr('height', this.imageHeight);
+      .attr('height', this.imageHeight)
+      .attr('transform', function (d) {
+        return 'translate(' + -d.shiftX + ',' + -d.shiftY + ')';
+      });
 
     // produce forces
     const attractForce = d3.forceManyBody().strength(50);
 
-    let collisionForce;
-    if (this.representation === 'circular') {
-      collisionForce = d3.forceCollide().radius(function (d: any) {
+    let collisionForce = d3.forceCollide().radius(function (d: any) {
         return d.r / 2 + 1;
-      }).iterations(100);
-    } else {
-      collisionForce = d3.forceCollide().radius(function (d: any) {
-        return d.r / 2 * Math.sqrt(2) + 1;
-      }).iterations(100);
-    }
+      }).iterations(5);
 
     // force simulation
     const simulation = d3.forceSimulation(nodeData).alphaDecay(0.01)
       .force('attractForce', attractForce)
       .force('collisionForce', collisionForce)
-      .force('center', d3.forceCenter(400, 300));
+      .force('center', d3.forceCenter(width / 2, height / 2));
 
     // produce nodes from node data
-    let node;
-    if (this.representation === 'circular') {
-      node = svg.selectAll('circle').data(nodeData)
+    let node = svg.selectAll('circle').data(nodeData)
         .enter().append('circle')
         .attr('r', function (d) { return d.r / 2; })
         .attr('cx', function (d) { return d.x; })
@@ -101,23 +94,6 @@ export class RandomPosDirective implements OnChanges {
           .on('start', dragstarted)
           .on('drag', dragged)
           .on('end', dragended));
-    } else {
-      node = svg.selectAll('rect').data(nodeData)
-        .enter().append('rect')
-        .attr('height', function (d) { return d.r; })
-        .attr('width', function (d) { return d.r; })
-        .attr('x', function (d) { return d.x; })
-        .attr('y', function (d) { return d.y; })
-        .attr('fill', function (d) {
-          return 'url(#pattern_' + d.name + ')';
-        })
-        .attr('stroke', 'gray')
-        .attr('stroke-width', '2')
-        .call(d3.drag()
-          .on('start', dragstarted)
-          .on('drag', dragged)
-          .on('end', dragended));
-    }
 
     function dragstarted(d) {
       simulation.restart();
@@ -137,26 +113,17 @@ export class RandomPosDirective implements OnChanges {
       simulation.alphaTarget(0.1);
     }
 
-    function tickedCircle() {
-      node.attr('cx', function (d) { return d.x; })
-        .attr('cy', function (d) { return d.y; });
-    }
-
-    function tickedSquare() {
-      node.attr('x', function (d) { return d.x; })
-        .attr('y', function (d) { return d.y; });
+    function ticked() {
+      node.attr('cx', function (d) {
+        return d.x = Math.max(boundarySize, Math.min(width - boundarySize, d.x));
+      }).attr('cy', function (d) {
+        return d.y = Math.max(boundarySize, Math.min(height - boundarySize, d.y));
+      });
     }
 
     // start simulation
-    if (this.representation === 'circular') {
-      simulation.on('tick', tickedCircle);
-    } else {
-      simulation.on('tick', tickedSquare);
-    }
+    simulation.on('tick', ticked);
   }
-  constructor(private el: ElementRef) { }
-
-
 }
 
 

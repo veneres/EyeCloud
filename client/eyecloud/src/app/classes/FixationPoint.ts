@@ -1,10 +1,10 @@
 export class FixationPoint {
   private x: number;
   private y: number;
-  private duration: number;
+  private duration: string;
   private index: number;
-  private timestamp: number;
-  constructor(index: number, x: number, y: number, duration: number, timestamp: number) {
+  private timestamp: string;
+  constructor(index: number, x: number, y: number, duration: string, timestamp: string) {
     this.x = x;
     this.y = y;
     this.duration = duration;
@@ -21,5 +21,9 @@ export class FixationPoint {
 
   public getDuration() {
     return this.duration;
+  }
+
+  public getTimestamp() {
+    return this.timestamp;
   }
 }
