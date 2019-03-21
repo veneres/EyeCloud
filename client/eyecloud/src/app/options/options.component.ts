@@ -24,7 +24,6 @@ export class OptionsComponent implements OnInit {
   timestampStart: number;
   timestampEnd: number;
   stimuliStationMap: Map<String, Station>;
-  @Output() currentDisplayConfigurationEvent = new EventEmitter<DisplayConfiguration>();
   constructor(private attentionCloudService: AttentionCloudService, private modalService: BsModalService) {
     this.availableUsers = [];
     this.availableStations = [];
@@ -43,7 +42,6 @@ export class OptionsComponent implements OnInit {
   ngOnInit() {
     this.attentionCloudService.getAllStations().subscribe((data: Object[]) => {
       data.forEach(element => {
-        console.log(element);
         const name = element['name'];
         const width = parseInt(element['width'], 10);
         const height = parseInt(element['height'], 10);
@@ -52,8 +50,10 @@ export class OptionsComponent implements OnInit {
         const stimuli = element['stimuli_list'];
         const station = new Station(name, stimuli, complexity, height, width, description);
         // cache stations
-        for (let i = 0; i < stimuli.length; i++) {
-          this.stimuliStationMap.set(stimuli[i], station);
+        if (stimuli !== undefined) {
+          for (let i = 0; i < stimuli.length; i++) {
+            this.stimuliStationMap.set(stimuli[i], station);
+          }
         }
         this.availableStations.push(station);
       });
@@ -73,7 +73,7 @@ export class OptionsComponent implements OnInit {
 
   public changeCurrentStimulus(stimulus: string) {
     this.currentStimulus = stimulus;
-    let station = this.stimuliStationMap.get(stimulus);
+    const station = this.stimuliStationMap.get(stimulus);
     this.stimulusWidth = station.width;
     this.stimulusHeight = station.height;
     this.attentionCloudService.getAllUserByStimulus(stimulus).subscribe((data: string[]) => {
@@ -104,7 +104,7 @@ export class OptionsComponent implements OnInit {
   }
 
   generate() {
-    this.currentDisplayConfigurationEvent.emit(new DisplayConfiguration(
+    this.attentionCloudService.changeDisplayConf(new DisplayConfiguration(
       this.currentUsers,
       this.currentStimulus,
       this.stimulusWidth,

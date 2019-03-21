@@ -9,19 +9,11 @@ import { DisplayConfiguration } from '../classes/DisaplyConfiguration';
   styleUrls: ['./attention-heatmap.component.css']
 })
 export class AttentionHeatmapComponent implements OnChanges {
-
-  @Input() stimulusName: string;
-  @Input() timestampStart: number;
-  @Input() timestampEnd: number;
-  @Input() usersIds: User[];
   @Input() configuration: DisplayConfiguration;
   usersIdsJson: string;
   stimulusUrl: string;
   showStimulus: boolean;
   constructor(private attentionCloudService: AttentionCloudService) { }
   ngOnChanges(): void {
-    this.stimulusUrl = this.attentionCloudService.getStimulusURL(this.stimulusName).toString();
-    this.showStimulus = this.stimulusName !== '' && this.usersIds.length !== 0;
-    this.usersIdsJson = JSON.stringify(this.usersIds);
   }
 }

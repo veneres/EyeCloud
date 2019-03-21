@@ -9,12 +9,7 @@ import { User } from './classes/User';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit {
-  usersArray: string;
-  currentStimulus: string;
-  stimulusWidth: number;
-  stimulusHeight: number;
-  timestampStart: number;
-  timestampEnd: number;
+  configuration: DisplayConfiguration;
   showVisualizations: boolean;
   constructor() {
     this.showVisualizations = false;
@@ -22,12 +17,7 @@ export class AppComponent implements OnInit {
   ngOnInit(): void {
   }
   public receiveDisplayConfiguration(configuration: DisplayConfiguration) {
-    this.usersArray = JSON.stringify(configuration.getUsers());
-    this.currentStimulus = configuration.getStimulus();
-    this.stimulusWidth = configuration.getStimulusWidth();
-    this.stimulusHeight = configuration.getStimulusHeight();
-    this.timestampStart = configuration.getTimeStampStart();
-    this.timestampEnd = configuration.getTimeStampEnd();
+    this.configuration = configuration;
     this.showVisualizations = true;
   }
 }

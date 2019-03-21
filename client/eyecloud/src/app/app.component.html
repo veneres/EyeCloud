@@ -5,32 +5,18 @@
   </h1>
   <div class="row">
     <div class="col-md-12">
-      <app-options
-      (currentDisplayConfigurationEvent)="receiveDisplayConfiguration($event)">
+      <app-options>
       </app-options>
     </div>
   </div>
-  <div class="row" *ngIf="showVisualizations">
+  <div class="row">
     <div class="col-md-6">
-      <app-attention-cloud
-        stimulusName="{{currentStimulus}}"
-        stimulusHeight="{{stimulusHeight}}"
-        stimulusWidth="{{stimulusWidth}}"
-        userIds="{{usersArray}}"
-        timestampStart="timestampStart"
-        timestampEnd="timestampEnd"
-        configuration="configuration"
-        max_thumbnail_size="100"
-        thumbnail_portion_width="40">
+      <app-attention-cloud>
       </app-attention-cloud>
+      Attention cloud
     </div>
     <div class="col-md-6">
-      <app-attention-heatmap
-        usersIds="{{usersArray}}"
-        timestampStart="timestampStart"
-        timestampEnd="timestampEnd"
-        configuration="configuration"
-        stimulusName="{{currentStimulus}}">
+      <app-attention-heatmap>
       </app-attention-heatmap>
     </div>
   </div>

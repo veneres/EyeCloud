@@ -1,7 +1,9 @@
 import { Injectable } from '@angular/core';
 import { User } from './classes/User';
 import { HttpClient } from '@angular/common/http';
+import * as Rx from 'rxjs';
 import { Url } from 'url';
+import {DisplayConfiguration} from './classes/DisaplyConfiguration';
 
 @Injectable({
   providedIn: 'root',
@@ -9,8 +11,14 @@ import { Url } from 'url';
 export class AttentionCloudService {
   baseUrl = 'http://127.0.0.1:5000';
 
+  private commonConfBehavior = new Rx.BehaviorSubject(undefined);
+  currentConf = this.commonConfBehavior.asObservable();
+
   constructor(private http: HttpClient) {
 
+  }
+  public changeDisplayConf(conf: DisplayConfiguration) {
+    this.commonConfBehavior.next(conf);
   }
 
   public getAllStations() {

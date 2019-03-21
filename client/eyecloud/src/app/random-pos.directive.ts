@@ -31,6 +31,9 @@ export class RandomPosDirective implements OnChanges {
 
     // create note data from thumbnail data
     const nodeData = [];
+    if (this.thumbnailData === undefined) {
+      return;
+    }
     for (let i = 0; i < this.thumbnailData.length; i++) {
       const thumbnail = this.thumbnailData[i];
       nodeData.push({
