@@ -156,8 +156,12 @@ def get_users_by_stimulus(stimulus_name):
         users = set()
         cursor = mongo.db.fixations.find({'stimuliName': stimulus_name})
         for document in cursor:
-            users.add(int(document['user'][1:]))
-        return jsonify([user_id for user_id in sorted(users)])
+            users.add(document['user'])
+        return jsonify([user_id for user_id in sorted(users, key=get_integer_id)])
+
+
+def get_integer_id(user):
+    return int(user[1:])
 
 
 def rgb_from_intensity(intensity, max_intensity):

@@ -113,7 +113,4 @@ export class OptionsComponent implements OnInit {
       this.timestampEnd
     ));
   }
-
-
-
 }

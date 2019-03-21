@@ -1,29 +1,23 @@
-import { Component, Input, OnInit} from '@angular/core';
-import { Thumbnail } from './classes/Thumbnail';
-import { FixationPoint } from '../classes/FixationPoint';
-import { User } from '../classes/User';
-import { AttentionCloudService } from '../attention-cloud.service';
-import { DisplayConfiguration } from '../classes/DisaplyConfiguration';
+import { Component, OnInit } from '@angular/core';
+import {DisplayConfiguration} from "../classes/DisaplyConfiguration";
+import {FixationPoint} from "../classes/FixationPoint";
+import {User} from "../classes/User";
+import {AttentionCloudService} from "../attention-cloud.service";
 
 @Component({
-  selector: 'app-attention-cloud',
-  templateUrl: './attention-cloud.component.html',
-  styleUrls: ['./attention-cloud.component.css']
+  selector: 'app-gaze-stripes',
+  templateUrl: './gaze-stripes.component.html',
+  styleUrls: ['./gaze-stripes.component.css']
 })
-export class AttentionCloudComponent implements OnInit {
-  private stimulusURL: string;
-  private thumbnails: Thumbnail[];
+export class GazeStripesComponent implements OnInit {
   private fixationPoints: FixationPoint[];
-  svgWidth = 600;
-  svgHeight = 600;
   imageURL: string;
   imageWidth: number;
   imageHeight: number;
   private stimulusName: string;
   private userIds: User[];
 
-  constructor(private attentionCloudService: AttentionCloudService) {
-  }
+  constructor(private attentionCloudService: AttentionCloudService) { }
 
   ngOnInit() {
     // the configuration are passed via this observable
@@ -49,12 +43,24 @@ export class AttentionCloudComponent implements OnInit {
               }
             }
           }
-          this.fixationPoints = fixationPoints;
-          this.thumbnails = Thumbnail.get_thumbnails_for_attention_cloud(fixationPoints);
+          this.fixationPoints = fixationPoints.sort(compareFixationPointTimestamp);
         });
       this.imageURL = this.attentionCloudService.getStimulusURL(this.stimulusName).toString();
       this.imageWidth = conf.getStimulusWidth();
       this.imageHeight = conf.getStimulusHeight();
     });
-    }
+  }
+}
+
+// function to compare two fixation points with durations
+function compareFixationPointTimestamp(a: FixationPoint, b: FixationPoint) {
+  let durationA = parseInt(a.getTimestamp());
+  let durationB = parseInt(b.getTimestamp());
+  if (durationA > durationB) {
+    return 1;
+  } else if (durationA < durationB) {
+    return -1;
+  } else {
+    return 0;
+  }
 }

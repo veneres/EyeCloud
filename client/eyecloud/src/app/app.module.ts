@@ -7,10 +7,12 @@ import { AttentionCloudComponent } from './attention-cloud/attention-cloud.compo
 import { AttentionHeatmapComponent } from './attention-heatmap/attention-heatmap.component';
 import { Ng5SliderModule } from 'ng5-slider';
 import { HttpClientModule } from '@angular/common/http';
-import { RandomPosDirective } from './random-pos.directive';
+import { AttentionCloudDirective } from './attention-cloud.directive';
 import { OptionsComponent } from './options/options.component';
 import { HeatmapDirective } from './heatmap.directive';
 import { FormsModule } from '@angular/forms';
+import { GazeStripesComponent } from './gaze-stripes/gaze-stripes.component';
+import { GazeStripesDirective } from './gaze-stripes.directive';
 
 
 
@@ -19,9 +21,11 @@ import { FormsModule } from '@angular/forms';
     AppComponent,
     AttentionCloudComponent,
     AttentionHeatmapComponent,
-    RandomPosDirective,
+    AttentionCloudDirective,
     OptionsComponent,
-    HeatmapDirective
+    HeatmapDirective,
+    GazeStripesComponent,
+    GazeStripesDirective
   ],
   imports: [
     BsDropdownModule.forRoot(),
