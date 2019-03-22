@@ -3,10 +3,7 @@ import os
 from flask import request, jsonify
 from app import app, mongo
 import logger
-import sys
 import math
-import numpy as np
-from tqdm import tqdm
 
 ROOT_PATH = os.environ.get('ROOT_PATH')
 LOG = logger.get_root_logger(
@@ -60,25 +57,21 @@ def get_all_users():
 @app.route('/all_fixations/user=<user>/station=<station_name>/from=<from_timestamp>-to=<to_timestamp>', methods=['GET'])
 def get_fixations_by_user_and_station(user, station_name, from_timestamp, to_timestamp):
     if request.method == 'GET':
-        return jsonify(get_fixations_by_user_and_station_aux(user, station_name, from_timestamp, to_timestamp))
-
-
-def get_fixations_by_user_and_station_aux(user, station_name, from_timestamp, to_timestamp):
-    data = {}
-    data_id = 1
-    cursor = mongo.db.fixations.find({'station': station_name, 'user': user})
-    for document in cursor:
-        timestamp = document['timestamp']
-        if int(from_timestamp) <= int(timestamp) <= int(to_timestamp):
-            fixation_point = {'index': document['fixationIndex'], 'timestamp': document['timestamp'],
-                              'x': document['mappedFixationPointX'], 'y': document['mappedFixationPointY'],
-                              'duration': document['fixationDuration']}
-            map_data = {'mapName': document['stimuliName'], 'description': document['description']}
-            fixation_data = {'station': station_name, 'fixationPoint': fixation_point, 'mapInfo': map_data,
-                             'user': user}
-            data[str(data_id)] = fixation_data
-            data_id += 1
-    return data
+        data = {}
+        data_id = 1
+        cursor = mongo.db.fixations.find({'station': station_name, 'user': user})
+        for document in cursor:
+            timestamp = document['timestamp']
+            if from_timestamp <= timestamp <= to_timestamp:
+                fixation_point = {'index': document['fixationIndex'], 'timestamp': document['timestamp'],
+                                  'x': document['mappedFixationPointX'], 'y': document['mappedFixationPointY'],
+                                  'duration': document['fixationDuration']}
+                map_data = {'mapName': document['stimuliName'], 'description': document['description']}
+                fixation_data = {'station': station_name, 'fixationPoint': fixation_point, 'mapInfo': map_data,
+                                 'user': user}
+                data[str(data_id)] = fixation_data
+                data_id += 1
+        return jsonify(data)
 
 
 @app.route('/all_stations/', methods=['GET'])
@@ -97,7 +90,7 @@ def get_fixations_by_user(user, from_timestamp, to_timestamp):
         cursor = mongo.db.fixations.find({'user': user})
         for document in cursor:
             timestamp = document['timestamp']
-            if int(from_timestamp) <= int(timestamp) <= int(to_timestamp):
+            if from_timestamp <= timestamp <= to_timestamp:
                 fixation_point = {'index': document['fixationIndex'], 'timestamp': document['timestamp'],
                                   'x': document['mappedFixationPointX'], 'y': document['mappedFixationPointY'],
                                   'duration': document['fixationDuration']}
@@ -117,7 +110,7 @@ def get_fixations_by_station(station_name, from_timestamp, to_timestamp):
         cursor = mongo.db.fixations.find({'station': station_name})
         for document in cursor:
             timestamp = document['timestamp']
-            if int(from_timestamp) <= int(timestamp) <= int(to_timestamp):
+            if from_timestamp <= timestamp <= to_timestamp:
                 fixation_point = {'index': document['fixationIndex'], 'timestamp': document['timestamp'],
                                   'x': document['mappedFixationPointX'], 'y': document['mappedFixationPointY'],
                                   'duration': document['fixationDuration']}
@@ -138,7 +131,7 @@ def get_fixations_by_stimulus(stimulus_name, from_timestamp, to_timestamp):
         cursor = mongo.db.fixations.find({'stimuliName': stimulus_name})
         for document in cursor:
             timestamp = document['timestamp']
-            if int(from_timestamp) <= int(timestamp) <= int(to_timestamp):
+            if from_timestamp <= timestamp <= to_timestamp:
                 fixation_point = {'index': document['fixationIndex'], 'timestamp': document['timestamp'],
                                   'x': document['mappedFixationPointX'], 'y': document['mappedFixationPointY'],
                                   'duration': document['fixationDuration']}
@@ -181,16 +174,20 @@ def rgb_from_intensity(intensity, max_intensity):
     else:
         b = 0
         r = 255
-        g = max_value * (1 - (intensity - 3 * scaling_factor)/ max_intensity)
+        g = max_value * (1 - (intensity - 3 * scaling_factor) / max_intensity)
 
     return r, g, b
 
 
 # TODO make this function working for an array of users instead of a single user
 # TODO decide if we do the scaling on the frontend or in the backend
-@app.route('/heatmap/stimulus=<string:stimulus_name>/user=<user>', methods=['GET'])
-def get_heatmap(stimulus_name, user):
-    if request.method == 'GET':
+@app.route('/heatmap/stimulus=<string:stimulus_name>', methods=['POST'])
+def get_heatmap(stimulus_name):
+    if request.method == 'POST' and request.is_json:
+        content = request.get_json()
+        users = [user['userId'] for user in content['users']]
+        timestamp_start = content['timeStampStart']
+        timestamp_end = content['timeStampStop']
         all_stations = mongo.db.station.find()
         associated_station = None
         for station in all_stations:
@@ -205,31 +202,82 @@ def get_heatmap(stimulus_name, user):
         map_width = int(associated_station['width'])
         pixel_matrix = [[0 for _ in range(map_width)] for _ in range(map_height)]
         max_weight_for_red = 0
-        # TODO decided if want to make the visual span variable
+        # TODO next improvement, make the visual span radius a parameter
         visual_span_radius = 30
-        # TODO change the hardcoded timestamps
-        fixations_points = get_fixations_by_user_and_station_aux(user, associated_station['name'], 0, 9999999999999)
-        for key, fixation_point in fixations_points.items():
-            x = int(fixation_point['fixationPoint']['x'])
-            y = int(fixation_point['fixationPoint']['y'])
-            # check if the visual span is inside the pixel matrix
-            range_start_x = x - visual_span_radius if x - visual_span_radius > 0 else 0
-            range_finish_x = x + visual_span_radius if x + visual_span_radius < map_width - 1 else map_width - 1
-            range_start_y = y - visual_span_radius if y - visual_span_radius > 0 else 0
-            range_finish_y = y + visual_span_radius if y + visual_span_radius < map_height - 1 else map_height - 1
-            for row in range(range_start_y, range_finish_y + 1):
-                for column in range(range_start_x, range_finish_x + 1):
-                    distance = math.sqrt((x - column) ** 2 + (y - row) ** 2)
-                    if distance >  visual_span_radius:
-                        continue
-                    # linear scaling for the model
-                    # TODO decide if we want to add also the Gaussian option
-                    # p = probabilty that the user have seen the pixel in specificed visual span
-                    p = 1 - distance / (visual_span_radius * 2)
-                    duration = int(fixation_point['fixationPoint']['duration'])
-                    pixel_matrix[row][column] += duration * p
-                    if pixel_matrix[row][column] > max_weight_for_red:
-                        max_weight_for_red = pixel_matrix[row][column]
+        for user in users:
+            # check cache in mongodb
+            cache_document = mongo.db.heatmapCache.find_one({'user': user,
+                                                             "timestampStart": timestamp_start,
+                                                             "timestampEnd": timestamp_end,
+                                                             "stimulus": stimulus_name})
+            # if it's cached
+            if cache_document is not None:
+                pixel_matrix_cached = cache_document['matrixSummary']
+                # the structure is {<row>:[<column>:value, ...], ...}
+                for row, column_dict in pixel_matrix_cached.items():
+                    for column, value in column_dict.items():
+                        row = int(row)
+                        column = int(column)
+                        pixel_matrix[row][column] += value
+                        if pixel_matrix[row][column] > max_weight_for_red:
+                            max_weight_for_red = pixel_matrix[row][column]
+            else:
+                cursor = mongo.db.fixations.find(
+                    {'stimuliName': '{}.jpg'.format(stimulus_name),
+                     'user': user
+                     })
+                fixation_points = []
+                # get all the fixations points for the given user, stimulus and timestamps
+                for document in cursor:
+                    timestamp = document['timestamp']
+                    if timestamp_start <= timestamp <= timestamp_end:
+                        fixation_point = {'index': document['fixationIndex'], 'timestamp': document['timestamp'],
+                                          'x': document['mappedFixationPointX'], 'y': document['mappedFixationPointY'],
+                                          'duration': document['fixationDuration']}
+                        fixation_points.append(fixation_point)
+                # create a new pixel matrix for the given user
+                pixel_matrix_user = [[0 for _ in range(map_width)] for _ in range(map_height)]
+                for fixation_point in fixation_points:
+                    x = fixation_point['x']
+                    y = fixation_point['y']
+                    # check if the visual span is inside the pixel matrix
+                    range_start_x = x - visual_span_radius if x - visual_span_radius > 0 else 0
+                    range_finish_x = x + visual_span_radius if x + visual_span_radius < map_width - 1 else map_width - 1
+                    range_start_y = y - visual_span_radius if y - visual_span_radius > 0 else 0
+                    range_finish_y = y + visual_span_radius if y + visual_span_radius < map_height - 1 else map_height - 1
+                    for row in range(range_start_y, range_finish_y + 1):
+                        for column in range(range_start_x, range_finish_x + 1):
+                            distance = math.sqrt((x - column) ** 2 + (y - row) ** 2)
+                            if distance > visual_span_radius:
+                                continue
+                            # TODO make gaussian model like a parameter
+                            # Gaussian model
+                            # p = probabilty that the user have seen the pixel in specificed visual span
+                            c = 0.17 * (visual_span_radius * 2)
+                            p = math.exp(-(distance ** 2) / (2 * c ** 2))
+                            # linear model
+                            # p = 1 - distance / (visual_span_radius * 2)
+                            duration = fixation_point['duration']
+                            pixel_matrix[row][column] += duration * p
+                            pixel_matrix_user[row][column] += duration * p
+                            if pixel_matrix[row][column] > max_weight_for_red:
+                                max_weight_for_red = pixel_matrix[row][column]
+                # Cache the pixel matrix just obtained
+                summary_to_cache = {}
+                for row in range(map_height):
+                    for column in range(map_width):
+                        if pixel_matrix[row][column] == 0:
+                            continue
+                        if str(row) in summary_to_cache:
+                            summary_to_cache[str(row)][str(column)] = pixel_matrix_user[row][column]
+                        else:
+                            summary_to_cache[str(row)] = {str(column): pixel_matrix_user[row][column]}
+                # we store the document in the db
+                mongo.db.heatmapCache.insert_one({'user': user,
+                                                  "timestampStart": timestamp_start,
+                                                  "timestampEnd": timestamp_end,
+                                                  "stimulus": stimulus_name,
+                                                  "matrixSummary": summary_to_cache})
         res = {}
         for row in range(map_height):
             for column in range(map_width):
@@ -237,20 +285,30 @@ def get_heatmap(stimulus_name, user):
                     continue
                 r, g, b = rgb_from_intensity(pixel_matrix[row][column], max_weight_for_red)
                 if row in res:
-                    res[row][column]=[r,g,b]
+                    res[row][column] = [r, g, b]
                 else:
-                    res[row]={column: [r,g,b]}
+                    res[row] = {column: [r, g, b]}
         return jsonify(height=map_height, width=map_width, points=res)
 
 
-@app.route('/timestamp/stimulus=<string:stimulus_name>', methods=['GET'])
+@app.route('/timestamp/stimulus=<string:stimulus_name>', methods=['POST'])
 def min_max_timestamp(stimulus_name):
-    minimum_fix = mongo.db.fixations.find({"stimuliName": "{}.jpg".format(stimulus_name)}).sort([("timestamp",-1)]).limit(1)
-    minimum_fix = list(minimum_fix)
-    max_fix = mongo.db.fixations.find({"stimuliName": "{}.jpg".format(stimulus_name)}).sort([("timestamp", 1)]).limit(1)
-    max_fix = list(max_fix)
-    res = {
-        "min": minimum_fix[0]['timestamp'],
-        "max": max_fix[0]['timestamp']
-    }
-    return jsonify(res)
+    if request.method == 'POST' and request.is_json:
+        content = request.get_json()
+        users_ids = [user['userId'] for user in content]
+        max_fix = None
+        min_fix = None
+        for user_id in users_ids:
+            # retrive all the fixation points for current user in asc order
+            sorted_documents = list(
+                mongo.db.fixations.find({"stimuliName": "{}.jpg".format(stimulus_name), "user": user_id}).sort(
+                    [("timestamp", 1)]))
+            if min_fix is None or sorted_documents[0]['timestamp'] < min_fix:
+                min_fix = sorted_documents[0]['timestamp']
+            if max_fix is None or sorted_documents[-1]['timestamp'] > max_fix:
+                max_fix = sorted_documents[-1]['timestamp']
+        res = {
+            "min": min_fix,
+            "max": max_fix
+        }
+        return jsonify(res)
