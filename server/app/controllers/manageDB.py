@@ -96,8 +96,9 @@ def recover_fixation_data_impl():
                         stimulus_dict[station_name].add(stimuli_name)
                     else:
                         stimulus_dict[station_name] = {stimuli_name}
-                    data = {'timestamp': row[0], 'stimuliName': stimuli_name, 'fixationIndex': row[2],
-                            'fixationDuration': row[3], 'mappedFixationPointX': row[4], 'mappedFixationPointY': row[5],
+                    data = {'timestamp': int(row[0]), 'stimuliName': stimuli_name, 'fixationIndex': int(row[2]),
+                            'fixationDuration': int(row[3]), 'mappedFixationPointX': int(row[4]),
+                            'mappedFixationPointY': int(row[5]),
                             'user': row[6], 'description': row[7], 'station': station_name}
                     json_data = json.dumps(data)
                     mongo.db.fixations.insert_one(json.loads(json_data))
@@ -165,7 +166,6 @@ def recover_resolution_data_impl():
                 station_name = row[0].lstrip()
                 width = row[1]
                 height = row[2].rstrip()
-                print(mongo.db.station.find({'name': station_name}).count())
                 if mongo.db.station.find({'name': station_name}).count() == 0:
                     data = {'name': station_name,
                             'width': width, 'height': height}
