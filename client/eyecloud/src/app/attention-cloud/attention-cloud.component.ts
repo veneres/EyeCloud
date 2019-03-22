@@ -4,6 +4,7 @@ import { FixationPoint } from '../classes/FixationPoint';
 import { User } from '../classes/User';
 import { AttentionCloudService } from '../attention-cloud.service';
 import { DisplayConfiguration } from '../classes/DisaplyConfiguration';
+import {Utilities} from "../classes/Utilities";
 
 @Component({
   selector: 'app-attention-cloud',
@@ -50,7 +51,8 @@ export class AttentionCloudComponent implements OnInit {
             }
           }
           this.fixationPoints = fixationPoints;
-          this.thumbnails = Thumbnail.get_thumbnails_for_attention_cloud(fixationPoints);
+          let aggregateFixationPoints = Utilities.clusterFixationPoints(fixationPoints);
+          this.thumbnails = Thumbnail.get_thumbnails_for_attention_cloud(aggregateFixationPoints);
         });
       this.imageURL = this.attentionCloudService.getStimulusURL(this.stimulusName).toString();
       this.imageWidth = conf.getStimulusWidth();

@@ -1,7 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { DisplayConfiguration } from './classes/DisaplyConfiguration';
-import { OptionsComponent } from './options/options.component';
-import { User } from './classes/User';
 
 @Component({
   selector: 'app-root',
@@ -11,6 +9,7 @@ import { User } from './classes/User';
 export class AppComponent implements OnInit {
   configuration: DisplayConfiguration;
   showVisualizations: boolean;
+
   constructor() {
     this.showVisualizations = false;
   }
