@@ -1,4 +1,4 @@
-  <div  appHeatmap [stimulusUrl]="stimulusUrl" [show]=showStimulus [usersIdsJSON]=usersIdsJson [stimulusName]="stimulusName">
+  <div  appHeatmap [dataset]=dataset [show]=showStimulus>
     <div class="img-heatmap-container" *ngIf="showStimulus">
       <img id="img-heatmap" src="{{stimulusUrl}}" class="img-fluid">
     </div>

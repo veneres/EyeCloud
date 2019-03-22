@@ -18,8 +18,8 @@ export class AttentionCloudDirective implements OnChanges {
 
     const svg = d3.select('#svg-attention-cloud');
     const boundarySize = 50;
-    const width = parseInt(svg.attr("width"));
-    const height = parseInt(svg.attr("height"));
+    const width = parseInt(svg.attr('width'), 10);
+    const height = parseInt(svg.attr('height'), 10);
 
     // reset svg
     svg.selectAll('*').remove();
@@ -69,7 +69,7 @@ export class AttentionCloudDirective implements OnChanges {
     // produce forces
     const attractForce = d3.forceManyBody().strength(50);
 
-    let collisionForce = d3.forceCollide().radius(function (d: any) {
+    const collisionForce = d3.forceCollide().radius(function (d: any) {
         return d.r / 2 + 1;
       }).iterations(5);
 
@@ -80,7 +80,7 @@ export class AttentionCloudDirective implements OnChanges {
       .force('center', d3.forceCenter(width / 2, height / 2));
 
     // produce nodes from node data
-    let node = svg.selectAll('circle').data(nodeData)
+    const node = svg.selectAll('circle').data(nodeData)
         .enter().append('circle')
         .attr('r', function (d) { return d.r / 2; })
         .attr('cx', function (d) { return d.x; })

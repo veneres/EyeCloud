@@ -16,9 +16,6 @@ canvas{
   max-height: auto;
 }
 
-.img-heatmap-container {
-  z-index: -1;
-}
 .heatmap-container {
   width: 100%;
 }

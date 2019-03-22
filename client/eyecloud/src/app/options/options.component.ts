@@ -69,6 +69,17 @@ export class OptionsComponent implements OnInit {
       user.setSelected(false);
       this.currentUsers.splice(index_to_remove, 1);
     }
+    this.attentionCloudService.getMinAndMaxTimestamp(this.currentStimulus, this.currentUsers).subscribe((res: any) => {
+      this.timestampStart = parseInt(res.min, 10);
+      this.timestampEnd = parseInt(res.max, 10);
+      this.sliderTimestamp = new FormGroup({
+        sliderControl: new FormControl([this.timestampStart, this.sliderTimestamp])
+      });
+      this.sliderTimeStampOptions = {
+        floor: this.timestampStart,
+        ceil: this.timestampEnd
+      };
+    });
   }
 
   public changeCurrentStimulus(stimulus: string) {
@@ -82,18 +93,6 @@ export class OptionsComponent implements OnInit {
         this.availableUsers.push(new User(id));
       });
       this.currentUsers = [];
-    });
-
-    this.attentionCloudService.getMinAndMaxTimestamp(stimulus).subscribe((res: any) => {
-      this.timestampStart = parseInt(res.min, 10);
-      this.timestampEnd = parseInt(res.max, 10);
-      this.sliderTimestamp = new FormGroup({
-        sliderControl: new FormControl([this.timestampStart, this.sliderTimestamp])
-      });
-      this.sliderTimeStampOptions = {
-        floor: this.timestampStart,
-        ceil: this.timestampEnd
-      };
     });
   }
 

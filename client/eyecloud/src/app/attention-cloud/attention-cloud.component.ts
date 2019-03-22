@@ -51,7 +51,7 @@ export class AttentionCloudComponent implements OnInit {
             }
           }
           this.fixationPoints = fixationPoints;
-          let aggregateFixationPoints = Utilities.clusterFixationPoints(fixationPoints);
+          const aggregateFixationPoints = Utilities.clusterFixationPoints(fixationPoints);
           this.thumbnails = Thumbnail.get_thumbnails_for_attention_cloud(aggregateFixationPoints);
         });
       this.imageURL = this.attentionCloudService.getStimulusURL(this.stimulusName).toString();
