@@ -1,4 +1,4 @@
-import { FixationPoint } from '../../classes/FixationPoint';
+import {AggregatedFixationPoint} from "../../classes/AggregatedFixationPoints";
 
 export class Thumbnail {
 
@@ -7,7 +7,7 @@ export class Thumbnail {
   private static minCroppingSize = 20;
   private static startX = 200;
   private static startY = 200;
-  private fixationPoint: FixationPoint;
+  private fixationPoint: AggregatedFixationPoint;
   id: number;
   croppingSize: number;
   styleX: number;
@@ -15,7 +15,7 @@ export class Thumbnail {
   positionX: number;
   positionY: number;
 
-  constructor(id: number, fixationPoint: FixationPoint, croppingSize: number,
+  constructor(id: number, fixationPoint: AggregatedFixationPoint, croppingSize: number,
               positionX: number, positionY: number) {
     this.id = id;
     this.fixationPoint = fixationPoint;
@@ -26,18 +26,18 @@ export class Thumbnail {
     this.positionY = positionY;
   }
 
-  public static get_thumbnails_for_attention_cloud(fixationPoints: FixationPoint[]) {
+  public static get_thumbnails_for_attention_cloud(fixationPoints: AggregatedFixationPoint[]) {
 
     // sort fixation points according to duration
     fixationPoints.sort(compareFixationPointDuration);
-    let max_duration = parseInt(fixationPoints[0].getDuration());
+    let max_duration = fixationPoints[0].getDuration();
 
     const res = [];
     let counter = 0;
     let numPointsPerCircle = 5;
 
     fixationPoints.forEach(fixation => {
-      let size = parseInt(fixation.getDuration()) / max_duration * this.maxCroppingSize;
+      let size = fixation.getDuration() / max_duration * this.maxCroppingSize;
       if (counter < this.maxDisplayPoints) {
         if (size < this.minCroppingSize) size = this.minCroppingSize;
         let multiplier = Math.floor(counter / numPointsPerCircle) + 1;
@@ -55,9 +55,9 @@ export class Thumbnail {
 }
 
 // function to compare two fixation points with durations
-function compareFixationPointDuration(a: FixationPoint, b: FixationPoint) {
-  let durationA = parseInt(a.getDuration());
-  let durationB = parseInt(b.getDuration());
+function compareFixationPointDuration(a: AggregatedFixationPoint, b: AggregatedFixationPoint) {
+  let durationA = a.getDuration();
+  let durationB = b.getDuration();
   if (durationA > durationB) {
     return -1;
   } else if (durationA < durationB) {
