@@ -4,6 +4,7 @@ import { User } from '../classes/User';
 import { DisplayConfiguration } from '../classes/DisplayConfiguration';
 import { HeatmapService } from '../heatmap.service';
 import { Options } from 'ng5-slider';
+import { Point } from '../classes/Utilities';
 
 @Component({
   selector: 'app-attention-heatmap',
@@ -49,5 +50,19 @@ export class AttentionHeatmapComponent implements OnInit {
         this.showStimulus = true;
       });
     });
+    this.attentionCloudService.currentSelectedPoint.subscribe((point: Point) => {
+      if (point === undefined) {
+        return;
+      }
+    });
+  }
+  canvasClick($event: any) {
+    const realHeight = $event.currentTarget.height;
+    const realWidth = $event.currentTarget.width;
+    const displayHeight = $event.currentTarget.clientHeight;
+    const displayWidth = $event.currentTarget.clientWidth;
+    const xClicked = $event.layerX * (realWidth / displayWidth);
+    const yClicked = $event.layerY * (realHeight / displayHeight);
+    this.attentionCloudService.changeSelectedPoint(new Point(xClicked, yClicked));
   }
 }

@@ -4,6 +4,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import * as Rx from 'rxjs';
 import { Url } from 'url';
 import { DisplayConfiguration } from './classes/DisplayConfiguration';
+import {Point} from './classes/Utilities';
 
 class FixationDataRequest {
   users: User[];
@@ -29,12 +30,17 @@ export class AttentionCloudService {
 
   private commonConfBehavior = new Rx.BehaviorSubject(undefined);
   currentConf = this.commonConfBehavior.asObservable();
+  private selectedPoint = new Rx.BehaviorSubject(undefined);
+  currentSelectedPoint = this.selectedPoint.asObservable();
 
   constructor(private http: HttpClient) {
 
   }
   public changeDisplayConf(conf: DisplayConfiguration) {
     this.commonConfBehavior.next(conf);
+  }
+  public changeSelectedPoint(point: Point) {
+    this.selectedPoint.next(point);
   }
 
   public getAllStations() {
