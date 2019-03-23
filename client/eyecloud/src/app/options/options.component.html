@@ -27,7 +27,7 @@
             <div *ngFor="let station of availableStations">
               <li  class="disabled" role="menuitem" class="station-name"><span class="dropdown-item disabled" >{{station.name}}</span></li>
               <li role="menuitem" *ngFor="let stimulus of station.stimuli">
-                <a class="dropdown-item" href="#" (click)="changeCurrentStimulus(stimulus)">
+                <a class="dropdown-item" style="cursor: pointer" (click)="changeCurrentStimulus(stimulus)">
                   {{stimulus}}
                 </a>
               </li>
@@ -51,7 +51,7 @@
           <ul id="dropdown-users" *dropdownMenu class="dropdown-menu" role="menu" aria-labelledby="button-users">
             <div *ngFor="let user of availableUsers">
               <li role="menuitem" [class.selected]="user.isSelected()">
-                <a class="dropdown-item" href="#" (click)="toogleSelectedUser(user)">
+                <a class="dropdown-item" style="cursor: pointer" (click)="toogleSelectedUser(user)">
                   {{user.getUserId()}}
                 </a>
               </li>
