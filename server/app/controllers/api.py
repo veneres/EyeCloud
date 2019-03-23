@@ -212,9 +212,6 @@ def rgb_from_intensity(intensity, max_intensity):
 
     return r, g, b
 
-
-# TODO make this function working for an array of users instead of a single user
-# TODO decide if we do the scaling on the frontend or in the backend
 @app.route('/heatmap/stimulus=<string:stimulus_name>', methods=['POST'])
 def get_heatmap(stimulus_name):
     if request.method == 'POST' and request.is_json:
@@ -222,6 +219,7 @@ def get_heatmap(stimulus_name):
         users = [user['userId'] for user in content['users']]
         timestamp_start = content['timeStampStart']
         timestamp_end = content['timeStampStop']
+        visual_span_radius = content['visualSpan']
         all_stations = mongo.db.station.find()
         associated_station = None
         for station in all_stations:
@@ -236,13 +234,12 @@ def get_heatmap(stimulus_name):
         map_width = int(associated_station['width'])
         pixel_matrix = [[0 for _ in range(map_width)] for _ in range(map_height)]
         max_weight_for_red = 0
-        # TODO next improvement, make the visual span radius a parameter
-        visual_span_radius = 30
         for user in users:
             # check cache in mongodb
             cache_document = mongo.db.heatmapCache.find_one({'user': user,
                                                              "timestampStart": timestamp_start,
                                                              "timestampEnd": timestamp_end,
+                                                             "visualSpan": visual_span_radius,
                                                              "stimulus": stimulus_name})
             # if it's cached
             if cache_document is not None:
@@ -311,6 +308,7 @@ def get_heatmap(stimulus_name):
                                                   "timestampStart": timestamp_start,
                                                   "timestampEnd": timestamp_end,
                                                   "stimulus": stimulus_name,
+                                                  "visualSpan": visual_span_radius,
                                                   "matrixSummary": summary_to_cache})
         res = {}
         for row in range(map_height):

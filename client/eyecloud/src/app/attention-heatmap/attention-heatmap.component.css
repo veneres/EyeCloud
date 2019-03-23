@@ -15,6 +15,16 @@ canvas, .img-heatmap-container {
   left: 0px;
 }
 
+.padding-up {
+  padding-top: 20px;
+  padding-bottom: 10px;
+}
+
+.padding-side {
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
 .loading-overlay {
   position: relative;
   top: 100px;
@@ -31,4 +41,9 @@ canvas {
 
 .heatmap-container {
   width: 100%;
+}
+
+#dropdownContent {
+  width: 400px;
+  left: -300px !important;
 }

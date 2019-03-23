@@ -17,6 +17,14 @@ class FixationDataRequest {
   }
 }
 
+class HeatmapRequest extends FixationDataRequest {
+  visualSpan: number;
+  constructor(users: User[], timeStampStart: number, timeStampStop: number, visualSpan: number) {
+    super(users, timeStampStart, timeStampStop);
+    this.visualSpan = visualSpan;
+  }
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -69,10 +77,10 @@ export class AttentionCloudService {
     return this.http.post(endpoint, fixationDataReq, this.postHeader);
   }
 
-  public getHeatMap(users: User[], timeStampStart: number, timeStampStop: number, stimulus: string) {
+  public getHeatMap(users: User[], timeStampStart: number, timeStampStop: number, stimulus: string, visualSpan: number) {
     const stimulusNameCleaned = stimulus.substring(0, stimulus.length - 4);
     const endpoint = `${this.baseUrl}/heatmap/stimulus=${stimulusNameCleaned}`;
-    const heatmapReq = new FixationDataRequest(users, timeStampStart, timeStampStop);
+    const heatmapReq = new HeatmapRequest(users, timeStampStart, timeStampStop, visualSpan);
     return this.http.post(endpoint, heatmapReq, this.postHeader);
   }
 

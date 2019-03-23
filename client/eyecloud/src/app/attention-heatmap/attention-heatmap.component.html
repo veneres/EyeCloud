@@ -3,10 +3,10 @@
     <h5 class="d-inline-block">Heatmap</h5>
     <div ngbDropdown class="d-inline-block float-right" autoClose="outside">
       <button class="btn btn-outline-primary" id="dropdownHeatmap" ngbDropdownToggle>Settings</button>
-      <div ngbDropdownMenu aria-labelledby="dropdownHeatmap" style="width: 400px">
+      <div ngbDropdownMenu aria-labelledby="dropdownHeatmap" id="dropdownContent">
         <div class="row padding-side">
-          <h6 class="col-md-5 padding-up">max cropping size</h6>
-          <ng5-slider class="col-md-6" [(value)]="maxCroppingSizeValue" [options]="maxCroppingSizeOptions"></ng5-slider>
+          <h6 class="col-md-5 padding-up"> Visual Span radius (pixel)</h6>
+          <ng5-slider class="col-md-6" [(value)]="visualSpan" [options]="visualSpanOption"></ng5-slider>
         </div>
         <div class="row">
           <div class="col-md-7"></div>
