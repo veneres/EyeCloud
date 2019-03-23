@@ -1,6 +1,7 @@
 import { Directive, ElementRef, Input, OnChanges } from '@angular/core';
 import * as d3 from 'd3';
 import { Thumbnail } from './attention-cloud/classes/Thumbnail';
+import { Point } from './classes/Utilities';
 
 @Directive({
   selector: '[appAttentionCloud]'
@@ -11,11 +12,34 @@ export class AttentionCloudDirective implements OnChanges {
   @Input() imageUrl; string;
   @Input() imageWidth: number;
   @Input() imageHeight: number;
+  @Input() selectedPoint: Point;
 
   constructor() { }
 
   ngOnChanges() {
 
+    console.log(JSON.stringify(this.thumbnailData));
+    if (this.selectedPoint !== undefined) {
+      let selectedId;
+      let max_distance;
+      // find the nearest thumbnail from the selected point
+      this.thumbnailData.forEach((thumbnail) => {
+        const distance = ((this.selectedPoint.x - thumbnail.styleX) ** 2) + ((this.selectedPoint.y - thumbnail.styleY) ** 2);
+        if (max_distance === undefined || distance < max_distance) {
+          max_distance = distance;
+          selectedId = thumbnail.id;
+        }
+      });
+      // set the selected thumbnail
+      this.thumbnailData.forEach((thumbnail) => {
+
+        if (thumbnail.id === selectedId) {
+          thumbnail.selected = true;
+        } else {
+          thumbnail.selected = false;
+        }
+      });
+    }
     const svg = d3.select('#svg-attention-cloud');
     const boundarySize = 50;
     const width = parseInt(svg.attr('width'), 10);
@@ -41,7 +65,8 @@ export class AttentionCloudDirective implements OnChanges {
       nodeData.push({
         'name': thumbnail.id, 'r': thumbnail.croppingSize,
         'x': thumbnail.positionX, 'y': thumbnail.positionY,
-        'shiftX': thumbnail.styleX, 'shiftY': thumbnail.styleY
+        'shiftX': thumbnail.styleX, 'shiftY': thumbnail.styleY,
+        'selected': thumbnail.selected
       });
     }
 
@@ -70,8 +95,8 @@ export class AttentionCloudDirective implements OnChanges {
     const attractForce = d3.forceManyBody().strength(50);
 
     const collisionForce = d3.forceCollide().radius(function (d: any) {
-        return d.r / 2 + 1;
-      }).iterations(5);
+      return d.r / 2 + 1;
+    }).iterations(5);
 
     // force simulation
     const simulation = d3.forceSimulation(nodeData).alphaDecay(0.01)
@@ -81,19 +106,21 @@ export class AttentionCloudDirective implements OnChanges {
 
     // produce nodes from node data
     const node = svg.selectAll('circle').data(nodeData)
-        .enter().append('circle')
-        .attr('r', function (d) { return d.r / 2; })
-        .attr('cx', function (d) { return d.x; })
-        .attr('cy', function (d) { return d.y; })
-        .attr('fill', function (d) {
-          return 'url(#pattern_' + d.name + ')';
-        })
-        .attr('stroke', 'gray')
-        .attr('stroke-width', '2')
-        .call(d3.drag()
-          .on('start', dragstarted)
-          .on('drag', dragged)
-          .on('end', dragended));
+      .enter().append('circle')
+      .attr('r', function (d) { return d.r / 2; })
+      .attr('cx', function (d) { return d.x; })
+      .attr('cy', function (d) { return d.y; })
+      .attr('fill', function (d) {
+        return 'url(#pattern_' + d.name + ')';
+      })
+      .attr('stroke', (d) => {
+        return (d.selected ? 'red' : 'gray');
+      })
+      .attr('stroke-width', '2')
+      .call(d3.drag()
+        .on('start', dragstarted)
+        .on('drag', dragged)
+        .on('end', dragended));
 
     function dragstarted(d) {
       simulation.restart();

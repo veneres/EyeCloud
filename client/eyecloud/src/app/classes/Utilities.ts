@@ -1,5 +1,14 @@
-import {FixationPoint} from "./FixationPoint";
-import {AggregatedFixationPoint} from "./AggregatedFixationPoints";
+import { FixationPoint } from './FixationPoint';
+import { AggregatedFixationPoint } from './AggregatedFixationPoints';
+
+export class Point {
+  x: number;
+  y: number;
+  constructor(x: number, y: number) {
+    this.x = x;
+    this.y = y;
+  }
+}
 
 export class Utilities {
 
@@ -11,33 +20,31 @@ export class Utilities {
     fixationPoints.forEach(fixation => {
       let newCluster = true;
       for (let i = 0; i < aggregatedFixationPoints.length; i++) {
-        let aggregatedFixation = aggregatedFixationPoints[i];
+        const aggregatedFixation = aggregatedFixationPoints[i];
         if (getSquareDistance(fixation, aggregatedFixation) < clusterRadius * clusterRadius) {
-          let numPoints = aggregatedFixation.getNumPoints();
-          let averageX = (parseInt(aggregatedFixation.getX()) * numPoints + parseInt(String(fixation.getX()))) / (numPoints + 1);
-          let averageY = (parseInt(aggregatedFixation.getY()) * numPoints + parseInt(String(fixation.getY()))) / (numPoints + 1);
+          const numPoints = aggregatedFixation.getNumPoints();
+          const averageX = (parseInt(aggregatedFixation.getX(), 10) * numPoints + parseInt(String(fixation.getX()), 10)) / (numPoints + 1);
+          const averageY = (parseInt(aggregatedFixation.getY(), 10) * numPoints + parseInt(String(fixation.getY()), 10)) / (numPoints + 1);
           aggregatedFixation.setX(averageX);
           aggregatedFixation.setY(averageY);
           aggregatedFixation.incrementNumPoints();
-          aggregatedFixation.incrementDuration(parseInt(fixation.getDuration()));
+          aggregatedFixation.incrementDuration(parseInt(fixation.getDuration(), 10));
           newCluster = false;
           break;
         }
       }
       if (newCluster) {
-        aggregatedFixationPoints.push(new AggregatedFixationPoint(fixation.getX(), fixation.getY(), parseInt(fixation.getDuration())));
+        aggregatedFixationPoints.push(new AggregatedFixationPoint(fixation.getX(), fixation.getY(), parseInt(fixation.getDuration(), 10)));
       }
     });
-    console.log(fixationPoints);
-    console.log(aggregatedFixationPoints);
     return aggregatedFixationPoints;
   }
 }
 
 function getSquareDistance(fixation: FixationPoint, aggregatedFixation: AggregatedFixationPoint) {
-  let x1 = fixation.getX();
-  let y1 = fixation.getY();
-  let x2 = aggregatedFixation.getX();
-  let y2 = aggregatedFixation.getY();
-  return (x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2)
+  const x1 = fixation.getX();
+  const y1 = fixation.getY();
+  const x2 = aggregatedFixation.getX();
+  const y2 = aggregatedFixation.getY();
+  return (x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2);
 }

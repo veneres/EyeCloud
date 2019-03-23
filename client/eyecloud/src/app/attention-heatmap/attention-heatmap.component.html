@@ -20,7 +20,7 @@
       <div class="img-heatmap-container" *ngIf="showStimulus">
         <img id="img-heatmap" src="{{stimulusUrl}}" class="img-fluid">
       </div>
-      <canvas >
+      <canvas (click)="canvasClick($event)">
 
       </canvas>
     </div>

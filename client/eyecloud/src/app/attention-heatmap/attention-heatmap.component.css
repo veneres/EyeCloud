@@ -9,8 +9,8 @@
 
 canvas, .img-heatmap-container {
   position: absolute;
-  padding-right: 15px;
-  padding-left: 15px;
+  margin-right: 15px;
+  margin-left: 15px;
   top: 90px;
   left: 0px;
 }
@@ -25,7 +25,8 @@ canvas, .img-heatmap-container {
 }
 
 canvas {
-  max-width: 100%;
+  max-width: calc(100% - 15px);
+  ;
 }
 
 .heatmap-container {
