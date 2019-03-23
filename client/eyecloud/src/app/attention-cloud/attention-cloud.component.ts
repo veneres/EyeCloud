@@ -6,6 +6,7 @@ import { AttentionCloudService } from '../attention-cloud.service';
 import { DisplayConfiguration } from '../classes/DisplayConfiguration';
 import { Utilities } from '../classes/Utilities';
 import { Options } from 'ng5-slider';
+import { Point } from '../classes/Utilities';
 
 @Component({
   selector: 'app-attention-cloud',
@@ -14,7 +15,7 @@ import { Options } from 'ng5-slider';
 })
 export class AttentionCloudComponent implements OnInit {
   private stimulusURL: string;
-  private thumbnails: Thumbnail[];
+  thumbnails: Thumbnail[];
   private fixationPoints: FixationPoint[];
   timestampStart: number;
   timestampStop: number;
@@ -51,8 +52,10 @@ export class AttentionCloudComponent implements OnInit {
     step: 10,
     showSelectionBar: true,
   };
+  selectedPoint: Point;
 
   constructor(private attentionCloudService: AttentionCloudService) {
+    this.selectedPoint = undefined;
   }
 
   ngOnInit() {
@@ -89,6 +92,12 @@ export class AttentionCloudComponent implements OnInit {
       this.imageURL = this.attentionCloudService.getStimulusURL(this.stimulusName).toString();
       this.imageWidth = conf.getStimulusWidth();
       this.imageHeight = conf.getStimulusHeight();
+    });
+    this.attentionCloudService.currentSelectedPoint.subscribe((point: Point) => {
+      if (point === undefined) {
+        return;
+      }
+      this.selectedPoint = point;
     });
     }
 
