@@ -54,7 +54,7 @@ def get_all_users():
         return jsonify(data)
 
 
-@app.route('/all_fixations/user=<user>/station=<station_name>/from=<from_timestamp>-to=<to_timestamp>', methods=['GET'])
+@app.route('/all_fixations/user=<user>/station=<station_name>/from=<int:from_timestamp>-to=<int:to_timestamp>', methods=['GET'])
 def get_fixations_by_user_and_station(user, station_name, from_timestamp, to_timestamp):
     if request.method == 'GET':
         data = {}
