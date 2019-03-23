@@ -17,8 +17,8 @@ export class AttentionCloudComponent implements OnInit {
   private stimulusURL: string;
   thumbnails: Thumbnail[];
   private fixationPoints: FixationPoint[];
-  svgWidth = 400;
-  svgHeight = 400;
+  timestampStart: number;
+  timestampStop: number;
   imageURL: string;
   imageWidth: number;
   imageHeight: number;
@@ -67,8 +67,10 @@ export class AttentionCloudComponent implements OnInit {
       }
       this.stimulusName = conf.getStimulus();
       this.userIds = conf.getUsers();
+      this.timestampStart = conf.getTimeStampStart();
+      this.timestampStop = conf.getTimeStampEnd();
       const fixationPoints = [];
-      this.attentionCloudService.getFixationPoints(this.userIds[0], this.stimulusName)
+      this.attentionCloudService.getFixationPoints(this.userIds, this.timestampStart, this.timestampStop, this.stimulusName)
         .subscribe((data) => {
           for (const fixation_n in data) {
             if (data.hasOwnProperty(fixation_n)) {

@@ -33,15 +33,6 @@
   background-color: #e57373;
 }
 
-#generate-button {
-  display: block;
-  margin: auto;
-}
-
-.row {
-  padding: 15px 0px;
-}
-
 .modal-body {
   padding-bottom: 50px;
 }
@@ -56,4 +47,14 @@
 
 .range-slider {
   display: block;
+}
+
+.padding-up {
+  padding-top: 5px;
+  padding-bottom: 10px;
+}
+
+.padding-bottom {
+  padding-top: 30px;
+  padding-bottom: 10px;
 }

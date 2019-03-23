@@ -122,16 +122,19 @@ def get_fixations_by_station(station_name, from_timestamp, to_timestamp):
         return jsonify(data)
 
 
-@app.route('/all_fixations/stimulus=<string:stimulus_name>/from=<int:from_timestamp>-to=<int:to_timestamp>',
-           methods=['GET'])
-def get_fixations_by_stimulus(stimulus_name, from_timestamp, to_timestamp):
-    if request.method == 'GET':
+@app.route('/all_fixations/stimulus=<string:stimulus_name>', methods=['POST'])
+def get_fixations_by_stimulus(stimulus_name):
+    if request.method == 'POST' and request.is_json:
+        content = request.get_json()
+        users = [user['userId'] for user in content['users']]
+        timestamp_start = content['timeStampStart']
+        timestamp_end = content['timeStampStop']
         data = {}
         data_id = 1
         cursor = mongo.db.fixations.find({'stimuliName': stimulus_name})
         for document in cursor:
             timestamp = document['timestamp']
-            if from_timestamp <= timestamp <= to_timestamp:
+            if timestamp_start <= timestamp <= timestamp_end and document['user'] in users:
                 fixation_point = {'index': document['fixationIndex'], 'timestamp': document['timestamp'],
                                   'x': document['mappedFixationPointX'], 'y': document['mappedFixationPointY'],
                                   'duration': document['fixationDuration']}
@@ -141,6 +144,37 @@ def get_fixations_by_stimulus(stimulus_name, from_timestamp, to_timestamp):
                 data[str(data_id)] = fixation_data
                 data_id += 1
         return jsonify(data)
+
+
+@app.route('/gaze_stripes/stimulus=<string:stimulus_name>', methods=['POST'])
+def get_gaze_stripes_by_stimulus(stimulus_name):
+    if request.method == 'POST' and request.is_json:
+        content = request.get_json()
+        users = [user['userId'] for user in content['users']]
+        timestamp_start = content['timeStampStart']
+        timestamp_end = content['timeStampStop']
+        cursor = mongo.db.fixations.find({'stimuliName': stimulus_name})
+        data = {}
+        data_id = 1
+        for u in users:
+            data[u] = {}
+        for document in cursor:
+            timestamp = document['timestamp']
+            user = document['user']
+            if timestamp_start <= timestamp <= timestamp_end and user in users:
+                fixation_point = {'index': document['fixationIndex'], 'timestamp': document['timestamp'],
+                                  'x': document['mappedFixationPointX'], 'y': document['mappedFixationPointY'],
+                                  'duration': document['fixationDuration']}
+                map_data = {'mapName': document['stimuliName'], 'description': document['description']}
+                fixation_data = {'station': document['station'], 'fixationPoint': fixation_point, 'mapInfo': map_data,
+                                 'user': user}
+                data[user][data_id] = fixation_data
+                data_id += 1
+        filtered_data = {}
+        for key in data:
+            if len(data[key]) > 0:
+                filtered_data[key] = data[key]
+        return jsonify(filtered_data)
 
 
 @app.route('/all_users/stimulus=<string:stimulus_name>', methods=['GET'])

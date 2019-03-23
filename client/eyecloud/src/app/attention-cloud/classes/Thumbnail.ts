@@ -48,7 +48,6 @@ export class Thumbnail {
         counter++;
       }
     });
-
     return res;
   }
 }

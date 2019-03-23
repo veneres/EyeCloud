@@ -6,7 +6,7 @@ import { Url } from 'url';
 import { DisplayConfiguration } from './classes/DisplayConfiguration';
 import {Point} from './classes/Utilities';
 
-class HeatmapRequest {
+class FixationDataRequest {
   users: User[];
   timeStampStart: number;
   timeStampStop: number;
@@ -16,7 +16,6 @@ class HeatmapRequest {
     this.timeStampStop = timeStampStop;
   }
 }
-
 
 @Injectable({
   providedIn: 'root',
@@ -58,20 +57,22 @@ export class AttentionCloudService {
     return new URL(`${this.baseUrl}/stimuli/${stimulusName}`);
   }
 
-  public getFixationPoints(user: User, stimulus: string) {
-    const fixed_timestamp_start = 0;
-    const fixed_timestamp_end = 10000000;
-    const station = stimulus.split('_')[1];
-    // TODO make this line shorter
-    // tslint:disable-next-line:max-line-length
-    const endpoint = `${this.baseUrl}/all_fixations/user=${user.getUserId()}/station=${station}/from=${fixed_timestamp_start}-to=${fixed_timestamp_end}`;
-    return this.http.get(endpoint);
+  public getFixationPoints(users: User[], timeStampStart: number, timeStampStop: number, stimulus: string) {
+    const fixationDataReq = new FixationDataRequest(users, timeStampStart, timeStampStop);
+    const endpoint = `${this.baseUrl}/all_fixations/stimulus=${stimulus}`;
+    return this.http.post(endpoint, fixationDataReq, this.postHeader);
+  }
+
+  public getGazeStripes(users: User[], timeStampStart: number, timeStampStop: number, stimulus: string) {
+    const fixationDataReq = new FixationDataRequest(users, timeStampStart, timeStampStop);
+    const endpoint = `${this.baseUrl}/gaze_stripes/stimulus=${stimulus}`;
+    return this.http.post(endpoint, fixationDataReq, this.postHeader);
   }
 
   public getHeatMap(users: User[], timeStampStart: number, timeStampStop: number, stimulus: string) {
     const stimulusNameCleaned = stimulus.substring(0, stimulus.length - 4);
     const endpoint = `${this.baseUrl}/heatmap/stimulus=${stimulusNameCleaned}`;
-    const heatmapReq = new HeatmapRequest(users, timeStampStart, timeStampStop);
+    const heatmapReq = new FixationDataRequest(users, timeStampStart, timeStampStop);
     return this.http.post(endpoint, heatmapReq, this.postHeader);
   }
 

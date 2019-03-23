@@ -1,4 +1,4 @@
-import { Directive, ElementRef, Input, OnChanges } from '@angular/core';
+import { Directive, Input, OnChanges } from '@angular/core';
 import * as d3 from 'd3';
 import { Thumbnail } from './attention-cloud/classes/Thumbnail';
 import { Point } from './classes/Utilities';
@@ -17,8 +17,6 @@ export class AttentionCloudDirective implements OnChanges {
   constructor() { }
 
   ngOnChanges() {
-
-    console.log(JSON.stringify(this.thumbnailData));
     if (this.selectedPoint !== undefined) {
       let selectedId;
       let max_distance;
@@ -41,19 +39,11 @@ export class AttentionCloudDirective implements OnChanges {
       });
     }
     const svg = d3.select('#svg-attention-cloud');
-    const boundarySize = 50;
     const width = parseInt(svg.attr('width'), 10);
     const height = parseInt(svg.attr('height'), 10);
 
     // reset svg
     svg.selectAll('*').remove();
-
-
-    // add background color
-    // svg.append('rect').
-    // attr('height', '100%').
-    // attr('width', '100%').
-    // attr('fill', 'lightblue');
 
     // create note data from thumbnail data
     const nodeData = [];
@@ -69,6 +59,8 @@ export class AttentionCloudDirective implements OnChanges {
         'selected': thumbnail.selected
       });
     }
+
+
 
     // create pattern for each thumbnail
     const defs = svg.append('defs')
@@ -90,6 +82,12 @@ export class AttentionCloudDirective implements OnChanges {
       .attr('transform', function (d) {
         return 'translate(' + -d.shiftX + ',' + -d.shiftY + ')';
       });
+
+    this.generateForceSimulation(svg, nodeData, width, height);
+
+  }
+
+  private generateForceSimulation(svg, nodeData, width, height) {
 
     // produce forces
     const attractForce = d3.forceManyBody().strength(50);
@@ -142,9 +140,9 @@ export class AttentionCloudDirective implements OnChanges {
 
     function ticked() {
       node.attr('cx', function (d) {
-        return d.x = Math.max(boundarySize, Math.min(width - boundarySize, d.x));
+        return Math.max(d.r, Math.min(width - d.r, d.x));
       }).attr('cy', function (d) {
-        return d.y = Math.max(boundarySize, Math.min(height - boundarySize, d.y));
+        return Math.max(d.r, Math.min(height - d.r, d.y));
       });
     }
 

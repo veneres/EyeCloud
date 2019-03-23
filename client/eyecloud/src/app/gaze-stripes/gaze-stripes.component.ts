@@ -3,6 +3,7 @@ import {DisplayConfiguration} from '../classes/DisplayConfiguration';
 import {FixationPoint} from '../classes/FixationPoint';
 import {User} from '../classes/User';
 import {AttentionCloudService} from '../attention-cloud.service';
+import {Options} from "ng5-slider";
 
 @Component({
   selector: 'app-gaze-stripes',
@@ -10,12 +11,21 @@ import {AttentionCloudService} from '../attention-cloud.service';
   styleUrls: ['./gaze-stripes.component.css']
 })
 export class GazeStripesComponent implements OnInit {
-  private fixationPoints: FixationPoint[];
+  private userFixationMap;
   imageURL: string;
   imageWidth: number;
   imageHeight: number;
+  timestampStart: number;
+  timestampStop: number;
   private stimulusName: string;
   private userIds: User[];
+  scaleValue: number = 30;
+  scaleOptions: Options = {
+    floor: 20,
+    ceil: 200,
+    step: 10,
+    showSelectionBar: true,
+  };
 
   constructor(private attentionCloudService: AttentionCloudService) { }
 
@@ -28,22 +38,32 @@ export class GazeStripesComponent implements OnInit {
       }
       this.stimulusName = conf.getStimulus();
       this.userIds = conf.getUsers();
-      const fixationPoints = [];
-      this.attentionCloudService.getFixationPoints(this.userIds[0], this.stimulusName)
+      this.timestampStart = conf.getTimeStampStart();
+      this.timestampStop = conf.getTimeStampEnd();
+      const userFixationMap = {};
+      this.attentionCloudService.getGazeStripes(this.userIds, this.timestampStart, this.timestampStop, this.stimulusName)
         .subscribe((data) => {
-          for (const fixation_n in data) {
-            if (data.hasOwnProperty(fixation_n)) {
-              if (data[fixation_n].mapInfo.mapName === this.stimulusName) {
-                const index = data[fixation_n].fixationPoint.index;
-                const x = data[fixation_n].fixationPoint.x;
-                const y = data[fixation_n].fixationPoint.y;
-                const duration = data[fixation_n].fixationPoint.duration;
-                const timestamp = data[fixation_n].fixationPoint.timestamp;
-                fixationPoints.push(new FixationPoint(index, x, y, duration, timestamp));
+          for (const entry in data) {
+            if (data.hasOwnProperty(entry)) {
+              const fixationPoints = [];
+              const fixations = data[entry];
+              for (const fixation in fixations) {
+                if (fixations.hasOwnProperty(fixation)) {
+                  if (fixations[fixation].mapInfo.mapName === this.stimulusName) {
+                    const index = fixations[fixation].fixationPoint.index;
+                    const x = fixations[fixation].fixationPoint.x;
+                    const y = fixations[fixation].fixationPoint.y;
+                    const duration = fixations[fixation].fixationPoint.duration;
+                    const timestamp = fixations[fixation].fixationPoint.timestamp;
+                    fixationPoints.push(new FixationPoint(index, x, y, duration, timestamp));
+                  }
+                }
               }
+              fixationPoints.sort(compareFixationPointTimestamp);
+              userFixationMap[entry] = fixationPoints;
             }
           }
-          this.fixationPoints = fixationPoints.sort(compareFixationPointTimestamp);
+          this.userFixationMap = userFixationMap;
         });
       this.imageURL = this.attentionCloudService.getStimulusURL(this.stimulusName).toString();
       this.imageWidth = conf.getStimulusWidth();
