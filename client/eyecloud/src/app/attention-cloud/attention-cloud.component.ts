@@ -80,7 +80,7 @@ export class AttentionCloudComponent implements OnInit {
             }
           }
           this.fixationPoints = fixationPoints;
-          let aggregateFixationPoints = Utilities.clusterFixationPoints(this.fixationPoints, this.clusterRadiusValue);
+          const aggregateFixationPoints = Utilities.clusterFixationPoints(this.fixationPoints, this.clusterRadiusValue);
           this.thumbnails = Thumbnail.get_thumbnails_for_attention_cloud(aggregateFixationPoints,
             this.maxCroppingSizeValue, this.minCroppingSizeValue, this.numPointsValue);
         });
@@ -91,7 +91,7 @@ export class AttentionCloudComponent implements OnInit {
     }
 
     generate() {
-      let aggregateFixationPoints = Utilities.clusterFixationPoints(this.fixationPoints, this.clusterRadiusValue);
+      const aggregateFixationPoints = Utilities.clusterFixationPoints(this.fixationPoints, this.clusterRadiusValue);
       this.thumbnails = Thumbnail.get_thumbnails_for_attention_cloud(aggregateFixationPoints,
         this.maxCroppingSizeValue, this.minCroppingSizeValue, this.numPointsValue);
     }
