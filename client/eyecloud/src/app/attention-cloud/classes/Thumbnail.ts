@@ -40,7 +40,7 @@ export class Thumbnail {
         if (size < minCroppingSize) size = minCroppingSize;
         let multiplier = Math.floor(counter / numPointsPerCircle) + 1;
         let radius = maxCroppingSize * multiplier;
-        let degree = 360 / (numPointsPerCircle * multiplier) * (counter % numPointsPerCircle);
+        let degree = 360 / (numPointsPerCircle * multiplier) * (counter % numPointsPerCircle + 1);
         let posX = this.startX + radius * Math.cos(degree * Math.PI / 180);
         let posY = this.startY + radius * Math.sin(degree * Math.PI / 180);
         res.push(new Thumbnail(counter, fixation, size, posX, posY));
