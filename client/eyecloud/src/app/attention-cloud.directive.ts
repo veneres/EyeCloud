@@ -21,7 +21,7 @@ export class AttentionCloudDirective implements OnChanges {
   constructor(private attentionCloudService: AttentionCloudService) { }
 
   ngOnChanges() {
-    if (this.selectedPoint !== undefined) {
+    if (this.selectedPoint) {
       let selectedId;
       let max_distance;
       // find the nearest thumbnail from the selected point
@@ -40,6 +40,7 @@ export class AttentionCloudDirective implements OnChanges {
         this.oldSelectedId = selectedId;
       }
     } else {
+
       this.oldThumbnailData = this.thumbnailData;
       const svg = d3.select('#svg-attention-cloud');
       const width = parseInt(svg.attr('width'), 10);
@@ -62,8 +63,6 @@ export class AttentionCloudDirective implements OnChanges {
           'selected': thumbnail.selected
         });
       }
-
-
 
       // create pattern for each thumbnail
       const defs = svg.append('defs')
