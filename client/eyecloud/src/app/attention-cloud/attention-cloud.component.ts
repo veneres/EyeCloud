@@ -1,10 +1,11 @@
-import { Component, Input, OnInit} from '@angular/core';
+import { Component, OnInit} from '@angular/core';
 import { Thumbnail } from './classes/Thumbnail';
 import { FixationPoint } from '../classes/FixationPoint';
 import { User } from '../classes/User';
 import { AttentionCloudService } from '../attention-cloud.service';
 import { DisplayConfiguration } from '../classes/DisaplyConfiguration';
 import {Utilities} from "../classes/Utilities";
+import { Options } from 'ng5-slider';
 
 @Component({
   selector: 'app-attention-cloud',
@@ -15,13 +16,41 @@ export class AttentionCloudComponent implements OnInit {
   private stimulusURL: string;
   private thumbnails: Thumbnail[];
   private fixationPoints: FixationPoint[];
-  svgWidth = 600;
-  svgHeight = 600;
+  svgWidth = 400;
+  svgHeight = 400;
   imageURL: string;
   imageWidth: number;
   imageHeight: number;
   private stimulusName: string;
   private userIds: User[];
+  maxCroppingSizeValue: number = 100;
+  maxCroppingSizeOptions: Options = {
+    floor: 70,
+    ceil: 150,
+    step: 10,
+    showSelectionBar: true,
+  };
+  minCroppingSizeValue: number = 20;
+  minCroppingSizeOptions: Options = {
+    floor: 10,
+    ceil: 50,
+    step: 5,
+    showSelectionBar: true,
+  };
+  numPointsValue: number = 100;
+  numPointsOptions: Options = {
+    floor: 10,
+    ceil: 50,
+    step: 5,
+    showSelectionBar: true,
+  };
+  clusterRadiusValue: number = 50;
+  clusterRadiusOptions: Options = {
+    floor: 0,
+    ceil: 500,
+    step: 10,
+    showSelectionBar: true,
+  };
 
   constructor(private attentionCloudService: AttentionCloudService) {
   }
@@ -51,12 +80,19 @@ export class AttentionCloudComponent implements OnInit {
             }
           }
           this.fixationPoints = fixationPoints;
-          const aggregateFixationPoints = Utilities.clusterFixationPoints(fixationPoints);
-          this.thumbnails = Thumbnail.get_thumbnails_for_attention_cloud(aggregateFixationPoints);
+          const aggregateFixationPoints = Utilities.clusterFixationPoints(this.fixationPoints, this.clusterRadiusValue);
+          this.thumbnails = Thumbnail.get_thumbnails_for_attention_cloud(aggregateFixationPoints,
+            this.maxCroppingSizeValue, this.minCroppingSizeValue, this.numPointsValue);
         });
       this.imageURL = this.attentionCloudService.getStimulusURL(this.stimulusName).toString();
       this.imageWidth = conf.getStimulusWidth();
       this.imageHeight = conf.getStimulusHeight();
     });
+    }
+
+    generate() {
+      const aggregateFixationPoints = Utilities.clusterFixationPoints(this.fixationPoints, this.clusterRadiusValue);
+      this.thumbnails = Thumbnail.get_thumbnails_for_attention_cloud(aggregateFixationPoints,
+        this.maxCroppingSizeValue, this.minCroppingSizeValue, this.numPointsValue);
     }
 }

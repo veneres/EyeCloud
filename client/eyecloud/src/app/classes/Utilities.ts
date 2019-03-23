@@ -3,18 +3,16 @@ import {AggregatedFixationPoint} from "./AggregatedFixationPoints";
 
 export class Utilities {
 
-  private static clusterRadius = 50;
-
   constructor() {
   }
 
-  public static clusterFixationPoints(fixationPoints: FixationPoint[]): AggregatedFixationPoint[] {
+  public static clusterFixationPoints(fixationPoints: FixationPoint[], clusterRadius: number): AggregatedFixationPoint[] {
     const aggregatedFixationPoints = [];
     fixationPoints.forEach(fixation => {
       let newCluster = true;
       for (let i = 0; i < aggregatedFixationPoints.length; i++) {
         let aggregatedFixation = aggregatedFixationPoints[i];
-        if (getSquareDistance(fixation, aggregatedFixation) < this.clusterRadius * this.clusterRadius) {
+        if (getSquareDistance(fixation, aggregatedFixation) < clusterRadius * clusterRadius) {
           let numPoints = aggregatedFixation.getNumPoints();
           let averageX = (parseInt(aggregatedFixation.getX()) * numPoints + parseInt(String(fixation.getX()))) / (numPoints + 1);
           let averageY = (parseInt(aggregatedFixation.getY()) * numPoints + parseInt(String(fixation.getY()))) / (numPoints + 1);
