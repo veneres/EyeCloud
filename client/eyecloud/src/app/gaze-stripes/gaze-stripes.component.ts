@@ -54,8 +54,8 @@ export class GazeStripesComponent implements OnInit {
 
 // function to compare two fixation points with durations
 function compareFixationPointTimestamp(a: FixationPoint, b: FixationPoint) {
-  let durationA = parseInt(a.getTimestamp());
-  let durationB = parseInt(b.getTimestamp());
+  const durationA = parseInt(a.getTimestamp(), 10);
+  const durationB = parseInt(b.getTimestamp(), 10);
   if (durationA > durationB) {
     return 1;
   } else if (durationA < durationB) {
