@@ -38,6 +38,7 @@ export class AttentionCloudDirective implements OnChanges {
         }
       });
     }
+
     const svg = d3.select('#svg-attention-cloud');
     const width = parseInt(svg.attr('width'), 10);
     const height = parseInt(svg.attr('height'), 10);
