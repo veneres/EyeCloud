@@ -4,7 +4,7 @@
 }
 
 .card-body {
-  min-height: 400px;
+  min-height: 440px;
 }
 
 canvas, .img-heatmap-container {
@@ -17,7 +17,6 @@ canvas, .img-heatmap-container {
 
 canvas {
   max-width: 100%;
-  max-height: auto;
 }
 
 .heatmap-container {

@@ -2,7 +2,7 @@
 
 <ng-template #template>
   <div class="modal-header">
-    <h4 class="modal-title pull-left">Settings</h4>
+    <h4 class="modal-title pull-left">General settings</h4>
     <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
       <span aria-hidden="true">&times;</span>
     </button>
@@ -75,14 +75,17 @@
     </div>
   <div class="row">
     <div class="col-md-6">
+      <div class="block">
+        <p>Timestamp</p>
+      </div>
+      <ng5-slider [(value)]="timestampStart" [(highValue)]="timestampEnd" [options]="sliderTimeStampOptions"></ng5-slider>
+    </div>
+    <div class="col-md-6">
       <div class="range-input-selectors">
-        <p>Min timestamp: <input type="number" [(ngModel)]="timestampStart"></p>
-        <p>Max timestamp: <input type="number"[(ngModel)]="timestampEnd"></p>
+        <p>Min timestamp: <input disabled type="number" [(ngModel)]="timestampStart"></p>
+        <p>Max timestamp: <input disabled type="number" [(ngModel)]="timestampEnd"></p>
       </div>
     </div>
-  </div>
-  <div class="row">
-      <ng5-slider [(value)]="timestampStart" [(highValue)]="timestampEnd" [options]="sliderTimeStampOptions"></ng5-slider>
   </div>
   <div class="row">
     <div class="offset-md-8 col-md-4">

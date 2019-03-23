@@ -38,13 +38,22 @@
   margin: auto;
 }
 
+.row {
+  padding: 15px 0px;
+}
+
 .modal-body {
   padding-bottom: 50px;
 }
 
-.range-input-selectors{
+.range-input-selectors {
   display: block;
 }
-.range-slider{
+
+.modal-body .dropdown-item:hover {
+  background-color: inherit;
+}
+
+.range-slider {
   display: block;
 }
