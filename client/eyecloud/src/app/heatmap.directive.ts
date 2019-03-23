@@ -1,4 +1,5 @@
 import { Directive, OnChanges, ElementRef, AfterViewInit, Input } from '@angular/core';
+import { HeatmapService } from './heatmap.service';
 import * as d3 from 'd3';
 
 @Directive({
@@ -8,7 +9,7 @@ export class HeatmapDirective implements AfterViewInit, OnChanges {
 
   @Input() dataset: any;
   @Input() show: boolean;
-  constructor(private el: ElementRef) {
+  constructor(private el: ElementRef, private heatmapService: HeatmapService) {
   }
   width: number;
 
@@ -75,6 +76,7 @@ export class HeatmapDirective implements AfterViewInit, OnChanges {
     imageData.data.set(buf8);
 
     ctx.putImageData(imageData, 0, 0);
+    this.heatmapService.changeDisplayLoading(false);
 
   }
 

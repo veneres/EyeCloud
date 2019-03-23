@@ -8,11 +8,20 @@
 }
 
 canvas, .img-heatmap-container {
-  position: relative;
+  position: absolute;
   padding-right: 15px;
   padding-left: 15px;
-  top: 0px;
+  top: 90px;
   left: 0px;
+}
+
+.loading-overlay {
+  position: relative;
+  top: 100px;
+}
+
+.loading-overlay svg {
+  display: block;
 }
 
 canvas {

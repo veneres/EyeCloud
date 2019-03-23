@@ -1,6 +1,7 @@
 import { Component, OnInit, Output, EventEmitter, TemplateRef } from '@angular/core';
 import { BsModalService, BsModalRef } from 'ngx-bootstrap/modal';
 import { AttentionCloudService } from '../attention-cloud.service';
+import { HeatmapService } from '../heatmap.service';
 import { Station } from '../classes/Station';
 import { User } from '../classes/User';
 import { DisplayConfiguration} from '../classes/DisplayConfiguration';
@@ -24,7 +25,9 @@ export class OptionsComponent implements OnInit {
   timestampStart: number;
   timestampEnd: number;
   stimuliStationMap: Map<String, Station>;
-  constructor(private attentionCloudService: AttentionCloudService, private modalService: BsModalService) {
+  constructor(private attentionCloudService: AttentionCloudService,
+              private modalService: BsModalService,
+              private heatmapService: HeatmapService) {
     this.availableUsers = [];
     this.availableStations = [];
     this.currentUsers = [];
@@ -111,5 +114,6 @@ export class OptionsComponent implements OnInit {
       this.timestampStart,
       this.timestampEnd
     ));
+    this.heatmapService.changeDisplayLoading(true);
   }
 }

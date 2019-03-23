@@ -2,6 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { AttentionCloudService } from '../attention-cloud.service';
 import { User } from '../classes/User';
 import { DisplayConfiguration } from '../classes/DisplayConfiguration';
+import { HeatmapService } from '../heatmap.service';
 import { Options } from 'ng5-slider';
 
 @Component({
@@ -17,8 +18,9 @@ export class AttentionHeatmapComponent implements OnInit {
   private stimulusName: string;
   private timestampStart: number;
   private timestampStop: number;
+  displayLoading: boolean;
   dataset: any;
-  constructor(private attentionCloudService: AttentionCloudService) {
+  constructor(private attentionCloudService: AttentionCloudService, private heatmapService: HeatmapService) {
     this.maxVisualSpan = 50;
     const visualSpanOption: Options = {
       floor: 70,
@@ -26,8 +28,12 @@ export class AttentionHeatmapComponent implements OnInit {
       step: 10,
       showSelectionBar: true,
     };
+    this.displayLoading = false;
   }
   ngOnInit(): void {
+    this.heatmapService.currentDisplayLoading.subscribe((display: boolean) => {
+      this.displayLoading = display;
+    });
     this.attentionCloudService.currentConf.subscribe((conf: DisplayConfiguration) => {
       // default and starting value
       if (conf === undefined) {

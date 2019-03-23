@@ -14,7 +14,7 @@ import { FormsModule } from '@angular/forms';
 import { GazeStripesComponent } from './gaze-stripes/gaze-stripes.component';
 import { GazeStripesDirective } from './gaze-stripes.directive';
 import { NgbModule} from '@ng-bootstrap/ng-bootstrap';
-import { SelectDropDownModule } from 'ngx-select-dropdown'
+import { SelectDropDownModule } from 'ngx-select-dropdown';
 
 
 
