@@ -16,13 +16,14 @@
     </div>
   </div>
   <div class="card-body">
-    <div  appHeatmap [dataset]=dataset [show]=showStimulus>
+    <div  appHeatmap [dataset]=dataset [show]=showStimulus [selectedPoint]=selectedPoint>
       <div class="img-heatmap-container" *ngIf="showStimulus">
         <img id="img-heatmap" src="{{stimulusUrl}}" class="img-fluid">
       </div>
-      <canvas (click)="canvasClick($event)">
+      <canvas id="heatmap" >
 
       </canvas>
+      <canvas id="heatmap-interaction" (click)="canvasClick($event)"></canvas>
     </div>
     <div *ngIf="displayLoading" class="loading-overlay">
       <svg id="login_loading" width="200px" height="200px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"

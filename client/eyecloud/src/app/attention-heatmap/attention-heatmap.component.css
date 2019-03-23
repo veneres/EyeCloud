@@ -26,8 +26,12 @@ canvas, .img-heatmap-container {
 }
 
 .loading-overlay {
-  position: relative;
-  top: 100px;
+  position: absolute;
+  background-color: rgba(0,0,0,0.8);
+  width: 100%;
+  left: 0px;
+  top: 0px;
+  height: 100%;
 }
 
 .loading-overlay svg {
@@ -35,7 +39,7 @@ canvas, .img-heatmap-container {
 }
 
 canvas {
-  max-width: calc(100% - 15px);
+  max-width: calc(100% - 30px);
   ;
 }
 

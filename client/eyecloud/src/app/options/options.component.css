@@ -45,6 +45,9 @@
   background-color: inherit;
 }
 
+.dropdown-item:focus, .dropdown-item:hover {
+  background-color: inherit;
+}
 .range-slider {
   display: block;
 }

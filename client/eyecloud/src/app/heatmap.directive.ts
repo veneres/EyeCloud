@@ -1,6 +1,7 @@
 import { Directive, OnChanges, ElementRef, AfterViewInit, Input } from '@angular/core';
 import { HeatmapService } from './heatmap.service';
 import * as d3 from 'd3';
+import { Point } from './classes/Utilities';
 
 @Directive({
   selector: '[appHeatmap]'
@@ -9,6 +10,7 @@ export class HeatmapDirective implements AfterViewInit, OnChanges {
 
   @Input() dataset: any;
   @Input() show: boolean;
+  @Input() selectedPoint: Point;
   constructor(private el: ElementRef, private heatmapService: HeatmapService) {
   }
   width: number;
@@ -24,15 +26,30 @@ export class HeatmapDirective implements AfterViewInit, OnChanges {
     if (!this.show) {
       return;
     }
-    // We append the canvas in this phase to accelerate the rendering process
-    // remove the canvas if it's present
-    // Append the canvas
-    const canvas = d3.select(this.el.nativeElement).select('canvas')
-      .node();
+
     const canvasWidth = this.dataset
     ['width'];
     const canvasHeight = this.dataset
     ['height'];
+    // We append the canvas in this phase to accelerate the rendering process
+    // remove the canvas if it's present
+    // Append the canvas
+    d3.select(this.el.nativeElement).select('#heatmap-interaction')
+      .attr('width', this.dataset
+      ['width'])
+      .attr('height', this.dataset
+      ['height']);
+    if (this.selectedPoint !== undefined) {
+      const interactionCanvas = d3.select(this.el.nativeElement).select('#heatmap-interaction').node();
+      const ctxInteractive = (interactionCanvas as HTMLCanvasElement).getContext('2d');
+      ctxInteractive.arc(this.selectedPoint.x, this.selectedPoint.y, 30, 0, 2 * Math.PI);
+      ctxInteractive.lineWidth = 10;
+      ctxInteractive.strokeStyle = '#f44336';
+      ctxInteractive.stroke();
+      return;
+    }
+    const canvas = d3.select(this.el.nativeElement).select('#heatmap')
+      .node();
     // ignore the warning on the next line for calling getContext on type BaseType
     const ctx = (canvas as HTMLCanvasElement).getContext('2d');
     const imageData = ctx.getImageData(0, 0, canvasWidth, canvasHeight);
@@ -42,7 +59,7 @@ export class HeatmapDirective implements AfterViewInit, OnChanges {
     if (this.dataset
       .hasOwnProperty('height') && this.dataset
         .hasOwnProperty('width')) {
-      d3.select(this.el.nativeElement).select('canvas')
+      d3.select(this.el.nativeElement).select('#heatmap')
         .attr('width', this.dataset
         ['width'])
         .attr('height', this.dataset
@@ -77,7 +94,5 @@ export class HeatmapDirective implements AfterViewInit, OnChanges {
 
     ctx.putImageData(imageData, 0, 0);
     this.heatmapService.changeDisplayLoading(false);
-
   }
-
 }

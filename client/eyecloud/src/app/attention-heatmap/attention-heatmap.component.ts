@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { AttentionCloudService } from '../attention-cloud.service';
 import { User } from '../classes/User';
 import { DisplayConfiguration } from '../classes/DisplayConfiguration';
@@ -20,10 +20,11 @@ export class AttentionHeatmapComponent implements OnInit {
   private timestampStart: number;
   private timestampStop: number;
   private currentConfig: DisplayConfiguration;
+  selectedPoint: Point;
   displayLoading: boolean;
   dataset: any;
   visualSpanOption: Options;
-  constructor(private attentionCloudService: AttentionCloudService, private heatmapService: HeatmapService) {
+  constructor(private el: ElementRef, private attentionCloudService: AttentionCloudService, private heatmapService: HeatmapService) {
     this.visualSpan = 30;
     this.visualSpanOption = {
       floor: 10,
@@ -59,6 +60,7 @@ export class AttentionHeatmapComponent implements OnInit {
       if (point === undefined) {
         return;
       }
+      this.selectedPoint = point;
     });
   }
   canvasClick($event: any) {
