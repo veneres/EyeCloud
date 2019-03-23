@@ -1,4 +1,4 @@
-import { Directive, ElementRef, Input, OnChanges } from '@angular/core';
+import { Directive, Input, OnChanges } from '@angular/core';
 import * as d3 from 'd3';
 import { Thumbnail } from './attention-cloud/classes/Thumbnail';
 
@@ -15,21 +15,12 @@ export class AttentionCloudDirective implements OnChanges {
   constructor() { }
 
   ngOnChanges() {
-
     const svg = d3.select('#svg-attention-cloud');
-    const boundarySize = 50;
     const width = parseInt(svg.attr('width'), 10);
     const height = parseInt(svg.attr('height'), 10);
 
     // reset svg
     svg.selectAll('*').remove();
-
-
-    // add background color
-    // svg.append('rect').
-    // attr('height', '100%').
-    // attr('width', '100%').
-    // attr('fill', 'lightblue');
 
     // create note data from thumbnail data
     const nodeData = [];
@@ -44,6 +35,8 @@ export class AttentionCloudDirective implements OnChanges {
         'shiftX': thumbnail.styleX, 'shiftY': thumbnail.styleY
       });
     }
+
+
 
     // create pattern for each thumbnail
     const defs = svg.append('defs')
@@ -66,12 +59,18 @@ export class AttentionCloudDirective implements OnChanges {
         return 'translate(' + -d.shiftX + ',' + -d.shiftY + ')';
       });
 
+    this.generateForceSimulation(svg, nodeData, width, height);
+
+  }
+
+  private generateForceSimulation(svg, nodeData, width, height) {
+
     // produce forces
     const attractForce = d3.forceManyBody().strength(50);
 
     const collisionForce = d3.forceCollide().radius(function (d: any) {
-        return d.r / 2 + 1;
-      }).iterations(5);
+      return d.r / 2 + 1;
+    }).iterations(5);
 
     // force simulation
     const simulation = d3.forceSimulation(nodeData).alphaDecay(0.01)
@@ -81,19 +80,19 @@ export class AttentionCloudDirective implements OnChanges {
 
     // produce nodes from node data
     const node = svg.selectAll('circle').data(nodeData)
-        .enter().append('circle')
-        .attr('r', function (d) { return d.r / 2; })
-        .attr('cx', function (d) { return d.x; })
-        .attr('cy', function (d) { return d.y; })
-        .attr('fill', function (d) {
-          return 'url(#pattern_' + d.name + ')';
-        })
-        .attr('stroke', 'gray')
-        .attr('stroke-width', '2')
-        .call(d3.drag()
-          .on('start', dragstarted)
-          .on('drag', dragged)
-          .on('end', dragended));
+      .enter().append('circle')
+      .attr('r', function (d) { return d.r / 2; })
+      .attr('cx', function (d) { return d.x; })
+      .attr('cy', function (d) { return d.y; })
+      .attr('fill', function (d) {
+        return 'url(#pattern_' + d.name + ')';
+      })
+      .attr('stroke', 'gray')
+      .attr('stroke-width', '2')
+      .call(d3.drag()
+        .on('start', dragstarted)
+        .on('drag', dragged)
+        .on('end', dragended));
 
     function dragstarted(d) {
       simulation.restart();
@@ -115,9 +114,9 @@ export class AttentionCloudDirective implements OnChanges {
 
     function ticked() {
       node.attr('cx', function (d) {
-        return d.x = Math.max(boundarySize, Math.min(width - boundarySize, d.x));
+        return Math.max(d.r, Math.min(width - d.r, d.x));
       }).attr('cy', function (d) {
-        return d.y = Math.max(boundarySize, Math.min(height - boundarySize, d.y));
+        return Math.max(d.r, Math.min(height - d.r, d.y));
       });
     }
 

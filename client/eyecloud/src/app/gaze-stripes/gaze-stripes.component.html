@@ -1,4 +1,23 @@
-<svg id="svg-gaze-stripes" appGazeStripes [fixationData]="fixationPoints"
-     [imageUrl]="imageURL" [imageWidth]="imageWidth" [imageHeight]="imageHeight">
-</svg>
+<div class="card">
+  <div class="card-header">
+    <h5 class="d-inline-block">Gaze Stripes</h5>
+    <div ngbDropdown class="d-inline-block float-right" autoClose="outside">
+      <button class="btn btn-outline-primary" id="dropdownBasic1" ngbDropdownToggle>Settings</button>
+      <div ngbDropdownMenu aria-labelledby="dropdownBasic1" style="width: 300px">
+        <div class="row padding-side">
+          <h6 class="col-md-3 padding-up">Scale</h6>
+          <ng5-slider class="col-md-8" [(value)]="scaleValue" [options]="scaleOptions"></ng5-slider>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="card-body">
+    <div id="container-gaze-stripes" appGazeStripes [scaleValue]="scaleValue" [userFixationData]="userFixationMap"
+         [imageUrl]="imageURL" [imageWidth]="imageWidth" [imageHeight]="imageHeight">
+    </div>
+  </div>
+</div>
+
+
+
 

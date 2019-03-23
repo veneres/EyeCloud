@@ -28,8 +28,6 @@ export class Utilities {
         aggregatedFixationPoints.push(new AggregatedFixationPoint(fixation.getX(), fixation.getY(), parseInt(fixation.getDuration())));
       }
     });
-    console.log(fixationPoints);
-    console.log(aggregatedFixationPoints);
     return aggregatedFixationPoints;
   }
 }
