@@ -13,6 +13,8 @@ import { HeatmapDirective } from './heatmap.directive';
 import { FormsModule } from '@angular/forms';
 import { GazeStripesComponent } from './gaze-stripes/gaze-stripes.component';
 import { GazeStripesDirective } from './gaze-stripes.directive';
+import { NgbModule} from '@ng-bootstrap/ng-bootstrap';
+import { SelectDropDownModule } from 'ngx-select-dropdown'
 
 
 
@@ -33,7 +35,9 @@ import { GazeStripesDirective } from './gaze-stripes.directive';
     BrowserModule,
     HttpClientModule,
     FormsModule,
-    Ng5SliderModule
+    Ng5SliderModule,
+    NgbModule,
+    SelectDropDownModule
   ],
   providers: [],
   bootstrap: [AppComponent]

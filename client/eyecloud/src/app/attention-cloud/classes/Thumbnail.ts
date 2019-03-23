@@ -2,9 +2,6 @@ import {AggregatedFixationPoint} from "../../classes/AggregatedFixationPoints";
 
 export class Thumbnail {
 
-  private static maxCroppingSize = 120;
-  private static maxDisplayPoints = 30;
-  private static minCroppingSize = 20;
   private static startX = 200;
   private static startY = 200;
   private fixationPoint: AggregatedFixationPoint;
@@ -26,7 +23,8 @@ export class Thumbnail {
     this.positionY = positionY;
   }
 
-  public static get_thumbnails_for_attention_cloud(fixationPoints: AggregatedFixationPoint[]) {
+  public static get_thumbnails_for_attention_cloud(fixationPoints: AggregatedFixationPoint[],
+                                                   maxCroppingSize: number, minCroppingSize: number, maxDisplayPoints: number) {
 
     // sort fixation points according to duration
     fixationPoints.sort(compareFixationPointDuration);
@@ -37,11 +35,11 @@ export class Thumbnail {
     let numPointsPerCircle = 5;
 
     fixationPoints.forEach(fixation => {
-      let size = fixation.getDuration() / max_duration * this.maxCroppingSize;
-      if (counter < this.maxDisplayPoints) {
-        if (size < this.minCroppingSize) size = this.minCroppingSize;
+      let size = fixation.getDuration() / max_duration * maxCroppingSize;
+      if (counter < maxDisplayPoints) {
+        if (size < minCroppingSize) size = minCroppingSize;
         let multiplier = Math.floor(counter / numPointsPerCircle) + 1;
-        let radius = this.maxCroppingSize * multiplier;
+        let radius = maxCroppingSize * multiplier;
         let degree = 360 / (numPointsPerCircle * multiplier) * (counter % numPointsPerCircle);
         let posX = this.startX + radius * Math.cos(degree * Math.PI / 180);
         let posY = this.startY + radius * Math.sin(degree * Math.PI / 180);
