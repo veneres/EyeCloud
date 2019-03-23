@@ -22,6 +22,7 @@ export class AttentionCloudComponent implements OnInit {
   imageURL: string;
   imageWidth: number;
   imageHeight: number;
+  displayComponent = false;
   private stimulusName: string;
   private userIds: User[];
   maxCroppingSizeValue = 100;
@@ -67,6 +68,7 @@ export class AttentionCloudComponent implements OnInit {
       }
       this.stimulusName = conf.getStimulus();
       this.userIds = conf.getUsers();
+      if (this.stimulusName != '' && this.userIds.length > 0) this.displayComponent = true;
       this.timestampStart = conf.getTimeStampStart();
       this.timestampStop = conf.getTimeStampEnd();
       const fixationPoints = [];
@@ -105,5 +107,6 @@ export class AttentionCloudComponent implements OnInit {
       const aggregateFixationPoints = Utilities.clusterFixationPoints(this.fixationPoints, this.clusterRadiusValue);
       this.thumbnails = Thumbnail.get_thumbnails_for_attention_cloud(aggregateFixationPoints,
         this.maxCroppingSizeValue, this.minCroppingSizeValue, this.numPointsValue);
+      this.selectedPoint = undefined;
     }
 }

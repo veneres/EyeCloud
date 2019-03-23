@@ -16,6 +16,7 @@ export class AttentionHeatmapComponent implements OnInit {
   stimulusUrl: string;
   showStimulus: boolean;
   visualSpan: number;
+  displayComponent = false;
   private stimulusName: string;
   private timestampStart: number;
   private timestampStop: number;
@@ -45,6 +46,7 @@ export class AttentionHeatmapComponent implements OnInit {
       this.stimulusName = conf.getStimulus();
       this.stimulusUrl = this.attentionCloudService.getStimulusURL(this.stimulusName).toString();
       this.users = conf.getUsers();
+      if (this.stimulusName != '' && this.users.length > 0) this.displayComponent = true;
       this.timestampStart = conf.getTimeStampStart();
       this.timestampStop = conf.getTimeStampEnd();
       this.attentionCloudService.getHeatMap(this.users,

@@ -17,6 +17,7 @@ export class GazeStripesComponent implements OnInit {
   imageHeight: number;
   timestampStart: number;
   timestampStop: number;
+  displayComponent = false;
   private stimulusName: string;
   private userIds: User[];
   scaleValue: number = 30;
@@ -38,6 +39,7 @@ export class GazeStripesComponent implements OnInit {
       }
       this.stimulusName = conf.getStimulus();
       this.userIds = conf.getUsers();
+      if (this.stimulusName != '' && this.userIds.length > 0) this.displayComponent = true;
       this.timestampStart = conf.getTimeStampStart();
       this.timestampStop = conf.getTimeStampEnd();
       const userFixationMap = {};
