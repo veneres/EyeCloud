@@ -1,9 +1,29 @@
-  <div  appHeatmap [dataset]=dataset [show]=showStimulus>
-    <div class="img-heatmap-container" *ngIf="showStimulus">
-      <img id="img-heatmap" src="{{stimulusUrl}}" class="img-fluid">
+<div class="card">
+  <div class="card-header">
+    <h5 class="d-inline-block">Attention Cloud</h5>
+    <div ngbDropdown class="d-inline-block float-right" autoClose="outside">
+      <button class="btn btn-outline-primary" id="dropdownHeatmap" ngbDropdownToggle>Settings</button>
+      <div ngbDropdownMenu aria-labelledby="dropdownHeatmap" style="width: 400px">
+        <div class="row padding-side">
+          <h6 class="col-md-5 padding-up">max cropping size</h6>
+          <ng5-slider class="col-md-6" [(value)]="maxCroppingSizeValue" [options]="maxCroppingSizeOptions"></ng5-slider>
+        </div>
+        <div class="row">
+          <div class="col-md-7"></div>
+          <button class="col-md-4 btn btn-primary" type="button" (click)="generate()">Go!</button>
+        </div>
+      </div>
     </div>
-    <canvas >
-
-    </canvas>
   </div>
+  <div class="card-body">
+    <div  appHeatmap [dataset]=dataset [show]=showStimulus>
+      <div class="img-heatmap-container" *ngIf="showStimulus">
+        <img id="img-heatmap" src="{{stimulusUrl}}" class="img-fluid">
+      </div>
+      <canvas >
+
+      </canvas>
+    </div>
+  </div>
+</div>
 

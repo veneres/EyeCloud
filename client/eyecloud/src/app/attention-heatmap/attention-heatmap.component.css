@@ -3,15 +3,19 @@
   height: 100%;
 }
 
+.card-body {
+  min-height: 400px;
+}
+
 canvas, .img-heatmap-container {
-  position: absolute;
+  position: relative;
   padding-right: 15px;
   padding-left: 15px;
   top: 0px;
   left: 0px;
 }
 
-canvas{
+canvas {
   max-width: 100%;
   max-height: auto;
 }

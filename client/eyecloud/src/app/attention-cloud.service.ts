@@ -3,7 +3,7 @@ import { User } from './classes/User';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import * as Rx from 'rxjs';
 import { Url } from 'url';
-import { DisplayConfiguration } from './classes/DisaplyConfiguration';
+import { DisplayConfiguration } from './classes/DisplayConfiguration';
 
 class HeatmapRequest {
   users: User[];

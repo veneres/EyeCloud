@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { DisplayConfiguration } from './classes/DisaplyConfiguration';
+import { DisplayConfiguration } from './classes/DisplayConfiguration';
 
 @Component({
   selector: 'app-root',

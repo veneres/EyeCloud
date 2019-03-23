@@ -3,8 +3,8 @@ import { Thumbnail } from './classes/Thumbnail';
 import { FixationPoint } from '../classes/FixationPoint';
 import { User } from '../classes/User';
 import { AttentionCloudService } from '../attention-cloud.service';
-import { DisplayConfiguration } from '../classes/DisaplyConfiguration';
-import {Utilities} from "../classes/Utilities";
+import { DisplayConfiguration } from '../classes/DisplayConfiguration';
+import { Utilities } from '../classes/Utilities';
 import { Options } from 'ng5-slider';
 
 @Component({
@@ -23,28 +23,28 @@ export class AttentionCloudComponent implements OnInit {
   imageHeight: number;
   private stimulusName: string;
   private userIds: User[];
-  maxCroppingSizeValue: number = 100;
+  maxCroppingSizeValue = 100;
   maxCroppingSizeOptions: Options = {
     floor: 70,
     ceil: 150,
     step: 10,
     showSelectionBar: true,
   };
-  minCroppingSizeValue: number = 20;
+  minCroppingSizeValue = 20;
   minCroppingSizeOptions: Options = {
     floor: 10,
     ceil: 50,
     step: 5,
     showSelectionBar: true,
   };
-  numPointsValue: number = 100;
+  numPointsValue = 100;
   numPointsOptions: Options = {
     floor: 10,
     ceil: 50,
     step: 5,
     showSelectionBar: true,
   };
-  clusterRadiusValue: number = 50;
+  clusterRadiusValue = 50;
   clusterRadiusOptions: Options = {
     floor: 0,
     ceil: 500,

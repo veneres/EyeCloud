@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import {DisplayConfiguration} from "../classes/DisaplyConfiguration";
-import {FixationPoint} from "../classes/FixationPoint";
-import {User} from "../classes/User";
-import {AttentionCloudService} from "../attention-cloud.service";
+import {DisplayConfiguration} from '../classes/DisplayConfiguration';
+import {FixationPoint} from '../classes/FixationPoint';
+import {User} from '../classes/User';
+import {AttentionCloudService} from '../attention-cloud.service';
 
 @Component({
   selector: 'app-gaze-stripes',

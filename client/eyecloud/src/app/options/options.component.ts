@@ -3,7 +3,7 @@ import { BsModalService, BsModalRef } from 'ngx-bootstrap/modal';
 import { AttentionCloudService } from '../attention-cloud.service';
 import { Station } from '../classes/Station';
 import { User } from '../classes/User';
-import { DisplayConfiguration} from '../classes/DisaplyConfiguration';
+import { DisplayConfiguration} from '../classes/DisplayConfiguration';
 import { FormGroup, FormControl } from '@angular/forms';
 import { Options } from 'ng5-slider';
 @Component({
