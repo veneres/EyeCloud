@@ -91,6 +91,7 @@ export class AttentionCloudComponent implements OnInit {
           const aggregateFixationPoints = Utilities.clusterFixationPoints(this.fixationPoints, this.clusterRadiusValue);
           this.thumbnails = Thumbnail.get_thumbnails_for_attention_cloud(aggregateFixationPoints,
             this.maxCroppingSizeValue, this.minCroppingSizeValue, this.numPointsValue);
+          this.selectedPoint = undefined;
         });
       this.imageURL = this.attentionCloudService.getStimulusURL(this.stimulusName).toString();
       this.imageWidth = conf.getStimulusWidth();

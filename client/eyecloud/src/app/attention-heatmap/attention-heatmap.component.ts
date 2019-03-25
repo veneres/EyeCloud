@@ -49,7 +49,6 @@ export class AttentionHeatmapComponent implements OnInit {
       this.displayComponent = this.stimulusName !== '' && this.users.length > 0;
       this.timestampStart = conf.getTimeStampStart();
       this.timestampStop = conf.getTimeStampEnd();
-      this.selectedPoint = undefined;
       this.attentionCloudService.getHeatMap(this.users,
         this.timestampStart,
         this.timestampStop,
@@ -57,6 +56,7 @@ export class AttentionHeatmapComponent implements OnInit {
         this.visualSpan).subscribe((dataset) => {
           this.dataset = dataset;
           this.showStimulus = true;
+          this.selectedPoint = undefined;
         });
     });
     this.attentionCloudService.currentSelectedPoint.subscribe((point: Point) => {
@@ -96,7 +96,7 @@ export class AttentionHeatmapComponent implements OnInit {
     }
   }
   generate() {
-    this.attentionCloudService.changeDisplayConf(this.currentConfig);
     this.heatmapService.changeDisplayLoading(true);
+    this.attentionCloudService.changeDisplayConf(this.currentConfig);
   }
 }
