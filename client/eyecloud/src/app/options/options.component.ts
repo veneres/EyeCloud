@@ -1,5 +1,5 @@
-import { Component, OnInit, Output, EventEmitter, TemplateRef } from '@angular/core';
-import { BsModalService, BsModalRef } from 'ngx-bootstrap/modal';
+import { Component, OnInit} from '@angular/core';
+import { BsModalRef } from 'ngx-bootstrap/modal';
 import { AttentionCloudService } from '../attention-cloud.service';
 import { HeatmapService } from '../heatmap.service';
 import { Station } from '../classes/Station';
@@ -27,7 +27,6 @@ export class OptionsComponent implements OnInit {
   timestampEnd: number;
   stimuliStationMap: Map<String, Station>;
   constructor(private attentionCloudService: AttentionCloudService,
-              private modalService: BsModalService,
               private heatmapService: HeatmapService) {
     this.availableUsers = [];
     this.availableStations = [];
