@@ -11,19 +11,19 @@ import {Options} from "ng5-slider";
   styleUrls: ['./gaze-stripes.component.css']
 })
 export class GazeStripesComponent implements OnInit {
-  private userFixationMap;
+  userFixationMap;
   imageURL: string;
   imageWidth: number;
   imageHeight: number;
   timestampStart: number;
   timestampStop: number;
   displayComponent = false;
-  private stimulusName: string;
-  private userIds: User[];
+  stimulusName: string;
+  userIds: User[];
   scaleValue: number = 30;
   scaleOptions: Options = {
-    floor: 20,
-    ceil: 200,
+    floor: 10,
+    ceil: 100,
     step: 10,
     showSelectionBar: true,
   };

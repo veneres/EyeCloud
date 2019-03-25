@@ -1,7 +1,3 @@
-#container-gaze-stripes {
-  overflow: scroll;
-}
-
 .padding-side {
   padding-left: 20px;
   padding-right: 20px;
@@ -14,4 +10,12 @@
 
 .float-right {
   float: right;
+}
+
+.padding-left {
+  padding-left: 10px;
+}
+
+.drag-scroll-content {
+  overflow: hidden;
 }
