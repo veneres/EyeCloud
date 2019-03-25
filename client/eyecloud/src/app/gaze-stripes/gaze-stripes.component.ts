@@ -39,7 +39,7 @@ export class GazeStripesComponent implements OnInit {
       }
       this.stimulusName = conf.getStimulus();
       this.userIds = conf.getUsers();
-      if (this.stimulusName != '' && this.userIds.length > 0) this.displayComponent = true;
+      this.displayComponent = this.stimulusName !== '' && this.userIds.length > 0;
       this.timestampStart = conf.getTimeStampStart();
       this.timestampStop = conf.getTimeStampEnd();
       const userFixationMap = {};
@@ -57,7 +57,8 @@ export class GazeStripesComponent implements OnInit {
                     const y = fixations[fixation].fixationPoint.y;
                     const duration = fixations[fixation].fixationPoint.duration;
                     const timestamp = fixations[fixation].fixationPoint.timestamp;
-                    fixationPoints.push(new FixationPoint(index, x, y, duration, timestamp));
+                    const user = fixations[fixation].user;
+                    fixationPoints.push(new FixationPoint(index, x, y, duration, timestamp, user));
                   }
                 }
               }

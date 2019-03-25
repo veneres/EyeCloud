@@ -67,8 +67,16 @@
 
   </div>
   <div class="row">
-    <div class="offset-md-8 col-md-4">
-      <button id="generate-button" (click)="generate()" type="button" class="btn btn-success">Generate</button>
+    <div class="offset-4 col-md-4">
+      <span *ngIf="currentStimulus == ''" style="color: red;">You have to choose a map to proceed...</span>
+      <span *ngIf="currentStimulus !== '' && currentUsers.length == 0" style="color: #3a3a3a;">You can view map information, but you need to choose users to visualize data...</span>
+    </div>
+    <div class="col-md-4">
+      <button id="generate-button" (click)="generate()" type="button" class="btn btn-primary" [disabled]="currentStimulus == ''">
+        <span *ngIf="currentStimulus == ''">Continue &#10095;</span>
+        <span *ngIf="currentStimulus !== '' && currentUsers.length == 0">View map &#10095;</span>
+        <span *ngIf="currentStimulus !== ''  && currentUsers.length > 0">Visualize Data &#9729;</span>
+      </button>
     </div>
   </div>
 </div>

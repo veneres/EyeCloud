@@ -1,0 +1,29 @@
+<div class="card" *ngIf="displayComponent">
+  <div class="card-header">
+    <h5 class="d-inline-block">Fixation Data</h5>
+  </div>
+  <div class="card-body">
+    <table class="table table-striped">
+      <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">Timestamp</th>
+        <th scope="col">Position</th>
+        <th scope="col">Duration</th>
+        <th scope="col">User</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let fixation of fixationPoints; index as i">
+        <th scope="row">{{ i + 1 }}</th>
+        <td>
+          {{ fixation.getTimestamp() }}
+        </td>
+        <td>({{fixation.getX()}},{{fixation.getY()}})</td>
+        <td>{{fixation.getDuration()}}</td>
+        <td>{{fixation.getUser()}}</td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

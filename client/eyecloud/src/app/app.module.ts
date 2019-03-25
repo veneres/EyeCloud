@@ -15,6 +15,8 @@ import { GazeStripesComponent } from './gaze-stripes/gaze-stripes.component';
 import { GazeStripesDirective } from './gaze-stripes.directive';
 import { NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import { DragScrollModule } from 'ngx-drag-scroll';
+import { MapInfoComponent } from './map-info/map-info.component';
+import { RawDataComponent } from './raw-data/raw-data.component';
 
 
 
@@ -27,7 +29,9 @@ import { DragScrollModule } from 'ngx-drag-scroll';
     OptionsComponent,
     HeatmapDirective,
     GazeStripesComponent,
-    GazeStripesDirective
+    GazeStripesDirective,
+    MapInfoComponent,
+    RawDataComponent
   ],
   imports: [
     BsDropdownModule.forRoot(),
