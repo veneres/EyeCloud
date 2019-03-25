@@ -46,9 +46,7 @@ export class AttentionHeatmapComponent implements OnInit {
       this.stimulusName = conf.getStimulus();
       this.stimulusUrl = this.attentionCloudService.getStimulusURL(this.stimulusName).toString();
       this.users = conf.getUsers();
-      if (this.stimulusName !== '' && this.users.length > 0) {
-        this.displayComponent = true;
-      }
+      this.displayComponent = this.stimulusName !== '' && this.users.length > 0;
       this.timestampStart = conf.getTimeStampStart();
       this.timestampStop = conf.getTimeStampEnd();
       this.selectedPoint = undefined;

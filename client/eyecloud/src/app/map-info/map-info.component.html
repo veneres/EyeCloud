@@ -1,0 +1,30 @@
+<div class="card" *ngIf="displayComponent">
+  <div class="card-header">
+    <h5 class="d-inline-block">Map Information</h5>
+  </div>
+  <div class="card-body">
+    <div class="row">
+      <div class="col-md-6">
+        <img src="{{imageURL}}" [height]="400" [width]="500">
+      </div>
+      <div class="col-md-6">
+        <table class="table table-striped">
+          <tbody>
+          <tr>
+            <th>Station</th>
+            <td>{{name}}</td>
+          </tr>
+          <tr>
+            <th>Complexity</th>
+            <td>{{complexity}} ({{description}})</td>
+          </tr>
+          <tr>
+            <th>Resolution</th>
+            <td>{{imageWidth}} x {{imageHeight}}</td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

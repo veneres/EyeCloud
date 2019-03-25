@@ -28,25 +28,25 @@ export class AttentionCloudComponent implements OnInit {
   maxCroppingSizeValue = 100;
   maxCroppingSizeOptions: Options = {
     floor: 70,
-    ceil: 150,
-    step: 10,
+    ceil: 120,
+    step: 5,
     showSelectionBar: true,
   };
   minCroppingSizeValue = 20;
   minCroppingSizeOptions: Options = {
     floor: 10,
-    ceil: 50,
+    ceil: 30,
     step: 5,
     showSelectionBar: true,
   };
-  numPointsValue = 100;
+  numPointsValue = 20;
   numPointsOptions: Options = {
     floor: 10,
     ceil: 50,
     step: 5,
     showSelectionBar: true,
   };
-  clusterRadiusValue = 50;
+  clusterRadiusValue = 0;
   clusterRadiusOptions: Options = {
     floor: 0,
     ceil: 500,
@@ -68,7 +68,7 @@ export class AttentionCloudComponent implements OnInit {
       }
       this.stimulusName = conf.getStimulus();
       this.userIds = conf.getUsers();
-      if (this.stimulusName != '' && this.userIds.length > 0) this.displayComponent = true;
+      this.displayComponent = this.stimulusName !== '' && this.userIds.length > 0;
       this.timestampStart = conf.getTimeStampStart();
       this.timestampStop = conf.getTimeStampEnd();
       const fixationPoints = [];
@@ -82,7 +82,8 @@ export class AttentionCloudComponent implements OnInit {
                 const y = data[fixation_n].fixationPoint.y;
                 const duration = data[fixation_n].fixationPoint.duration;
                 const timestamp = data[fixation_n].fixationPoint.timestamp;
-                fixationPoints.push(new FixationPoint(index, x, y, duration, timestamp));
+                const user = data[fixation_n].user;
+                fixationPoints.push(new FixationPoint(index, x, y, duration, timestamp, user));
               }
             }
           }

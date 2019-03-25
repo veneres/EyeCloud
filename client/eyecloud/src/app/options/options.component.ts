@@ -19,6 +19,7 @@ export class OptionsComponent implements OnInit {
   stimulusHeight: number;
   currentUsers: User[];
   availableStations: Station[];
+  currentStation: Station;
   availableUsers: User[];
   sliderTimeStampOptions: Options;
   sliderTimestamp: FormGroup;
@@ -87,9 +88,9 @@ export class OptionsComponent implements OnInit {
 
   public changeCurrentStimulus(stimulus: string) {
     this.currentStimulus = stimulus;
-    const station = this.stimuliStationMap.get(stimulus);
-    this.stimulusWidth = station.width;
-    this.stimulusHeight = station.height;
+    this.currentStation = this.stimuliStationMap.get(stimulus);
+    this.stimulusWidth = this.currentStation.width;
+    this.stimulusHeight = this.currentStation.height;
     this.attentionCloudService.getAllUserByStimulus(stimulus).subscribe((data: string[]) => {
       this.availableUsers = [];
       data.forEach(id => {
@@ -99,12 +100,6 @@ export class OptionsComponent implements OnInit {
     });
   }
 
-  openModal(template: TemplateRef<any>) {
-    this.modalRef = this.modalService.show(
-      template,
-      Object.assign({}, { class: 'modal-lg' }));
-  }
-
   generate() {
     this.attentionCloudService.changeDisplayConf(new DisplayConfiguration(
       this.currentUsers,
@@ -112,7 +107,8 @@ export class OptionsComponent implements OnInit {
       this.stimulusWidth,
       this.stimulusHeight,
       this.timestampStart,
-      this.timestampEnd
+      this.timestampEnd,
+      this.currentStation
     ));
     this.heatmapService.changeDisplayLoading(true);
   }
