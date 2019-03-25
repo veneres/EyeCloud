@@ -3,7 +3,7 @@ import {DisplayConfiguration} from '../classes/DisplayConfiguration';
 import {FixationPoint} from '../classes/FixationPoint';
 import {User} from '../classes/User';
 import {AttentionCloudService} from '../attention-cloud.service';
-import {Options} from "ng5-slider";
+import {Options} from 'ng5-slider';
 
 @Component({
   selector: 'app-gaze-stripes',
@@ -20,7 +20,7 @@ export class GazeStripesComponent implements OnInit {
   displayComponent = false;
   stimulusName: string;
   userIds: User[];
-  scaleValue: number = 30;
+  scaleValue = 30;
   scaleOptions: Options = {
     floor: 10,
     ceil: 100,
