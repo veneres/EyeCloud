@@ -74,7 +74,7 @@ export class GazeStripesDirective implements OnChanges{
       .attr('width', this.imageWidth)
       .attr('height', this.imageHeight)
       .attr('transform', function (d) {
-        return 'translate(' + -d.shiftX + ',' + -d.shiftY + ')';
+        return 'translate(' + (-d.shiftX + width / 2) + ',' + (-d.shiftY + height / 2) + ')';
       });
 
     // create axis of timeline

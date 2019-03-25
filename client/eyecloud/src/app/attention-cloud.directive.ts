@@ -82,7 +82,7 @@ export class AttentionCloudDirective implements OnChanges {
         .attr('width', this.imageWidth)
         .attr('height', this.imageHeight)
         .attr('transform', function (d) {
-          return 'translate(' + -d.shiftX + ',' + -d.shiftY + ')';
+          return 'translate(' + (-d.shiftX + d.r / 2) + ',' + (-d.shiftY + d.r / 2) + ')';
         });
 
       this.generateForceSimulation(svg, nodeData, width, height);
