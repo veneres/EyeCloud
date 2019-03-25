@@ -1,82 +1,85 @@
-<div class="container-fluid">
-  <div class="row" id="entry-stimulus">
-    <div class="col-md-2"><h6 class="padding-up">Select a map:</h6></div>
-    <div class="col-md-4">
-      <div class="btn-group" dropdown>
-        <button id="button-stimulus" dropdownToggle type="button" class="btn btn-outline-dark dropdown-toggle"
-                aria-controls="dropdown-stations">
-          <span *ngIf="currentStimulus==''">Stimulus<span class="caret"></span></span>
-          <span *ngIf="currentStimulus!=''">{{currentStimulus}}</span>
-        </button>
-        <ul id="dropdown-stations" *dropdownMenu class="dropdown-menu" role="menu" aria-labelledby="button-stimulus">
-          <div *ngFor="let station of availableStations">
-            <li  class="disabled" role="menuitem" class="station-name"><span class="dropdown-item disabled" >{{station.name}}</span></li>
-            <li role="menuitem" *ngFor="let stimulus of station.stimuli">
-              <a class="dropdown-item" style="cursor: pointer" (click)="changeCurrentStimulus(stimulus)">
-                {{stimulus}}
-              </a>
-            </li>
-          </div>
-        </ul>
-      </div>
-    </div>
-    <div class="col-md-2"><h6 class="padding-up">Select users:</h6></div>
-    <div class="col-md-4">
-      <div class="btn-group" dropdown [isDisabled]="availableUsers.length === 0" [insideClick]="true">
-        <button id="button-users" dropdownToggle type="button" class="btn btn-outline-dark dropdown-toggle"
-                aria-controls="dropdown-users">
-          <span *ngIf="currentUsers.length !== 0">
-            <span *ngIf="currentUsers.length <= 5">
-              <span *ngFor="let user of currentUsers; let i = index">
-                {{user.getUserId()}}
-                <span *ngIf="i !== (currentUsers.length - 1)">
-                  ,
-                </span>
-              </span>
-            </span>
-            <span *ngIf="currentUsers.length > 5">
-              <span *ngFor="let num of [0, 1, 2, 3, 4]; let i = index">
-                {{currentUsers[num].getUserId()}}
-                <span *ngIf="i < 4">
-                  ,
-                </span>
-              </span>
-              <span>+ {{currentUsers.length - 5}} more</span>
-            </span>
-          </span>
-          <span *ngIf="currentUsers.length == 0">Users<span class="caret"></span></span>
-        </button>
-        <ul id="dropdown-users" *dropdownMenu class="dropdown-menu" role="menu" aria-labelledby="button-users">
-          <div *ngFor="let user of availableUsers">
-            <li role="menuitem" [class.selected]="user.isSelected()">
-              <a class="dropdown-item" style="cursor: pointer" (click)="toogleSelectedUser(user)">
-                {{user.getUserId()}}
-              </a>
-            </li>
-            <li class="divider dropdown-divider"></li>
-          </div>
-        </ul>
-      </div>
-    </div>
+<div class="card">
+  <div class="card-header">
+    <h5 class="d-inline-block">&#9874; Options</h5>
   </div>
-  <div class="row">
-    <div class="col-md-2"><h6 class="padding-bottom">Select time ranges:</h6></div>
-    <div class="col-md-8">
-      <ng5-slider [(value)]="timestampStart" [(highValue)]="timestampEnd" [options]="sliderTimeStampOptions"></ng5-slider>
-    </div>
+  <div class="card-body">
+    <div class="container-fluid">
+      <div class="row" id="entry-stimulus">
+        <div class="col-md-2"><h6 class="padding-up">Select a map:</h6></div>
+        <div class="col-md-4">
+          <div class="btn-group" dropdown>
+            <button id="button-stimulus" dropdownToggle type="button" class="btn btn-outline-dark dropdown-toggle"
+                    aria-controls="dropdown-stations">
+              <span *ngIf="currentStimulus==''">Stimulus<span class="caret"></span></span>
+              <span *ngIf="currentStimulus!=''">{{currentStimulus}}</span>
+            </button>
+            <ul id="dropdown-stations" *dropdownMenu class="dropdown-menu" role="menu" aria-labelledby="button-stimulus">
+              <div *ngFor="let station of availableStations">
+                <li  class="disabled" role="menuitem" class="station-name"><span class="dropdown-item disabled" >{{station.name}}</span></li>
+                <li role="menuitem" *ngFor="let stimulus of station.stimuli">
+                  <a class="dropdown-item" style="cursor: pointer" (click)="changeCurrentStimulus(stimulus)">
+                    {{stimulus}}
+                  </a>
+                </li>
+              </div>
+            </ul>
+          </div>
+        </div>
+        <div class="col-md-2"><h6 class="padding-up">Select users:</h6></div>
+        <div class="col-md-4">
+          <div class="btn-group" dropdown [isDisabled]="availableUsers.length === 0" [insideClick]="true">
+            <button id="button-users" dropdownToggle type="button" class="btn btn-outline-dark dropdown-toggle"
+                    aria-controls="dropdown-users">
+              <span *ngIf="currentUsers.length !== 0">
+                <span *ngIf="currentUsers.length <= 5">
+                  <span *ngFor="let user of currentUsers; let i = index">
+                    {{user.getUserId()}}
+                    <span *ngIf="i !== (currentUsers.length - 1)">
+                      ,
+                    </span>
+                  </span>
+                </span>
+                <span *ngIf="currentUsers.length > 5">
+                  <span *ngFor="let num of [0, 1, 2, 3, 4]; let i = index">
+                    {{currentUsers[num].getUserId()}}
+                    <span *ngIf="i < 4">
+                      ,
+                    </span>
+                  </span>
+                  <span>+ {{currentUsers.length - 5}} more</span>
+                </span>
+              </span>
+              <span *ngIf="currentUsers.length == 0">Users<span class="caret"></span></span>
+            </button>
+            <ul id="dropdown-users" *dropdownMenu class="dropdown-menu" role="menu" aria-labelledby="button-users">
+              <div *ngFor="let user of availableUsers">
+                <li role="menuitem" [class.selected]="user.isSelected()">
+                  <a class="dropdown-item" style="cursor: pointer" (click)="toogleSelectedUser(user)">
+                    {{user.getUserId()}}
+                  </a>
+                </li>
+                <li class="divider dropdown-divider"></li>
+              </div>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-2"><h6 class="padding-bottom">Select time ranges:</h6></div>
+        <div class="col-md-8">
+          <ng5-slider [(value)]="timestampStart" [(highValue)]="timestampEnd" [options]="sliderTimeStampOptions"></ng5-slider>
+        </div>
 
-  </div>
-  <div class="row">
-    <div class="offset-4 col-md-4">
-      <span *ngIf="currentStimulus == ''" style="color: red;">You have to choose a map to proceed...</span>
-      <span *ngIf="currentStimulus !== '' && currentUsers.length == 0" style="color: #3a3a3a;">You can view map information, but you need to choose users to visualize data...</span>
-    </div>
-    <div class="col-md-4">
-      <button id="generate-button" (click)="generate()" type="button" class="btn btn-primary" [disabled]="currentStimulus == ''">
-        <span *ngIf="currentStimulus == ''">Continue &#10095;</span>
-        <span *ngIf="currentStimulus !== '' && currentUsers.length == 0">View map &#10095;</span>
-        <span *ngIf="currentStimulus !== ''  && currentUsers.length > 0">Visualize Data &#9729;</span>
-      </button>
+      </div>
+      <div class="row">
+        <div class="offset-md-8 col-md-4">
+          <button id="generate-button" (click)="generate()" type="button" class="btn btn-primary" [disabled]="currentStimulus == ''">
+            <span *ngIf="currentStimulus == ''">Continue &#10095;</span>
+            <span *ngIf="currentStimulus !== '' && currentUsers.length == 0">View map &#10095;</span>
+            <span *ngIf="currentStimulus !== ''  && currentUsers.length > 0">Visualize Data &#9729;</span>
+          </button>
+        </div>
+      </div>
     </div>
   </div>
 </div>
