@@ -46,14 +46,17 @@ export class AttentionHeatmapComponent implements OnInit {
       this.stimulusName = conf.getStimulus();
       this.stimulusUrl = this.attentionCloudService.getStimulusURL(this.stimulusName).toString();
       this.users = conf.getUsers();
-      if (this.stimulusName != '' && this.users.length > 0) this.displayComponent = true;
+      if (this.stimulusName !== '' && this.users.length > 0) {
+        this.displayComponent = true;
+      }
       this.timestampStart = conf.getTimeStampStart();
       this.timestampStop = conf.getTimeStampEnd();
+      this.selectedPoint = undefined;
       this.attentionCloudService.getHeatMap(this.users,
-                                            this.timestampStart,
-                                            this.timestampStop,
-                                            this.stimulusName,
-                                            this.visualSpan).subscribe((dataset) => {
+        this.timestampStart,
+        this.timestampStop,
+        this.stimulusName,
+        this.visualSpan).subscribe((dataset) => {
           this.dataset = dataset;
           this.showStimulus = true;
         });
@@ -66,13 +69,33 @@ export class AttentionHeatmapComponent implements OnInit {
     });
   }
   canvasClick($event: any) {
+    // check if the the click it's inside a visual span of a point
+    let inRange = false;
     const realHeight = $event.currentTarget.height;
     const realWidth = $event.currentTarget.width;
     const displayHeight = $event.currentTarget.clientHeight;
     const displayWidth = $event.currentTarget.clientWidth;
     const xClicked = $event.layerX * (realWidth / displayWidth);
     const yClicked = $event.layerY * (realHeight / displayHeight);
-    this.attentionCloudService.changeSelectedPoint(new Point(xClicked, yClicked));
+    for (const row in this.dataset.points) {
+      if (this.dataset.points.hasOwnProperty(row)) {
+        if (inRange) {
+          break;
+        }
+        for (const column in this.dataset.points[row]) {
+          if (this.dataset.points[row].hasOwnProperty(column)) {
+            const distance2 = (xClicked - parseInt(column, 10)) ** 2 + (yClicked - parseInt(row, 10)) ** 2;
+            if (distance2 < this.visualSpan ** 2) {
+              inRange = true;
+              break;
+            }
+          }
+        }
+      }
+    }
+    if (inRange) {
+      this.attentionCloudService.changeSelectedPoint(new Point(xClicked, yClicked));
+    }
   }
   generate() {
     this.attentionCloudService.changeDisplayConf(this.currentConfig);
