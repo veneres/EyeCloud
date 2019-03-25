@@ -7,6 +7,7 @@ import {FixationPoint} from "./classes/FixationPoint";
 })
 export class GazeStripesDirective implements OnChanges{
   @Input() userFixationData;
+  @Input() user: string;
   @Input() imageUrl; string;
   @Input() imageWidth: number;
   @Input() imageHeight: number;
@@ -15,30 +16,35 @@ export class GazeStripesDirective implements OnChanges{
   constructor() { }
 
   ngOnChanges() {
-    const container = d3.select('#container-gaze-stripes');
+    const container = d3.select('#gaze-stripe-' + this.user);
     const width = this.scaleValue;
     const height = this.scaleValue;
 
     // reset svg
     container.selectAll('*').remove();
+
     if (this.userFixationData === undefined) {
       return;
     }
 
-    for (let key in this.userFixationData) {
-      if (this.userFixationData.hasOwnProperty(key)) {
-        let fixations = this.userFixationData[key];
-        this.generateGazeStripesForUser(key, fixations, container, width, height);
-      }
-    }
+    this.generateGazeStripesForUser(this.user, this.userFixationData[this.user], container, width, height);
 
   }
 
   private generateGazeStripesForUser(user: string, fixationData: FixationPoint[], container, width: number, height: number) {
+
+    if (fixationData.length <= 0) return;
+
+    // remove scroll-bar
+    d3.selectAll('.drag-scroll-content').style('overflow', 'hidden');
+
+    // create svg
     container.append('svg')
-    .attr('id', 'user_' + user)
-    .attr('width', width * fixationData.length)
-    .attr('height', height);
+      .attr('id', 'user_' + user)
+      .attr('width', width * fixationData.length)
+      .attr('height', height + height / 2 + 10);
+
+    const svg = d3.select('#user_' + user);
 
     // create note data from thumbnail data
     let nodeData = [];
@@ -51,7 +57,6 @@ export class GazeStripesDirective implements OnChanges{
     }
 
     // create pattern for each thumbnail
-    const svg = d3.select('#user_' + user);
     const defs = svg.append('defs')
       .selectAll('pattern')
       .data(nodeData)
@@ -72,20 +77,38 @@ export class GazeStripesDirective implements OnChanges{
         return 'translate(' + -d.shiftX + ',' + -d.shiftY + ')';
       });
 
-    // produce nodes from node data
-    svg.append('text').attr('x', 0).attr('y', Math.floor(height * 0.6))
-      .attr('font-size', Math.floor(height * 0.6) + 'px')
-      .attr('font-family', "sans-serif")
-      .attr('fill', 'black')
-      .text(user);
+    // create axis of timeline
+    const minTimestamp = parseInt(fixationData[0].getTimestamp());
+    const maxTimestamp = parseInt(fixationData[fixationData.length - 1].getTimestamp());
+    let xScale = d3.scaleLinear().domain([minTimestamp, maxTimestamp]).range([0, width * fixationData.length]);
+    let xAxis = d3.axisBottom(xScale);
+    svg.append('g')
+      .attr('class', 'x axis')
+      .attr('transform', 'translate(0,' + height + ')')
+      .call(xAxis);
+
+    let gSize = height / 2;
+    if (gSize < 7) {
+      gSize = 7;
+    }
+    if (gSize > 30) {
+      gSize = 30;
+    }
+    svg.select('g')
+      .attr('size', gSize)
+      .attr('font-size', gSize);
+
+    // produce gaze stripe
     svg.selectAll('rect').data(nodeData)
       .enter().append('rect')
       .attr('height', height)
       .attr('width', width)
-      .attr('x', function(d) { return (parseInt(d.name) + 1) * width; })
-      .attr('y', 0 )
+      .attr('x', function(d) { return parseInt(d.name) * width; })
+      .attr('y', 0)
       .attr('fill', function (d) {
         return 'url(#user_' + user + '_pattern_' + d.name + ')';
       })
+      .attr('stroke', 'gray')
+      .attr('stroke-width', '1')
   }
 }

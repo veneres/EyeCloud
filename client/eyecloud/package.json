@@ -32,6 +32,7 @@
     "jquery": "^3.3.1",
     "ng5-slider": "^1.1.13",
     "ngx-bootstrap": "^3.2.0",
+    "ngx-drag-scroll": "^7.1.4",
     "ngx-select-dropdown": "^1.0.1",
     "popper.js": "^1.14.7",
     "rxjs": "^6.4.0",

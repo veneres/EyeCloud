@@ -12,8 +12,20 @@
     </div>
   </div>
   <div class="card-body">
-    <div id="container-gaze-stripes" appGazeStripes [scaleValue]="scaleValue" [userFixationData]="userFixationMap"
-         [imageUrl]="imageURL" [imageWidth]="imageWidth" [imageHeight]="imageHeight">
+    <div *ngFor="let user of userIds">
+      <div class="row">
+        <h5 class="padding-left">{{user.getUserId()}}</h5>
+        <div class="col-md-11">
+          <drag-scroll>
+            <div drag-scroll-item>
+                <div id="gaze-stripe-{{user.getUserId()}}" appGazeStripes
+                     [scaleValue]="scaleValue" [userFixationData]="userFixationMap" [user]="user.getUserId()"
+                     [imageUrl]="imageURL" [imageWidth]="imageWidth" [imageHeight]="imageHeight">
+              </div>
+            </div>
+          </drag-scroll>
+        </div>
+      </div>
     </div>
   </div>
 </div>
