@@ -3,7 +3,7 @@
 <!-- Navigation -->
 <nav class="navbar navbar-expand-lg navbar-light" id="mainNav">
   <div class="container">
-    <a class="navbar-brand" href="#page-top">EyeCloud</a>
+    <a class="navbar-brand" href="#page-top">&#9729; EyeCloud</a>
     <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
       Menu
       <i class="fas fa-bars"></i>
@@ -11,10 +11,10 @@
     <div class="collapse navbar-collapse" id="navbarResponsive">
       <ul class="navbar-nav ml-auto">
         <li class="nav-item">
-          <a class="nav-link" href="#about">About</a>
+          <a class="nav-link" href="#about">&#9731; About</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#projects">Visualizations</a>
+          <a class="nav-link" href="#projects">&#9737; Visualizations</a>
         </li>
       </ul>
     </div>
@@ -27,7 +27,7 @@
     <div class="mx-auto text-center">
       <h1 class="mx-auto my-0 text-uppercase">EyeCloud</h1>
       <h2 class="text-white-50 mx-auto mt-2 mb-5">A visualization and analysis tool for eye movement data of public transport maps.</h2>
-      <a href="#about" class="btn btn-primary">Get Started</a>
+      <a href="#about" class="btn btn-primary" style="font-weight: bold; font-size: 16px">Get Started &#10148;</a>
     </div>
   </div>
 </header>
@@ -38,7 +38,34 @@
     <div class="row">
       <div class="col-lg-8 mx-auto">
         <h2 class="text-white mb-4">Visual Computing Project</h2>
-        <p class="text-white-50">We are students from Eindhoven University of Technology. This project is to visualize eye movement data.</p>
+        <p class="text-white-50">This website is designed for visual computing project course (2IMV15) at
+          Technology University of Eindhoven (TU/e). The aim of this project is to help public transport map
+          designers and producers to visualize and analyse eye movement data tracked from study participants.
+          <a href="https://github.com/veneres/EyeCloud" style="color: aquamarine">https://github.com/veneres/EyeCloud</a>
+        </p>
+      </div>
+    </div>
+    <div class="row" style="padding-bottom: 20px">
+      <div class="col-lg-8 mx-auto">
+        <h3 class="text-white">Collaborators</h3>
+          <svg class="d-inline-block" width="90" height="130">
+            <defs>
+              <pattern id="image1" x="0" y="0" height="90" width="90" patternUnits="userSpaceOnUse">
+                <image x="0" y="0" height="90" width="90" xlink:href="../assets/alberto.jpg"></image>
+              </pattern>
+            </defs>
+            <circle cx="45" cy="45" r="45" fill="url(#image1)"/>
+            <text x="8" y="115" font-size="20" fill="white">A. Veneri</text>
+          </svg>
+          <svg class="d-inline-block" width="90" height="130">
+            <defs>
+              <pattern id="image2" x="0" y="0" height="90" width="90" patternUnits="userSpaceOnUse">
+                <image x="0" y="0" height="90" width="90" xlink:href="../assets/sun.jpg"></image>
+              </pattern>
+            </defs>
+            <circle cx="45" cy="45" r="45" fill="url(#image2)"/>
+            <text x="20" y="115" font-size="20" fill="white">B. Sun</text>
+          </svg>
       </div>
     </div>
   </div>
@@ -47,6 +74,7 @@
 <!-- Projects Section -->
 <section id="projects" class="projects-section bg-light">
   <div class="container">
+
     <!-- Featured Project Row -->
     <div class="row align-items-center no-gutters mb-4 mb-lg-5">
       <div class="col-lg-12">
@@ -63,19 +91,19 @@
       </div>
     </div>
 
-    <div class="row justify-content-center no-gutters">
+    <div class="row align-items-center no-gutters mb-4 mb-lg-5">
       <div class="col-lg-12">
         <app-gaze-stripes></app-gaze-stripes>
       </div>
     </div>
 
-    <div class="row justify-content-center no-gutters">
+    <div class="row align-items-center no-gutters mb-4 mb-lg-5">
       <div class="col-lg-12">
         <app-map-info></app-map-info>
       </div>
     </div>
 
-    <div class="row justify-content-center no-gutters">
+    <div class="row align-items-center no-gutters mb-4 mb-lg-5">
       <div class="col-lg-12">
         <app-raw-data></app-raw-data>
       </div>
@@ -87,6 +115,6 @@
 <!-- Footer -->
 <footer class="bg-black small text-center text-white-50">
   <div class="container">
-    Copyright &copy; Your Website 2019
+    Copyright &copy; EyeCloud (Visual Computing Project 2IM15 TU/e) 2019
   </div>
 </footer>
