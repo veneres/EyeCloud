@@ -1,5 +1,5 @@
 import { User } from './User';
-import {Station} from "./Station";
+import {Station} from './Station';
 
 export class DisplayConfiguration {
   private users: User[];

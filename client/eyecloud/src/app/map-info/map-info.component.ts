@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import {AttentionCloudService} from "../attention-cloud.service";
-import {DisplayConfiguration} from "../classes/DisplayConfiguration";
-import {Station} from "../classes/Station";
+import { AttentionCloudService } from '../attention-cloud.service';
+import { DisplayConfiguration } from '../classes/DisplayConfiguration';
+import { Station } from '../classes/Station';
 
 @Component({
   selector: 'app-map-info',
@@ -29,7 +29,7 @@ export class MapInfoComponent implements OnInit {
         return;
       }
       this.stimulusName = conf.getStimulus();
-      if (this.stimulusName != '') this.displayComponent = true;
+      if (this.stimulusName !== '') { this.displayComponent = true; }
       this.imageURL = this.attentionCloudService.getStimulusURL(this.stimulusName).toString();
       this.imageWidth = conf.getStimulusWidth();
       this.imageHeight = conf.getStimulusHeight();
@@ -37,7 +37,7 @@ export class MapInfoComponent implements OnInit {
       this.complexity = this.station.complexity;
       this.description = this.station.description;
       this.name = this.station.name;
-    })
+    });
   }
 
 }

@@ -39,7 +39,11 @@ export class AttentionHeatmapComponent implements OnInit {
     });
     this.attentionCloudService.currentConf.subscribe((conf: DisplayConfiguration) => {
       // default and starting value
-      if (conf === undefined) {
+      if (conf === undefined ) {
+        return;
+      }
+      // check if all the parameters are present otherwise skip the updating
+      if (conf.getUsers().length === 0 || conf.getTimeStampStart() === NaN || conf.getTimeStampEnd() === NaN) {
         return;
       }
       this.currentConfig = conf;

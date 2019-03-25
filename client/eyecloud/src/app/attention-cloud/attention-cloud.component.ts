@@ -66,6 +66,10 @@ export class AttentionCloudComponent implements OnInit {
       if (conf === undefined) {
         return;
       }
+      // check if all the parameters are present otherwise skip the updating
+      if (conf.getUsers().length === 0 || conf.getTimeStampStart() === NaN || conf.getTimeStampEnd() === NaN) {
+        return;
+      }
       this.stimulusName = conf.getStimulus();
       this.userIds = conf.getUsers();
       this.displayComponent = this.stimulusName !== '' && this.userIds.length > 0;

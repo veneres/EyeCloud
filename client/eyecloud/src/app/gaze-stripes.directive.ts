@@ -1,11 +1,11 @@
 import {Directive, Input, OnChanges} from '@angular/core';
-import * as d3 from "d3";
-import {FixationPoint} from "./classes/FixationPoint";
+import * as d3 from 'd3';
+import {FixationPoint} from './classes/FixationPoint';
 
 @Directive({
   selector: '[appGazeStripes]'
 })
-export class GazeStripesDirective implements OnChanges{
+export class GazeStripesDirective implements OnChanges {
   @Input() userFixationData;
   @Input() user: string;
   @Input() imageUrl; string;
@@ -33,7 +33,7 @@ export class GazeStripesDirective implements OnChanges{
 
   private generateGazeStripesForUser(user: string, fixationData: FixationPoint[], container, width: number, height: number) {
 
-    if (fixationData.length <= 0) return;
+    if (fixationData === undefined || fixationData.length <= 0) { return; }
 
     // remove scroll-bar
     d3.selectAll('.drag-scroll-content').style('overflow', 'hidden');
@@ -47,7 +47,7 @@ export class GazeStripesDirective implements OnChanges{
     const svg = d3.select('#user_' + user);
 
     // create note data from thumbnail data
-    let nodeData = [];
+    const nodeData = [];
 
     for (let i = 0; i < fixationData.length; i++) {
       const fixation = fixationData[i];
@@ -78,10 +78,10 @@ export class GazeStripesDirective implements OnChanges{
       });
 
     // create axis of timeline
-    const minTimestamp = parseInt(fixationData[0].getTimestamp());
-    const maxTimestamp = parseInt(fixationData[fixationData.length - 1].getTimestamp());
-    let xScale = d3.scaleLinear().domain([minTimestamp, maxTimestamp]).range([0, width * fixationData.length]);
-    let xAxis = d3.axisBottom(xScale);
+    const minTimestamp = parseInt(fixationData[0].getTimestamp(), 10);
+    const maxTimestamp = parseInt(fixationData[fixationData.length - 1].getTimestamp(), 10);
+    const xScale = d3.scaleLinear().domain([minTimestamp, maxTimestamp]).range([0, width * fixationData.length]);
+    const xAxis = d3.axisBottom(xScale);
     svg.append('g')
       .attr('class', 'x axis')
       .attr('transform', 'translate(0,' + height + ')')
@@ -103,7 +103,7 @@ export class GazeStripesDirective implements OnChanges{
       .enter().append('rect')
       .attr('height', height)
       .attr('width', width)
-      .attr('x', function(d) { return parseInt(d.name) * width; })
+      .attr('x', function(d) { return parseInt(d.name, 10) * width; })
       .attr('y', 0)
       .attr('fill', function (d) {
         return 'url(#user_' + user + '_pattern_' + d.name + ')';
