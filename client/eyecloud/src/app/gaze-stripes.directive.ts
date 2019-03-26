@@ -30,22 +30,26 @@ export class GazeStripesDirective implements OnChanges {
     if (this.userFixationData === undefined) {
       return;
     }
-    console.log(this.granularity);
+    if (this.userFixationData[this.user] === undefined) {
+      return;
+    }
     const fixationData = this.granularity === 0 ? this.userFixationData[this.user]
     : this.processData(this.userFixationData[this.user]);
     const leng = this.userFixationData[this.user].length - 1;
     const lastFixation = this.userFixationData[this.user][leng];
     this.maxTimestamp = this.granularity === 0 ? parseInt(lastFixation.getTimestamp(), 10) + parseInt(lastFixation.getDuration(), 10)
     : this.maxTimestamp;
-    this.generateGazeStripesForUser(this.user, fixationData, container, width, height);
-
+    this.generateGazeStripesForUser(this.user, fixationData, container, width, height)
   }
 
   private processData(fixations: FixationPoint[]) {
+    if (fixations === undefined) {
+      return undefined;
+    }
     const newFixations = [];
     let sum = 0;
     let offset = 0;
-    for (let i = 0; i < fixations.length - 1; i++) {
+    for (let i = 0; i < fixations.length; i++) {
       const rep = Math.ceil((parseInt(fixations[i].getDuration(), 10) - offset) / this.granularity);
       offset = rep * this.granularity - parseInt(fixations[i].getDuration(), 10);
       for (let j = 0; j < rep; j++) {

@@ -145,9 +145,11 @@ export class AttentionCloudDirective implements OnChanges {
 
     function ticked() {
       node.attr('cx', function (d) {
-        return Math.max(d.r, Math.min(width - d.r, d.x));
+        return isNaN(Math.max(d.r, Math.min(width - d.r, d.x))) ? 225
+          : Math.max(d.r, Math.min(width - d.r, d.x));
       }).attr('cy', function (d) {
-        return Math.max(d.r, Math.min(height - d.r, d.y));
+        return isNaN(Math.max(d.r, Math.min(height - d.r, d.y))) ? 175
+          :Math.max(d.r, Math.min(height - d.r, d.y));
       });
     }
 
