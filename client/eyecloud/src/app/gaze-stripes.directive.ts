@@ -112,12 +112,12 @@ export class GazeStripesDirective implements OnChanges {
     const minTimestamp = parseInt(fixationData[0].getTimestamp(), 10);
     const xScale = d3.scaleLinear().domain([minTimestamp, this.maxTimestamp]).range([0, width * fixationData.length]);
     const tickRange = [];
-    const tickStep = Math.ceil(this.granularity * 3 / this.minDuration) * 50;
+    const tickStep = this.granularity !== 0 ? Math.ceil(this.granularity * 3 / this.minDuration) * 50
+    :1000;
     d3.range(Math.ceil(this.maxTimestamp / tickStep)).forEach(n => {
       tickRange.push(n * tickStep);
     });
-    const xAxis = this.granularity !== 0 ? d3.axisBottom(xScale).tickValues(tickRange)
-    :d3.axisBottom(xScale);
+    const xAxis =  d3.axisBottom(xScale).tickValues(tickRange);
     svg.append('g')
       .attr('class', 'x axis')
       .attr('transform', 'translate(0,' + height + ')')
