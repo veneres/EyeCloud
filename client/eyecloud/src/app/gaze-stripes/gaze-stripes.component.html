@@ -24,7 +24,8 @@
             <div drag-scroll-item>
                 <div id="gaze-stripe-{{user.getUserId()}}" appGazeStripes
                      [scaleValue]="scaleValue" [userFixationData]="userFixationMap" [user]="user.getUserId()"
-                     [imageUrl]="imageURL" [imageWidth]="imageWidth" [imageHeight]="imageHeight" [granularity]="granularityValue">
+                     [imageUrl]="imageURL" [imageWidth]="imageWidth" [imageHeight]="imageHeight"
+                     [granularity]="granularityValue" [minDuration]="minDuration">
               </div>
             </div>
           </drag-scroll>
