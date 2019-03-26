@@ -1,4 +1,4 @@
-.center{
+.center {
   text-align: center;
   margin: auto;
 }
@@ -147,7 +147,8 @@
 }
 
 .btn-primary {
-  background-color: #64a19d;
+  background-color: #ddd;
+  color: #333;
 }
 
 .btn-primary:hover {
