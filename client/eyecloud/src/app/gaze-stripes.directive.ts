@@ -16,6 +16,7 @@ export class GazeStripesDirective implements OnChanges {
   @Input() imageHeight: number;
   @Input() scaleValue: number;
   @Input() granularity: number;
+  @Input() minDuration: number;
 
   constructor() { }
 
@@ -110,7 +111,13 @@ export class GazeStripesDirective implements OnChanges {
     // create axis of timeline
     const minTimestamp = parseInt(fixationData[0].getTimestamp(), 10);
     const xScale = d3.scaleLinear().domain([minTimestamp, this.maxTimestamp]).range([0, width * fixationData.length]);
-    const xAxis = d3.axisBottom(xScale);
+    const tickRange = [];
+    const tickStep = Math.ceil(this.granularity * 3 / this.minDuration) * 50;
+    d3.range(Math.ceil(this.maxTimestamp / tickStep)).forEach(n => {
+      tickRange.push(n * tickStep);
+    });
+    const xAxis = this.granularity !== 0 ? d3.axisBottom(xScale).tickValues(tickRange)
+    :d3.axisBottom(xScale);
     svg.append('g')
       .attr('class', 'x axis')
       .attr('transform', 'translate(0,' + height + ')')
