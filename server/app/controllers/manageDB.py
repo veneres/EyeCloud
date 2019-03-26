@@ -36,6 +36,7 @@ def clear_all_data():
             mongo.db.fixations.remove({})
             mongo.db.station.remove({})
             mongo.db.user.remove({})
+            mongo.db.heatmapCache.remove({})
             return jsonify({'ok': True, 'message': 'All documents in collections are removed!'}), 200
         else:
             return jsonify({'ok': False, 'message': 'Wrong username and password!'}), 400
@@ -85,18 +86,27 @@ def recover_fixation_data_impl():
             csv_reader = csv.reader(csv_file, delimiter='\t')
             line_count = 0
             stimulus_dict = {}
+            prev_stimulus_name = ""
+            prev_user = ""
+            min_timestamp = 0
             for row in csv_reader:
                 if line_count == 0:
                     line_count += 1
                 else:
-                    users.add(row[6])
+                    user = row[6]
+                    timestamp = int(row[0])
                     station_name = row[1].split('_')[1]
                     stimuli_name = row[1]
+                    if prev_stimulus_name != stimuli_name or prev_user != user:
+                        min_timestamp = timestamp
+                        prev_stimulus_name = stimuli_name
+                        prev_user = user
+                    users.add(user)
                     if station_name in stimulus_dict:
                         stimulus_dict[station_name].add(stimuli_name)
                     else:
                         stimulus_dict[station_name] = {stimuli_name}
-                    data = {'timestamp': int(row[0]), 'stimuliName': stimuli_name, 'fixationIndex': int(row[2]),
+                    data = {'timestamp': timestamp - min_timestamp, 'stimuliName': stimuli_name, 'fixationIndex': int(row[2]),
                             'fixationDuration': int(row[3]), 'mappedFixationPointX': int(row[4]),
                             'mappedFixationPointY': int(row[5]),
                             'user': row[6], 'description': row[7], 'station': station_name}

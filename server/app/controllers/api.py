@@ -324,23 +324,20 @@ def get_heatmap(stimulus_name):
 
 
 @app.route('/timestamp/stimulus=<string:stimulus_name>', methods=['POST'])
-def min_max_timestamp(stimulus_name):
+def max_timestamp(stimulus_name):
     if request.method == 'POST' and request.is_json:
         content = request.get_json()
         users_ids = [user['userId'] for user in content]
         max_fix = None
-        min_fix = None
         for user_id in users_ids:
             # retrive all the fixation points for current user in asc order
             sorted_documents = list(
                 mongo.db.fixations.find({"stimuliName": "{}.jpg".format(stimulus_name), "user": user_id}).sort(
                     [("timestamp", 1)]))
-            if min_fix is None or sorted_documents[0]['timestamp'] < min_fix:
-                min_fix = sorted_documents[0]['timestamp']
-            if max_fix is None or sorted_documents[-1]['timestamp'] > max_fix:
-                max_fix = sorted_documents[-1]['timestamp']
+            max_duration = sorted_documents[-1]['timestamp'] - sorted_documents[0]['timestamp']
+            if max_fix is None or max_duration > max_fix:
+                max_fix = max_duration
         res = {
-            "min": min_fix,
             "max": max_fix
         }
         return jsonify(res)

@@ -1,17 +1,21 @@
-import {Directive, Input, OnChanges} from '@angular/core';
+import { Directive, Input, OnChanges } from '@angular/core';
 import * as d3 from 'd3';
-import {FixationPoint} from './classes/FixationPoint';
+import { FixationPoint } from './classes/FixationPoint';
 
 @Directive({
   selector: '[appGazeStripes]'
 })
 export class GazeStripesDirective implements OnChanges {
+
+  maxTimestamp = 0;
+
   @Input() userFixationData;
   @Input() user: string;
   @Input() imageUrl; string;
   @Input() imageWidth: number;
   @Input() imageHeight: number;
   @Input() scaleValue: number;
+  @Input() granularity: number;
 
   constructor() { }
 
@@ -26,9 +30,31 @@ export class GazeStripesDirective implements OnChanges {
     if (this.userFixationData === undefined) {
       return;
     }
+    console.log(this.granularity);
+    const fixationData = this.granularity === 0 ? this.userFixationData[this.user]
+    : this.processData(this.userFixationData[this.user]);
+    const leng = this.userFixationData[this.user].length - 1;
+    const lastFixation = this.userFixationData[this.user][leng];
+    this.maxTimestamp = this.granularity === 0 ? parseInt(lastFixation.getTimestamp(), 10) + parseInt(lastFixation.getDuration(), 10)
+    : this.maxTimestamp;
+    this.generateGazeStripesForUser(this.user, fixationData, container, width, height);
 
-    this.generateGazeStripesForUser(this.user, this.userFixationData[this.user], container, width, height);
+  }
 
+  private processData(fixations: FixationPoint[]) {
+    const newFixations = [];
+    let sum = 0;
+    let offset = 0;
+    for (let i = 0; i < fixations.length - 1; i++) {
+      const rep = Math.ceil((parseInt(fixations[i].getDuration(), 10) - offset) / this.granularity);
+      offset = rep * this.granularity - parseInt(fixations[i].getDuration(), 10);
+      for (let j = 0; j < rep; j++) {
+        newFixations.push(fixations[i]);
+      }
+      sum += rep * this.granularity;
+    }
+    this.maxTimestamp = sum;
+    return newFixations;
   }
 
   private generateGazeStripesForUser(user: string, fixationData: FixationPoint[], container, width: number, height: number) {
@@ -79,8 +105,7 @@ export class GazeStripesDirective implements OnChanges {
 
     // create axis of timeline
     const minTimestamp = parseInt(fixationData[0].getTimestamp(), 10);
-    const maxTimestamp = parseInt(fixationData[fixationData.length - 1].getTimestamp(), 10);
-    const xScale = d3.scaleLinear().domain([minTimestamp, maxTimestamp]).range([0, width * fixationData.length]);
+    const xScale = d3.scaleLinear().domain([minTimestamp, this.maxTimestamp]).range([0, width * fixationData.length]);
     const xAxis = d3.axisBottom(xScale);
     svg.append('g')
       .attr('class', 'x axis')
@@ -103,12 +128,12 @@ export class GazeStripesDirective implements OnChanges {
       .enter().append('rect')
       .attr('height', height)
       .attr('width', width)
-      .attr('x', function(d) { return parseInt(d.name, 10) * width; })
+      .attr('x', function (d) { return parseInt(d.name, 10) * width; })
       .attr('y', 0)
       .attr('fill', function (d) {
         return 'url(#user_' + user + '_pattern_' + d.name + ')';
       })
       .attr('stroke', 'gray')
-      .attr('stroke-width', '1')
+      .attr('stroke-width', '1');
   }
 }

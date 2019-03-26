@@ -14,8 +14,18 @@
 
 .padding-left {
   padding-left: 10px;
+  width: 70px;
 }
 
 .drag-scroll-content {
   overflow: hidden;
+}
+
+.dropdown-menu {
+  left: -350px !important;
+}
+
+.card-body{
+  max-height: 400px;
+  overflow: scroll;
 }

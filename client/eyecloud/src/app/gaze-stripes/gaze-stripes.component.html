@@ -3,10 +3,14 @@
     <h5 class="d-inline-block">&#9783; Gaze Stripes</h5>
     <div ngbDropdown class="d-inline-block float-right" autoClose="outside">
       <button class="btn btn-outline-primary" id="dropdownBasic1" ngbDropdownToggle>&#9881; Settings</button>
-      <div ngbDropdownMenu aria-labelledby="dropdownBasic1" style="width: 300px">
+      <div ngbDropdownMenu aria-labelledby="dropdownBasic1" style="width: 475px">
         <div class="row padding-side">
           <h6 class="col-md-3 padding-up">Scale</h6>
           <ng5-slider class="col-md-8" [(value)]="scaleValue" [options]="scaleOptions"></ng5-slider>
+        </div>
+        <div class="row padding-side">
+          <h6 class="col-md-3 padding-up">Granularity</h6>
+          <ng5-slider class="col-md-8" [(value)]="granularityValue" [options]="granularityOptions"></ng5-slider>
         </div>
       </div>
     </div>
@@ -20,7 +24,7 @@
             <div drag-scroll-item>
                 <div id="gaze-stripe-{{user.getUserId()}}" appGazeStripes
                      [scaleValue]="scaleValue" [userFixationData]="userFixationMap" [user]="user.getUserId()"
-                     [imageUrl]="imageURL" [imageWidth]="imageWidth" [imageHeight]="imageHeight">
+                     [imageUrl]="imageURL" [imageWidth]="imageWidth" [imageHeight]="imageHeight" [granularity]="granularityValue">
               </div>
             </div>
           </drag-scroll>

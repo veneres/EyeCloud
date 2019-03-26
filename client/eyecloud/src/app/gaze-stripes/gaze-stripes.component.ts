@@ -4,6 +4,8 @@ import {FixationPoint} from '../classes/FixationPoint';
 import {User} from '../classes/User';
 import {AttentionCloudService} from '../attention-cloud.service';
 import {Options} from 'ng5-slider';
+import { interpolateGreens } from 'd3';
+import { isInteger } from '@ng-bootstrap/ng-bootstrap/util/util';
 
 @Component({
   selector: 'app-gaze-stripes',
@@ -27,6 +29,9 @@ export class GazeStripesComponent implements OnInit {
     step: 10,
     showSelectionBar: true,
   };
+  minDuration = Number.MAX_SAFE_INTEGER;
+  granularityValue = 30;
+  granularityOptions: Options;
 
   constructor(private attentionCloudService: AttentionCloudService) { }
 
@@ -39,6 +44,7 @@ export class GazeStripesComponent implements OnInit {
       }
       // check if all the parameters are present otherwise skip the updating
       if (conf.getUsers().length === 0 || conf.getTimeStampStart() === NaN || conf.getTimeStampEnd() === NaN) {
+        this.displayComponent = false;
         return;
       }
       this.stimulusName = conf.getStimulus();
@@ -67,14 +73,26 @@ export class GazeStripesComponent implements OnInit {
                 }
               }
               fixationPoints.sort(compareFixationPointTimestamp);
+              this.findMinimumDuration(fixationPoints);
               userFixationMap[entry] = fixationPoints;
             }
           }
+          this.granularityOptions = {
+            floor: 0,
+            ceil: this.minDuration,
+            step: Math.ceil(this.minDuration / 5),
+            showSelectionBar: true,
+          };
           this.userFixationMap = userFixationMap;
         });
       this.imageURL = this.attentionCloudService.getStimulusURL(this.stimulusName).toString();
       this.imageWidth = conf.getStimulusWidth();
       this.imageHeight = conf.getStimulusHeight();
+    });
+  }
+  findMinimumDuration(fixationPoints: FixationPoint[]): void {
+    fixationPoints.forEach(fixation => {
+      this.minDuration = Math.min(this.minDuration, parseInt(fixation.getDuration(), 10));
     });
   }
 }

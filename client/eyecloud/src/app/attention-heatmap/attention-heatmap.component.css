@@ -27,7 +27,7 @@ canvas, .img-heatmap-container {
 
 .loading-overlay {
   position: absolute;
-  background-color: rgba(0,0,0,0.8);
+  background-color: rgba(0, 0, 0, 0.8);
   width: 100%;
   left: 0px;
   top: 0px;
@@ -49,5 +49,5 @@ canvas {
 
 #dropdownContent {
   width: 400px;
-  left: -300px !important;
+  left: -275px !important;
 }

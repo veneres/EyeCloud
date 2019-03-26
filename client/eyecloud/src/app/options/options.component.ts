@@ -73,13 +73,13 @@ export class OptionsComponent implements OnInit {
       this.currentUsers.splice(index_to_remove, 1);
     }
     this.attentionCloudService.getMinAndMaxTimestamp(this.currentStimulus, this.currentUsers).subscribe((res: any) => {
-      this.timestampStart = parseInt(res.min, 10);
+      this.timestampStart = 0;
       this.timestampEnd = parseInt(res.max, 10);
       this.sliderTimestamp = new FormGroup({
         sliderControl: new FormControl([this.timestampStart, this.sliderTimestamp])
       });
       this.sliderTimeStampOptions = {
-        floor: this.timestampStart,
+        floor: 0,
         ceil: this.timestampEnd
       };
     });
