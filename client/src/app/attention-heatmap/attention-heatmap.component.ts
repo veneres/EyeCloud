@@ -24,8 +24,10 @@ export class AttentionHeatmapComponent implements OnInit {
   selectedPoint: Point;
   displayLoading: boolean;
   dataset: any;
+  hideHeatMapOverlay: boolean;
   visualSpanOption: Options;
   constructor(private el: ElementRef, private attentionCloudService: AttentionCloudService, private heatmapService: HeatmapService) {
+    this.hideHeatMapOverlay = false;
     this.visualSpan = 30;
     this.visualSpanOption = {
       floor: 10,

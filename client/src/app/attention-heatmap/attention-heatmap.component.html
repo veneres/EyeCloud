@@ -12,15 +12,25 @@
           <div class="col-md-7"></div>
           <button class="col-md-4 btn btn-primary" type="button" (click)="generate()">Go!</button>
         </div>
+        <div class="row padding-side padding-up">
+          <div class="btn-group btn-group-toggle" ngbRadioGroup name="radioBasic" [(ngModel)]="hideHeatMapOverlay">
+            <label ngbButtonLabel class="btn-primary">
+              <input ngbButton type="radio" [value]="false"> Show heat map overlay
+            </label>
+            <label ngbButtonLabel class="btn-primary">
+              <input ngbButton type="radio" [value]="true"> Hide heat map overlay
+            </label>
+          </div>
+        </div>
       </div>
     </div>
   </div>
   <div class="card-body">
-    <div  appHeatmap [dataset]=dataset [show]=showStimulus [selectedPoint]=selectedPoint>
+    <div appHeatmap [dataset]=dataset [show]=showStimulus [selectedPoint]=selectedPoint>
       <div class="img-heatmap-container" *ngIf="showStimulus">
         <img id="img-heatmap" src="{{stimulusUrl}}" class="img-fluid">
       </div>
-      <canvas id="heatmap" >
+      <canvas [ngClass]="{'hidden': hideHeatMapOverlay}" id="heatmap" >
 
       </canvas>
       <canvas id="heatmap-interaction" (click)="canvasClick($event)"></canvas>

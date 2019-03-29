@@ -19,6 +19,9 @@ canvas, .img-heatmap-container {
   padding-top: 20px;
   padding-bottom: 10px;
 }
+.hidden{
+  display: none;
+}
 
 .padding-side {
   padding-left: 20px;
