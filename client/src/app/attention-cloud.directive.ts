@@ -3,7 +3,6 @@ import * as d3 from 'd3';
 import { Thumbnail } from './attention-cloud/classes/Thumbnail';
 import { Point } from './classes/Utilities';
 import { AttentionCloudService } from './attention-cloud.service';
-import { element } from '@angular/core/src/render3';
 
 @Directive({
   selector: '[appAttentionCloud]'
@@ -149,7 +148,7 @@ export class AttentionCloudDirective implements OnChanges {
           : Math.max(d.r, Math.min(width - d.r, d.x));
       }).attr('cy', function (d) {
         return isNaN(Math.max(d.r, Math.min(height - d.r, d.y))) ? 175
-          :Math.max(d.r, Math.min(height - d.r, d.y));
+          : Math.max(d.r, Math.min(height - d.r, d.y));
       });
     }
 

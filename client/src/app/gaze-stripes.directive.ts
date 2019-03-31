@@ -1,6 +1,8 @@
 import { Directive, Input, OnChanges } from '@angular/core';
 import * as d3 from 'd3';
 import { FixationPoint } from './classes/FixationPoint';
+import { Point } from './classes/Utilities';
+import { AttentionCloudService } from './attention-cloud.service';
 
 @Directive({
   selector: '[appGazeStripes]'
@@ -18,7 +20,7 @@ export class GazeStripesDirective implements OnChanges {
   @Input() granularity: number;
   @Input() minDuration: number;
 
-  constructor() { }
+  constructor(private attentionCloudService: AttentionCloudService) { }
 
   ngOnChanges() {
     const container = d3.select('#gaze-stripe-' + this.user);
@@ -145,6 +147,9 @@ export class GazeStripesDirective implements OnChanges {
         return 'url(#user_' + user + '_pattern_' + d.name + ')';
       })
       .attr('stroke', 'gray')
-      .attr('stroke-width', '1');
+      .attr('stroke-width', '1')
+      .on('click', (d) => {
+        this.attentionCloudService.changeSelectedPoint(new Point(d.shiftX, d.shiftY));
+      });
   }
 }
