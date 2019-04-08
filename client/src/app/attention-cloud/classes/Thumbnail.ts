@@ -4,6 +4,7 @@ export class Thumbnail {
 
   private static startX = 200;
   private static startY = 200;
+  private static numPointsPerCircle = 5;
   private fixationPoint: AggregatedFixationPoint;
   selected = false;
   id: number;
@@ -33,15 +34,14 @@ export class Thumbnail {
 
     const res = [];
     let counter = 0;
-    const numPointsPerCircle = 5;
 
     fixationPoints.forEach(fixation => {
       let size = fixation.getDuration() / max_duration * maxCroppingSize;
       if (counter < maxDisplayPoints) {
         if (size < minCroppingSize) { size = minCroppingSize; }
-        const multiplier = Math.floor(counter / numPointsPerCircle) + 1;
+        const multiplier = Math.floor(counter / this.numPointsPerCircle) + 1;
         const radius = maxCroppingSize * multiplier;
-        const degree = 360 / (numPointsPerCircle * multiplier) * (counter % numPointsPerCircle + 1);
+        const degree = 360 / (this.numPointsPerCircle * multiplier) * (counter % this.numPointsPerCircle + 1);
         const posX = this.startX + radius * Math.cos(degree * Math.PI / 180);
         const posY = this.startY + radius * Math.sin(degree * Math.PI / 180);
         res.push(new Thumbnail(counter, fixation, size, posX, posY));

@@ -14,7 +14,6 @@ import { Point } from '../classes/Utilities';
   styleUrls: ['./attention-cloud.component.css']
 })
 export class AttentionCloudComponent implements OnInit {
-  private stimulusURL: string;
   thumbnails: Thumbnail[];
   private fixationPoints: FixationPoint[];
   timestampStart: number;
