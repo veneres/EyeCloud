@@ -1,0 +1,97 @@
+{
+	"info": {
+		"_postman_id": "2cba3c58-bfb9-481d-9979-7a304497317d",
+		"name": "Eyecloud",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Recover all data",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"username\": \"EyeCloud\",\n    \"password\": \"password123\"\n}"
+				},
+				"url": {
+					"raw": "localhost:5000/recover_all_data",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"recover_all_data"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "clear all data",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"username\": \"EyeCloud\",\n\t\"password\": \"password123\"\n}\n"
+				},
+				"url": {
+					"raw": "localhost:5000/clear_all_data",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"clear_all_data"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Recover station data",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": ""
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "request heatmap",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": ""
+				}
+			},
+			"response": []
+		}
+	]
+}
