@@ -6,24 +6,24 @@
       <div ngbDropdownMenu aria-labelledby="dropdownBasic1" style="width: 400px">
         <div class="row padding-side">
           <h6 class="col-md-5 padding-up">max cropping size</h6>
-          <ng5-slider class="col-md-6" [(value)]="maxCroppingSizeValue" [options]="maxCroppingSizeOptions"></ng5-slider>
+          <ng5-slider *ngIf="displayComponent" class="col-md-6" [(value)]="maxCroppingSizeValue" [options]="maxCroppingSizeOptions"></ng5-slider>
         </div>
         <div class="row padding-side">
           <h6 class="col-md-5 padding-up">min cropping size</h6>
-          <ng5-slider class="col-md-6" [(value)]="minCroppingSizeValue" [options]="minCroppingSizeOptions"></ng5-slider>
+          <ng5-slider *ngIf="displayComponent" class="col-md-6" [(value)]="minCroppingSizeValue" [options]="minCroppingSizeOptions"></ng5-slider>
         </div>
         <div class="row padding-side">
           <h6 class="col-md-5 padding-up">cluster radius</h6>
-          <ng5-slider class="col-md-6" [(value)]="clusterRadiusValue" [options]="clusterRadiusOptions"></ng5-slider>
+          <ng5-slider *ngIf="displayComponent" class="col-md-6" [(value)]="clusterRadiusValue" [options]="clusterRadiusOptions"></ng5-slider>
         </div>
         <div class="row padding-side">
           <h6 class="col-md-5 padding-up">num data points</h6>
-          <ng5-slider class="col-md-6" [(value)]="numPointsValue" [options]="numPointsOptions"></ng5-slider>
+          <ng5-slider *ngIf="displayComponent" class="col-md-6" [(value)]="numPointsValue" [options]="numPointsOptions"></ng5-slider>
         </div>
         <div class="dropdown-divider"></div>
         <div class="row">
           <div class="col-md-7"></div>
-          <button class="col-md-4 btn btn-primary" type="button" (click)="generate()">Go!</button>
+          <button *ngIf="displayComponent" class="col-md-4 btn btn-primary" type="button" (click)="generate()">Go!</button>
         </div>
       </div>
     </div>

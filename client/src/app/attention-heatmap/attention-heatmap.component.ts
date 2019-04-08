@@ -31,7 +31,8 @@ export class AttentionHeatmapComponent implements OnInit {
     this.visualSpan = 30;
     this.visualSpanOption = {
       floor: 10,
-      ceil: 150
+      ceil: 150,
+      showSelectionBar: true
     };
     this.displayLoading = false;
   }

@@ -6,11 +6,11 @@
       <div ngbDropdownMenu aria-labelledby="dropdownBasic1" style="width: 475px">
         <div class="row padding-side">
           <h6 class="col-md-3 padding-up">Scale</h6>
-          <ng5-slider class="col-md-8" [(value)]="scaleValue" [options]="scaleOptions"></ng5-slider>
+          <ng5-slider *ngIf="displayComponent" class="col-md-8" [(value)]="scaleValue" [options]="scaleOptions"></ng5-slider>
         </div>
         <div class="row padding-side">
           <h6 class="col-md-3 padding-up">Granularity</h6>
-          <ng5-slider class="col-md-8" [(value)]="granularityValue" [options]="granularityOptions"></ng5-slider>
+          <ng5-slider *ngIf="displayComponent" class="col-md-8" [(value)]="granularityValue" [options]="granularityOptions"></ng5-slider>
         </div>
       </div>
     </div>

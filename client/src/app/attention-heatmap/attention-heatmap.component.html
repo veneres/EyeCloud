@@ -6,11 +6,11 @@
       <div ngbDropdownMenu aria-labelledby="dropdownHeatmap" id="dropdownContent">
         <div class="row padding-side">
           <h6 class="col-md-5 padding-up"> Visual Span radius (pixel)</h6>
-          <ng5-slider class="col-md-6" [(value)]="visualSpan" [options]="visualSpanOption"></ng5-slider>
+          <ng5-slider  *ngIf="displayComponent" class="col-md-6" [(value)]="visualSpan" [options]="visualSpanOption"></ng5-slider>
         </div>
         <div class="row">
           <div class="col-md-7"></div>
-          <button class="col-md-4 btn btn-primary" type="button" (click)="generate()">Go!</button>
+          <button  *ngIf="displayComponent" class="col-md-4 btn btn-primary" type="button" (click)="generate()">Go!</button>
         </div>
         <div class="row padding-side padding-up">
           <div class="btn-group btn-group-toggle" ngbRadioGroup name="radioBasic" [(ngModel)]="hideHeatMapOverlay">
