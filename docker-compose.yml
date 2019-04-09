@@ -30,8 +30,6 @@ services:
     build: ./client
     ports:
       - "4200:4200"
-    volumes:
-      - ./client:/usr/src/app
     depends_on:
       - server
     links:
