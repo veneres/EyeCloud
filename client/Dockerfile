@@ -8,8 +8,7 @@ COPY package.json /usr/src/app
 RUN npm install
 COPY . /usr/src/app
 RUN npm install \
-    && npm install -g @angular/cli@latest \
-    && ng update @angular/cli \
+    && npm install -g @angular/cli@7.3.8 \
     && ng --version
 EXPOSE 4200
 
