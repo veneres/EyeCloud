@@ -39,7 +39,7 @@ services:
    # env_file:
    # - .env
   mongodb:
-    image: mongo:latest
+    image: mongo:4.2
     container_name: "mongodb"
     environment:
       - MONGO_DATA_DIR=/usr/data/db
@@ -48,5 +48,5 @@ services:
       - ./data/db:/usr/data/db
     ports:
       - 27017:27017
-    command: mongod --smallfiles --logpath=/dev/null # --quiet
+    command: mongod --logpath=/dev/null # --quiet
 
