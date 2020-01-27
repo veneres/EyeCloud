@@ -63,6 +63,63 @@ export class AttentionCloudDirective implements OnChanges {
         });
       }
 
+      // convert color to hex code
+      const rgbToHex = function (rgb) {
+        let hex = Number(rgb).toString(16);
+        if (hex.length < 2) {
+          hex = "0" + hex;
+        }
+        return hex;
+      };
+
+      const fullColorHex = function(r, g, b) {
+        let red = rgbToHex(r);
+        let green = rgbToHex(g);
+        let blue = rgbToHex(b);
+        return red + green + blue;
+      };
+
+      const idToColor = function(ratio) {
+        let red = 0, green = 0, blue = 0;
+        // 3 quadrants: (255, 0, 0) -> (128, 0, 255) -> (0, 255, 255) -> (128, 255, 0)
+        if (ratio >= 0 && ratio < 0.3) {
+          red = (1 - ratio / 0.3) * (255 - 128) + 128;
+          green = 0;
+          blue = (ratio / 0.3) * 255;
+        }
+        else if (ratio >= 0.3 && ratio < 0.65) {
+          red = (1 - (ratio - 0.3) / 0.35) * 128;
+          green = (ratio - 0.3) / 0.35 * 255;
+          blue = 255;
+        }
+        else if (ratio >= 0.65 && ratio <= 1) {
+          red = (ratio - 0.65) / 0.35 * 128;
+          green = 255;
+          blue = (1 - (ratio - 0.65) / 0.35) * 255;
+        }
+        return fullColorHex(Math.round(red), Math.round(green), Math.round(blue));
+      };
+
+      // create link data from thumbnail data
+      const linkData = [];
+      const sortedThumbnails = Thumbnail.sortThumbnailsByTimestamp(this.thumbnailData);
+      const totalSize = sortedThumbnails.length;
+      for (let i = 0; i < totalSize - 1; i++) {
+        const thumbnail = sortedThumbnails[i];
+        const nextThumbnail = sortedThumbnails[i + 1];
+        let width = (1 - (i + 1) / totalSize) * 10 + 5;
+        let opacity = (1 - (i + 1) / totalSize) * 0.5 + 0.5;
+        let color = '#' + idToColor(i / totalSize);
+        linkData.push({
+          'id': i,
+          'source': thumbnail.id,
+          'target': nextThumbnail.id,
+          'linewidth': width,
+          'lineopacity': opacity,
+          'linecolor': color,
+        });
+      }
+
       // create pattern for each thumbnail
       const defs = svg.append('defs')
         .selectAll('pattern')
@@ -84,22 +141,23 @@ export class AttentionCloudDirective implements OnChanges {
           return 'translate(' + (-d.shiftX + d.r / 2) + ',' + (-d.shiftY + d.r / 2) + ')';
         });
 
-      this.generateForceSimulation(svg, nodeData, width, height);
+      this.generateForceSimulation(svg, nodeData, linkData, width, height);
     }
 
   }
 
-  private generateForceSimulation(svg, nodeData, width, height) {
+  private generateForceSimulation(svg, nodeData, linkData, width, height) {
 
     // produce forces
     const attractForce = d3.forceManyBody().strength(50);
 
     const collisionForce = d3.forceCollide().radius(function (d: any) {
-      return d.r / 2 + 1;
+      return d.r / 2 + 0.1 * d.r;
     }).iterations(5);
 
     // force simulation
     const simulation = d3.forceSimulation(nodeData).alphaDecay(0.01)
+      .force("link", d3.forceLink(linkData))
       .force('attractForce', attractForce)
       .force('collisionForce', collisionForce)
       .force('center', d3.forceCenter(width / 2, height / 2));
@@ -124,6 +182,15 @@ export class AttentionCloudDirective implements OnChanges {
         .on('drag', dragged)
         .on('end', dragended));
 
+    // produce links from link data
+    // must produce links after nodes to make sure links appear on top of thumbnails
+    const link = svg.selectAll("line").data(linkData)
+      .enter().append('line')
+      .attr("stroke", d => d.linecolor)
+      .attr("stroke-opacity", d => d.lineopacity)
+      .attr("stroke-width", d => d.linewidth)
+      .attr('id', function (d) { return 'link-' + d.id; });
+
     function dragstarted(d) {
       simulation.restart();
       simulation.alpha(0.7);
@@ -143,7 +210,16 @@ export class AttentionCloudDirective implements OnChanges {
     }
 
     function ticked() {
-      node.attr('cx', function (d) {
+      // update link positions
+      link
+        .attr("x1", d => d.source.x)
+        .attr("y1", d => d.source.y)
+        .attr("x2", d => d.target.x)
+        .attr("y2", d => d.target.y);
+
+      // update node positions
+      node
+        .attr('cx', function (d) {
         return isNaN(Math.max(d.r, Math.min(width - d.r, d.x))) ? 225
           : Math.max(d.r, Math.min(width - d.r, d.x));
       }).attr('cy', function (d) {

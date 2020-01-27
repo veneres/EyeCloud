@@ -29,12 +29,14 @@ export class Utilities {
           aggregatedFixation.setY(averageY);
           aggregatedFixation.incrementNumPoints();
           aggregatedFixation.incrementDuration(parseInt(fixation.getDuration(), 10));
+          aggregatedFixation.addTimestamp(parseInt(fixation.getTimestamp(), 10));
           newCluster = false;
           break;
         }
       }
       if (newCluster) {
-        aggregatedFixationPoints.push(new AggregatedFixationPoint(fixation.getX(), fixation.getY(), parseInt(fixation.getDuration(), 10)));
+        aggregatedFixationPoints.push(new AggregatedFixationPoint(fixation.getX(), fixation.getY(),
+          parseInt(fixation.getDuration(), 10), parseInt(fixation.getTimestamp(), 10)));
       }
     });
     return aggregatedFixationPoints;
