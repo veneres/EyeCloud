@@ -14,6 +14,7 @@ export class AttentionCloudDirective implements OnChanges {
   @Input() imageWidth: number;
   @Input() imageHeight: number;
   @Input() selectedPoint: Point;
+  @Input() linkWidth: number;
   private oldThumbnailData: Thumbnail[];
   private oldSelectedId: any;
 
@@ -56,7 +57,7 @@ export class AttentionCloudDirective implements OnChanges {
       for (let i = 0; i < this.thumbnailData.length; i++) {
         const thumbnail = this.thumbnailData[i];
         nodeData.push({
-          'name': thumbnail.id, 'r': thumbnail.croppingSize,
+          'name': thumbnail.id, 'r': Math.round(thumbnail.croppingSize),
           'x': thumbnail.positionX, 'y': thumbnail.positionY,
           'shiftX': thumbnail.styleX, 'shiftY': thumbnail.styleY,
           'selected': thumbnail.selected
@@ -100,21 +101,20 @@ export class AttentionCloudDirective implements OnChanges {
         return fullColorHex(Math.round(red), Math.round(green), Math.round(blue));
       };
 
-      // create link data from thumbnail data
+      // create link data from thumbnail data if showLinks is true
       const linkData = [];
       const sortedThumbnails = Thumbnail.sortThumbnailsByTimestamp(this.thumbnailData);
       const totalSize = sortedThumbnails.length;
       for (let i = 0; i < totalSize - 1; i++) {
         const thumbnail = sortedThumbnails[i];
         const nextThumbnail = sortedThumbnails[i + 1];
-        let width = (1 - (i + 1) / totalSize) * 10 + 5;
         let opacity = (1 - (i + 1) / totalSize) * 0.5 + 0.5;
         let color = '#' + idToColor(i / totalSize);
         linkData.push({
           'id': i,
           'source': thumbnail.id,
           'target': nextThumbnail.id,
-          'linewidth': width,
+          'linewidth': this.linkWidth,
           'lineopacity': opacity,
           'linecolor': color,
         });
@@ -152,15 +152,24 @@ export class AttentionCloudDirective implements OnChanges {
     const attractForce = d3.forceManyBody().strength(50);
 
     const collisionForce = d3.forceCollide().radius(function (d: any) {
-      return d.r / 2 + 0.1 * d.r;
-    }).iterations(5);
+      return d.r / 2 * 1.1;
+    }).iterations(10);
 
     // force simulation
-    const simulation = d3.forceSimulation(nodeData).alphaDecay(0.01)
-      .force("link", d3.forceLink(linkData))
+    const simulation = d3.forceSimulation(nodeData).alphaDecay(0.1)
+      .force("link", d3.forceLink().links(linkData).strength(0.5).distance(0.5))
       .force('attractForce', attractForce)
       .force('collisionForce', collisionForce)
       .force('center', d3.forceCenter(width / 2, height / 2));
+
+    // produce links from link data
+    // must produce links before nodes to make sure links appear behind thumbnails
+    const link = svg.selectAll("line").data(linkData)
+      .enter().append('line')
+      .attr("stroke", d => d.linecolor)
+      .attr("stroke-opacity", d => d.lineopacity)
+      .attr("stroke-width", d => d.linewidth)
+      .attr('id', function (d) { return 'link-' + d.id; });
 
     // produce nodes from node data
     const node = svg.selectAll('circle').data(nodeData)
@@ -182,18 +191,8 @@ export class AttentionCloudDirective implements OnChanges {
         .on('drag', dragged)
         .on('end', dragended));
 
-    // produce links from link data
-    // must produce links after nodes to make sure links appear on top of thumbnails
-    const link = svg.selectAll("line").data(linkData)
-      .enter().append('line')
-      .attr("stroke", d => d.linecolor)
-      .attr("stroke-opacity", d => d.lineopacity)
-      .attr("stroke-width", d => d.linewidth)
-      .attr('id', function (d) { return 'link-' + d.id; });
-
     function dragstarted(d) {
-      simulation.restart();
-      simulation.alpha(0.7);
+      if (!d3.event.active) simulation.alphaTarget(0.3).restart();
       d.fx = d.x;
       d.fy = d.y;
     }
@@ -204,27 +203,27 @@ export class AttentionCloudDirective implements OnChanges {
     }
 
     function dragended(d) {
+      if (!d3.event.active) simulation.alphaTarget(0);
       d.fx = null;
       d.fy = null;
-      simulation.alphaTarget(0.1);
     }
 
     function ticked() {
       // update link positions
       link
-        .attr("x1", d => d.source.x)
-        .attr("y1", d => d.source.y)
-        .attr("x2", d => d.target.x)
-        .attr("y2", d => d.target.y);
+        .attr("x1", d => { return Math.max(0, Math.min(width, d.source.x)); })
+        .attr("y1", d => { return Math.max(0, Math.min(height, d.source.y)); })
+        .attr("x2", d => { return Math.max(0, Math.min(width, d.target.x)); })
+        .attr("y2", d => { return Math.max(0, Math.min(height, d.target.y)); });
 
       // update node positions
       node
         .attr('cx', function (d) {
-        return isNaN(Math.max(d.r, Math.min(width - d.r, d.x))) ? 225
-          : Math.max(d.r, Math.min(width - d.r, d.x));
+          let newX = Math.max(d.r / 2, Math.min(width - d.r / 2, d.x));
+          return isNaN(newX) ? width / 2 : newX;
       }).attr('cy', function (d) {
-        return isNaN(Math.max(d.r, Math.min(height - d.r, d.y))) ? 175
-          : Math.max(d.r, Math.min(height - d.r, d.y));
+        let newY = Math.max(d.r / 2, Math.min(height - d.r / 2, d.y));
+        return isNaN(newY) ? height / 2 : newY;
       });
     }
 
