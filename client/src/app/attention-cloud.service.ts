@@ -31,7 +31,8 @@ class HeatmapRequest extends FixationDataRequest {
   providedIn: 'root',
 })
 export class AttentionCloudService {
-  baseUrl = 'http://127.0.0.1:5000';
+  //baseUrl = 'http://127.0.0.1:5000'; // localhost
+  baseUrl = 'http://192.168.99.102:5000'; // docker machine ip
   private postHeader = {
     headers: new HttpHeaders({
       'Content-Type': 'application/json',

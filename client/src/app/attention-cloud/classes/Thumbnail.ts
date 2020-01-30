@@ -13,6 +13,7 @@ export class Thumbnail {
   styleY: number;
   positionX: number;
   positionY: number;
+  modeTimestamp: number;
 
   constructor(id: number, fixationPoint: AggregatedFixationPoint, croppingSize: number,
               positionX: number, positionY: number) {
@@ -23,6 +24,11 @@ export class Thumbnail {
     this.styleY = this.fixationPoint.getY();
     this.positionX = positionX;
     this.positionY = positionY;
+    this.modeTimestamp = fixationPoint.getModeTimestamp();
+  }
+
+  public getModeTimestamp(): number {
+    return this.modeTimestamp;
   }
 
   public getX(){
@@ -63,6 +69,12 @@ export class Thumbnail {
     });
     return res;
   }
+
+  public static sortThumbnailsByTimestamp(thumbnails: Thumbnail[]) {
+    // sort thumbnails according to mode timestamp
+    thumbnails.sort(compareThumbnailTimestamp);
+    return thumbnails;
+  }
 }
 
 // function to compare two fixation points with durations
@@ -78,3 +90,15 @@ function compareFixationPointDuration(a: AggregatedFixationPoint, b: AggregatedF
   }
 }
 
+// function to compare two thumbnails with timestamps
+function compareThumbnailTimestamp(a: Thumbnail, b: Thumbnail) {
+  const durationA = a.getModeTimestamp();
+  const durationB = b.getModeTimestamp();
+  if (durationA < durationB) {
+    return -1;
+  } else if (durationA > durationB) {
+    return 1;
+  } else {
+    return 0;
+  }
+}

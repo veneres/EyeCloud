@@ -4,12 +4,15 @@ export class AggregatedFixationPoint {
   private yCoord: number;
   private duration: number;
   private numPoints: number;
+  private timestamps: number[];
 
-  constructor(xCoord: number, yCoord: number, duration: number) {
+  constructor(xCoord: number, yCoord: number, duration: number, timestamps: number) {
     this.xCoord = xCoord;
     this.yCoord = yCoord;
     this.duration = duration;
     this.numPoints = 1;
+    this.timestamps = [];
+    this.timestamps.push(timestamps);
   }
 
   public getX() {
@@ -42,5 +45,27 @@ export class AggregatedFixationPoint {
 
   public incrementDuration(duration: number) {
     this.duration += duration;
+  }
+
+  public addTimestamp(timestamp: number) {
+    this.timestamps.push(timestamp);
+  }
+
+  public getModeTimestamp(): number {
+    let mode = {};
+    let max = 0, count = 0;
+
+    this.timestamps.forEach(
+      function(e) {
+        if (mode[e]) { mode[e]++; }
+        else { mode[e] = 1; }
+
+        if (count < mode[e]) {
+          max = e;
+          count = mode[e];
+        }
+      });
+
+    return max;
   }
 }

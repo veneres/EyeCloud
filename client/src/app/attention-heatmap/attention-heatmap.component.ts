@@ -52,7 +52,7 @@ export class AttentionHeatmapComponent implements OnInit {
         return;
       }
       // check if all the parameters are present otherwise skip the updating
-      if (conf.getUsers().length === 0 || conf.getTimeStampStart() === NaN || conf.getTimeStampEnd() === NaN) {
+      if (conf.getUsers().length === 0 || isNaN(conf.getTimeStampStart()) || isNaN(conf.getTimeStampEnd())) {
         this.displayComponent = false;
         return;
       }
