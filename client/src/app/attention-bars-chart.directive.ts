@@ -137,7 +137,7 @@ export class AttentionBarsChartDirective {
       })
 
     // axis width used to compute dimension of the thumbnail used as labels
-    let xAxisWidth = svg.select(".x-axis").node().getBBox().width;
+    let xAxisWidth = (svg.select(".x-axis").node() as SVGSVGElement).getBBox().width;
 
 
     for (let cloud of data) {
