@@ -21,6 +21,7 @@ export class AttentionCloudDirective implements OnChanges {
   constructor(private attentionCloudService: AttentionCloudService) { }
 
   ngOnChanges() {
+    console.log(this.selectedPoint);
     if (this.selectedPoint) {
       let selectedId;
       let max_distance;
@@ -39,6 +40,7 @@ export class AttentionCloudDirective implements OnChanges {
         d3.select(`#thumbnail-${selectedId}`).attr('stroke', 'red').attr('stroke-width', '4');
         this.oldSelectedId = selectedId;
       }
+
     } else {
 
       this.oldThumbnailData = this.thumbnailData;
@@ -57,68 +59,33 @@ export class AttentionCloudDirective implements OnChanges {
       for (let i = 0; i < this.thumbnailData.length; i++) {
         const thumbnail = this.thumbnailData[i];
         nodeData.push({
-          'name': thumbnail.id, 'r': Math.round(thumbnail.croppingSize),
+          'id': thumbnail.id, 'r': Math.round(thumbnail.croppingSize),
           'x': thumbnail.positionX, 'y': thumbnail.positionY,
           'shiftX': thumbnail.styleX, 'shiftY': thumbnail.styleY,
-          'selected': thumbnail.selected
+          'selected': thumbnail.selected, 'color': thumbnail.getStrokeColor()
         });
       }
-
-      // convert color to hex code
-      const rgbToHex = function (rgb) {
-        let hex = Number(rgb).toString(16);
-        if (hex.length < 2) {
-          hex = "0" + hex;
-        }
-        return hex;
-      };
-
-      const fullColorHex = function(r, g, b) {
-        let red = rgbToHex(r);
-        let green = rgbToHex(g);
-        let blue = rgbToHex(b);
-        return red + green + blue;
-      };
-
-      const idToColor = function(ratio) {
-        let red = 0, green = 0, blue = 0;
-        // 3 quadrants: (255, 0, 0) -> (128, 0, 255) -> (0, 255, 255) -> (128, 255, 0)
-        if (ratio >= 0 && ratio < 0.3) {
-          red = (1 - ratio / 0.3) * (255 - 128) + 128;
-          green = 0;
-          blue = (ratio / 0.3) * 255;
-        }
-        else if (ratio >= 0.3 && ratio < 0.65) {
-          red = (1 - (ratio - 0.3) / 0.35) * 128;
-          green = (ratio - 0.3) / 0.35 * 255;
-          blue = 255;
-        }
-        else if (ratio >= 0.65 && ratio <= 1) {
-          red = (ratio - 0.65) / 0.35 * 128;
-          green = 255;
-          blue = (1 - (ratio - 0.65) / 0.35) * 255;
-        }
-        return fullColorHex(Math.round(red), Math.round(green), Math.round(blue));
-      };
 
       // create link data from thumbnail data if showLinks is true
       const linkData = [];
       const sortedThumbnails = Thumbnail.sortThumbnailsByTimestamp(this.thumbnailData);
+      console.log(sortedThumbnails);
       const totalSize = sortedThumbnails.length;
       for (let i = 0; i < totalSize - 1; i++) {
         const thumbnail = sortedThumbnails[i];
         const nextThumbnail = sortedThumbnails[i + 1];
+        console.log(thumbnail.id, nextThumbnail.id);
         let opacity = (1 - (i + 1) / totalSize) * 0.5 + 0.5;
-        let color = '#' + idToColor(i / totalSize);
         linkData.push({
           'id': i,
           'source': thumbnail.id,
           'target': nextThumbnail.id,
           'linewidth': this.linkWidth,
           'lineopacity': opacity,
-          'linecolor': color,
+          'linecolor': thumbnail.getStrokeColor(),
         });
       }
+      console.log(linkData);
 
       // create pattern for each thumbnail
       const defs = svg.append('defs')
@@ -129,7 +96,7 @@ export class AttentionCloudDirective implements OnChanges {
         .attr('width', 1)
         .attr('height', 1)
         .attr('id', function (d) {
-          return 'pattern_' + d.name;
+          return 'pattern_' + d.id;
         });
 
       // add background image for cropping
@@ -152,12 +119,14 @@ export class AttentionCloudDirective implements OnChanges {
     const attractForce = d3.forceManyBody().strength(50);
 
     const collisionForce = d3.forceCollide().radius(function (d: any) {
-      return d.r / 2 * 1.1;
+      return d.r / 2 * 1.2;
     }).iterations(10);
 
     // force simulation
     const simulation = d3.forceSimulation(nodeData).alphaDecay(0.1)
-      .force("link", d3.forceLink().links(linkData).strength(0.5).distance(0.5))
+      .force("link", d3.forceLink().links(linkData)
+        .strength(0.5).distance(0.5)
+        .id(function id(d: any) { return d.id; }))
       .force('attractForce', attractForce)
       .force('collisionForce', collisionForce)
       .force('center', d3.forceCenter(width / 2, height / 2));
@@ -178,10 +147,10 @@ export class AttentionCloudDirective implements OnChanges {
       .attr('cx', function (d) { return d.x; })
       .attr('cy', function (d) { return d.y; })
       .attr('fill', function (d) {
-        return 'url(#pattern_' + d.name + ')';
+        return 'url(#pattern_' + d.id + ')';
       })
-      .attr('id', function (d) { return 'thumbnail-' + d.name; })
-      .attr('stroke', 'gray')
+      .attr('id', function (d) { return 'thumbnail-' + d.id; })
+      .attr('stroke', "gray")
       .attr('stroke-width', '2')
       .on('click', (d) => {
         this.attentionCloudService.changeSelectedPoint(new Point(d.shiftX, d.shiftY));
