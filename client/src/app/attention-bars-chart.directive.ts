@@ -15,17 +15,20 @@ export class AttentionBarsChartDirective {
   @Input() selectedPoint;
   constructor(private el: ElementRef, private attentionCloudService: AttentionCloudService) { }
   ngOnChanges() {
-    let margin = { top: 10, right: 30, bottom: 30, left: 40 },
+    let margin = { top: 10, right: 30, bottom: 30, left: 50 },
       width = 460 - margin.left - margin.right,
       height = 400 - margin.top - margin.bottom;
     let data = []
     let index = 0;
     let maxY = 0;
+
+    var colors = d3.scaleSequential(d3.interpolateRdYlBu);
+
     for (let cloud of this.clouds) {
       let value = cloud.getAggregatedFixationPoint().getDuration();
-      data.push({ "thumbnail": cloud, "i": index, "value": cloud.getAggregatedFixationPoint().getDuration()});
+      data.push({ "thumbnail": cloud, "i": index, "value": cloud.getAggregatedFixationPoint().getDuration() });
       index++;
-      if(value > maxY){
+      if (value > maxY) {
         maxY = value;
       }
     }
@@ -48,17 +51,22 @@ export class AttentionBarsChartDirective {
     let y = d3.scaleLinear()
       .range([height, 0])
       .domain([0, maxY]);   // d3.hist has to be called before the Y axis obviously
-    
 
+
+    let colorId = 0;
     // append the rectangles for the bar chart
     svg.selectAll("rect")
       .data(data)
       .enter().append("rect")
-      .attr("fill", d =>{
-        if(this.selectedPoint && d.thumbnail.getX() == this.selectedPoint.x && d.thumbnail.getY() == this.selectedPoint.y){
+      .attr("fill", d => {
+        let res = colors(colorId / data.length);
+        console.log("colorID: " + colorId);
+        console.log("colorID: " + colors(colorId));
+        if (this.selectedPoint && d.thumbnail.getX() == this.selectedPoint.x && d.thumbnail.getY() == this.selectedPoint.y) {
           return "green";
         }
-        return "red";
+        colorId++;
+        return res;
       })
       .attr("x", function (d) { return x(d.i); })
       .attr("width", x.bandwidth())
@@ -73,7 +81,8 @@ export class AttentionBarsChartDirective {
       .attr("transform", "translate(0," + height + ")")
       .attr("class", "x-axis")
       .call(d3.axisBottom(x));
-    console.log(svg.select(".x-axis").selectAll(".tick"));
+
+
     let defs = svg.append("defs").selectAll("pattern")
       .data(data)
       .enter()
@@ -85,39 +94,51 @@ export class AttentionBarsChartDirective {
       })
 
     defs.append('image')
-    .attr('xlink:href', this.imageUrl)
-    .attr('width', this.imageWidth)
-    .attr('height', this.imageHeight)
-    .attr('transform', function (d) {
-      return 'translate(' + (-d.thumbnail.getX() + 5) + ',' + (-d.thumbnail.getY() + 5) + ')';
-    })
+      .attr('xlink:href', this.imageUrl)
+      .attr('width', this.imageWidth)
+      .attr('height', this.imageHeight)
+      .attr('transform', function (d) {
+        return 'translate(' + (-d.thumbnail.getX() + 5) + ',' + (-d.thumbnail.getY() + 5) + ')';
+      })
+
 
     svg.selectAll(".x-axis .tick text").remove();
+    svg.selectAll(".x-axis .tick line").remove();
 
     svg.select(".x-axis")
-    .selectAll(".tick")
-    .data(data)
-    .attr("id", d =>{
-      return "data-i-"+d.i;
-    })
-
-    for(let cloud of data){
-      svg.select("#data-i-"+cloud.i)
-      .append("rect")
-      .attr("fill", d => {
-        return 'url(#pattern_axis_' + cloud.i + ")";
+      .selectAll(".tick")
+      .data(data)
+      .attr("id", d => {
+        return "data-i-" + d.i;
       })
-      .attr("width", "10px")
-      .attr("height", "10px");
-  
-    }
-    
-    
+    let xAxisWidth = svg.select(".x-axis").node().getBBox().width;
 
+
+    for (let cloud of data) {
+      svg.select("#data-i-" + cloud.i)
+        .append("rect")
+        .attr("fill", d => {
+          return 'url(#pattern_axis_' + cloud.i + ")";
+        })
+        .attr('transform', function (d) {
+          return 'translate(-' + (xAxisWidth / data.length) / 2 + ', 2)';
+        })
+        .attr("width", xAxisWidth / data.length + "px")
+        .attr("height", xAxisWidth / data.length + "px");
+
+    }
 
     // add the y Axis
     svg.append("g")
       .call(d3.axisLeft(y));
+
+    svg.append("text")
+      .attr("text-anchor", "end")
+      .attr("transform", "rotate(-90)")
+      .attr("y", -margin.left + 15)
+      .attr("x", -margin.top)
+      .attr("font-size", "0.75em")
+      .text("Fixation duration (ms)")
 
   }
 
