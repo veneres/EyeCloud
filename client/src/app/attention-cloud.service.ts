@@ -5,6 +5,8 @@ import * as Rx from 'rxjs';
 import { Url } from 'url';
 import { DisplayConfiguration } from './classes/DisplayConfiguration';
 import {Point} from './classes/Utilities';
+import { AggregatedFixationPoint } from './classes/AggregatedFixationPoints';
+import { Thumbnail } from './attention-cloud/classes/Thumbnail';
 
 class FixationDataRequest {
   users: User[];
@@ -41,6 +43,8 @@ export class AttentionCloudService {
   currentConf = this.commonConfBehavior.asObservable();
   private selectedPoint = new Rx.BehaviorSubject(undefined);
   currentSelectedPoint = this.selectedPoint.asObservable();
+  private clouds = new Rx.BehaviorSubject(undefined);
+  cloudsVisible = this.clouds.asObservable();
 
   constructor(private http: HttpClient) {
 
@@ -50,6 +54,9 @@ export class AttentionCloudService {
   }
   public changeSelectedPoint(point: Point) {
     this.selectedPoint.next(point);
+  }
+  public changeCloudsVisible(clouds: Thumbnail[]) {
+    this.clouds.next(clouds);
   }
 
   public getAllStations() {

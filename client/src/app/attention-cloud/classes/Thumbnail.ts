@@ -31,6 +31,19 @@ export class Thumbnail {
     return this.modeTimestamp;
   }
 
+  public getX(){
+    return this.styleX;
+  }
+
+  public getY(){
+    return this.styleY;
+  }
+
+  public getCroppingSize(){
+    return this.croppingSize;
+  }
+
+
   public static get_thumbnails_for_attention_cloud(fixationPoints: AggregatedFixationPoint[],
                                                    maxCroppingSize: number, minCroppingSize: number, maxDisplayPoints: number) {
 

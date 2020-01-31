@@ -5,6 +5,8 @@ import { DisplayConfiguration } from '../classes/DisplayConfiguration';
 import { HeatmapService } from '../heatmap.service';
 import { Options } from 'ng5-slider';
 import { Point } from '../classes/Utilities';
+import { AggregatedFixationPoint } from '../classes/AggregatedFixationPoints';
+import { Thumbnail } from '../attention-cloud/classes/Thumbnail';
 
 @Component({
   selector: 'app-attention-heatmap',
@@ -25,9 +27,12 @@ export class AttentionHeatmapComponent implements OnInit {
   displayLoading: boolean;
   dataset: any;
   hideHeatMapOverlay: boolean;
+  focusMode: boolean;
   visualSpanOption: Options;
+  clouds: Thumbnail[];
   constructor(private el: ElementRef, private attentionCloudService: AttentionCloudService, private heatmapService: HeatmapService) {
     this.hideHeatMapOverlay = false;
+    this.focusMode = false;
     this.visualSpan = 30;
     this.visualSpanOption = {
       floor: 10,
@@ -40,6 +45,7 @@ export class AttentionHeatmapComponent implements OnInit {
     this.heatmapService.currentDisplayLoading.subscribe((display: boolean) => {
       this.displayLoading = display;
     });
+    // subscribe to get the last general configuration
     this.attentionCloudService.currentConf.subscribe((conf: DisplayConfiguration) => {
       // default and starting value
       if (conf === undefined ) {
@@ -73,6 +79,10 @@ export class AttentionHeatmapComponent implements OnInit {
       }
       this.selectedPoint = point;
     });
+
+    this.attentionCloudService.cloudsVisible.subscribe((clouds: Thumbnail[]) => {
+      this.clouds = clouds;
+    });
   }
   canvasClick($event: any) {
     // check if the the click it's inside a visual span of a point
@@ -99,6 +109,7 @@ export class AttentionHeatmapComponent implements OnInit {
         }
       }
     }
+    
     if (inRange) {
       this.attentionCloudService.changeSelectedPoint(new Point(xClicked, yClicked));
     }
