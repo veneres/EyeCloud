@@ -1,4 +1,4 @@
-import {AggregatedFixationPoint} from '../../classes/AggregatedFixationPoints';
+import {AggregatedFixationPoint} from './AggregatedFixationPoints';
 
 export class Thumbnail {
 
@@ -29,6 +29,10 @@ export class Thumbnail {
 
   public getModeTimestamp(): number {
     return this.modeTimestamp;
+  }
+
+  public getAggregatedFixationPoint(){
+    return this.fixationPoint;
   }
 
   public getX(){

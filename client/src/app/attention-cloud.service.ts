@@ -5,8 +5,7 @@ import * as Rx from 'rxjs';
 import { Url } from 'url';
 import { DisplayConfiguration } from './classes/DisplayConfiguration';
 import {Point} from './classes/Utilities';
-import { AggregatedFixationPoint } from './classes/AggregatedFixationPoints';
-import { Thumbnail } from './attention-cloud/classes/Thumbnail';
+import { Thumbnail } from './classes/Thumbnail';
 
 class FixationDataRequest {
   users: User[];

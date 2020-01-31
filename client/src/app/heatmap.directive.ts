@@ -2,8 +2,7 @@ import { Directive, OnChanges, ElementRef, AfterViewInit, Input } from '@angular
 import { HeatmapService } from './heatmap.service';
 import * as d3 from 'd3';
 import { Point } from './classes/Utilities';
-import { AggregatedFixationPoint } from './classes/AggregatedFixationPoints';
-import { Thumbnail } from './attention-cloud/classes/Thumbnail';
+import { Thumbnail } from './classes/Thumbnail';
 
 @Directive({
   selector: '[appHeatmap]'
