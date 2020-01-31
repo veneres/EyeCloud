@@ -21,6 +21,7 @@ export class AttentionCloudDirective implements OnChanges {
   constructor(private attentionCloudService: AttentionCloudService) { }
 
   ngOnChanges() {
+    console.log(this.selectedPoint);
     if (this.selectedPoint) {
       let selectedId;
       let max_distance;
@@ -58,7 +59,7 @@ export class AttentionCloudDirective implements OnChanges {
       for (let i = 0; i < this.thumbnailData.length; i++) {
         const thumbnail = this.thumbnailData[i];
         nodeData.push({
-          'name': thumbnail.id, 'r': Math.round(thumbnail.croppingSize),
+          'id': thumbnail.id, 'r': Math.round(thumbnail.croppingSize),
           'x': thumbnail.positionX, 'y': thumbnail.positionY,
           'shiftX': thumbnail.styleX, 'shiftY': thumbnail.styleY,
           'selected': thumbnail.selected, 'color': thumbnail.getStrokeColor()
@@ -68,10 +69,12 @@ export class AttentionCloudDirective implements OnChanges {
       // create link data from thumbnail data if showLinks is true
       const linkData = [];
       const sortedThumbnails = Thumbnail.sortThumbnailsByTimestamp(this.thumbnailData);
+      console.log(sortedThumbnails);
       const totalSize = sortedThumbnails.length;
       for (let i = 0; i < totalSize - 1; i++) {
         const thumbnail = sortedThumbnails[i];
         const nextThumbnail = sortedThumbnails[i + 1];
+        console.log(thumbnail.id, nextThumbnail.id);
         let opacity = (1 - (i + 1) / totalSize) * 0.5 + 0.5;
         linkData.push({
           'id': i,
@@ -82,6 +85,7 @@ export class AttentionCloudDirective implements OnChanges {
           'linecolor': thumbnail.getStrokeColor(),
         });
       }
+      console.log(linkData);
 
       // create pattern for each thumbnail
       const defs = svg.append('defs')
@@ -92,7 +96,7 @@ export class AttentionCloudDirective implements OnChanges {
         .attr('width', 1)
         .attr('height', 1)
         .attr('id', function (d) {
-          return 'pattern_' + d.name;
+          return 'pattern_' + d.id;
         });
 
       // add background image for cropping
@@ -120,7 +124,9 @@ export class AttentionCloudDirective implements OnChanges {
 
     // force simulation
     const simulation = d3.forceSimulation(nodeData).alphaDecay(0.1)
-      .force("link", d3.forceLink().links(linkData).strength(0.5).distance(0.5))
+      .force("link", d3.forceLink().links(linkData)
+        .strength(0.5).distance(0.5)
+        .id(function id(d: any) { return d.id; }))
       .force('attractForce', attractForce)
       .force('collisionForce', collisionForce)
       .force('center', d3.forceCenter(width / 2, height / 2));
@@ -141,9 +147,9 @@ export class AttentionCloudDirective implements OnChanges {
       .attr('cx', function (d) { return d.x; })
       .attr('cy', function (d) { return d.y; })
       .attr('fill', function (d) {
-        return 'url(#pattern_' + d.name + ')';
+        return 'url(#pattern_' + d.id + ')';
       })
-      .attr('id', function (d) { return 'thumbnail-' + d.name; })
+      .attr('id', function (d) { return 'thumbnail-' + d.id; })
       .attr('stroke', "gray")
       .attr('stroke-width', '2')
       .on('click', (d) => {

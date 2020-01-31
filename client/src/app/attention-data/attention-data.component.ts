@@ -27,20 +27,17 @@ export class AttentionDataComponent implements OnInit {
     });
     this.attentionCloudService.currentSelectedPoint.subscribe((point: Point) => {
       if (this.clouds && this.clouds.length > 0) {
-        let minDistance = Utilities.euclideanDistance(new Point(this.clouds[0].getX(), this.clouds[0].getY()), point);
-        let selectedCloud = this.clouds[0];
-        for (let cloud of this.clouds) {
-          let distance = Utilities.euclideanDistance(new Point(cloud.getX(), cloud.getY()), point);
-          if (distance < minDistance) {
-            selectedCloud = cloud;
+        for (let i = 0; i < this.clouds.length; i++) {
+          let cloud = this.clouds[i];
+          if (cloud.styleX == point.x && cloud.styleY == point.y) {
+            this.selectedPoint = cloud.getAggregatedFixationPoint();
+            break;
           }
         }
-        this.selectedPoint = selectedCloud.getAggregatedFixationPoint();
-        this.displayComponent = true;
+        this.displayComponent = !!this.selectedPoint;
       } else {
         this.displayComponent = false;
       }
     });
   }
-
 }

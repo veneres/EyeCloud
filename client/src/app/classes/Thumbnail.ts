@@ -22,10 +22,10 @@ export class Thumbnail {
     this.id = id; // unique, unchangeable value
     this.fixationPoint = fixationPoint; // should not be null, and must be input upon creation of thumbnail
     // specify data associated with fixation point
-    this.styleX = fixationPoint.getX();
-    this.styleY = fixationPoint.getY();
+    this.styleX = this.fixationPoint.getX();
+    this.styleY = this.fixationPoint.getY();
     this.fixationDuration = fixationPoint.getDuration();
-    this.modeTimestamp = fixationPoint.getModeTimestamp();
+    this.modeTimestamp = fixationPoint.getModeTimestamp(1000);
     // modifiable data associated with thumbnail
     this.croppingSize = croppingSize;
     this.positionX = positionX;
@@ -78,7 +78,7 @@ export class Thumbnail {
     const thumbnails = [];
     const sortedFixationPoints = fixationPoints.sort(compareFixationDuration);
     // initialize thumbnail array with unsorted fixation points
-    for (let i = 0; i < maxDisplayPoints; i++) {
+    for (let i = 0; i < Math.min(maxDisplayPoints, sortedFixationPoints.length); i++) {
       thumbnails.push(new Thumbnail(i, sortedFixationPoints[i], 0,  0, 0));
     }
 

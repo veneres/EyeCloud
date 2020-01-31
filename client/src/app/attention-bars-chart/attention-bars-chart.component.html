@@ -1,10 +1,14 @@
 <div class="card" *ngIf="displayComponent">
   <div class="card-header">
-    <h5>📊 Attention Bars Chart</h5>
+    <a class="d-inline-block" data-toggle="collapse" href="#collapseAttentionBarChart" role="button" aria-expanded="false" aria-controls="collapseExample">
+      📊 Attention Bar Chart
+    </a>
   </div>
-  <div class="card-body">
-    <svg appAttentionBarsChart [clouds]=clouds id="bars-chart" [imageUrl]=imageUrl [imageWidth]=imageWidth
-      [imageHeight]=imageHeight [selectedPoint]=selectedPoint>
-    </svg>
+  <div class="collapse" id="collapseAttentionBarChart">
+    <div class="card-body">
+      <svg appAttentionBarsChart [clouds]=clouds id="bars-chart" [imageUrl]=imageUrl [imageWidth]=imageWidth
+        [imageHeight]=imageHeight [selectedPoint]=selectedPoint>
+      </svg>
+    </div>
   </div>
 </div>

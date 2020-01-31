@@ -111,7 +111,7 @@ export class AttentionBarsChartDirective {
       .attr("id", d => {
         return "data-i-" + d.i;
       })
-    let xAxisWidth = svg.select(".x-axis").node().getBBox().width;
+    let xAxisWidth = (svg.select(".x-axis").node() as SVGSVGElement).getBBox().width;
 
 
     for (let cloud of data) {

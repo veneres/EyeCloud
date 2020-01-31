@@ -11,8 +11,7 @@ export class AggregatedFixationPoint {
     this.yCoord = yCoord;
     this.duration = duration;
     this.numPoints = 1;
-    this.timestamps = [];
-    this.timestamps.push(timestamps);
+    this.timestamps = [timestamps];
   }
 
   public getX() {
@@ -55,21 +54,31 @@ export class AggregatedFixationPoint {
     this.timestamps.push(timestamp);
   }
 
-  public getModeTimestamp(): number {
-    let mode = {};
-    let max = 0, count = 0;
+  private getBinsOfTimestamps(binSize: number) {
+    const bins = {};
+    let numBins = Math.ceil(Math.max(...this.timestamps) / binSize);
+    this.timestamps.forEach(timestamp => {
+      let binIndex = Math.ceil(timestamp / binSize);
+      if (binIndex in bins) {
+        bins[binIndex].push(timestamp);
+      } else {
+        bins[binIndex] = [timestamp];
+      }
+    });
+    return bins;
+  }
 
-    this.timestamps.forEach(
-      function(e) {
-        if (mode[e]) { mode[e]++; }
-        else { mode[e] = 1; }
-
-        if (count < mode[e]) {
-          max = e;
-          count = mode[e];
-        }
-      });
-
-    return max;
+  public getModeTimestamp(binSize: number): number {
+    const bins = this.getBinsOfTimestamps(binSize);
+    // count the number of items in each bin
+    let targetBinIndex = "0";
+    for (let key in bins) {
+      if (!(targetBinIndex in bins) || bins[key].length > bins[targetBinIndex].length) {
+        targetBinIndex = key;
+      }
+    }
+    // take the average of all timestamps in the bin
+    const average = arr => Math.round(arr.reduce((a,b) => a + b, 0) / arr.length);
+    return average(bins[targetBinIndex]);
   }
 }

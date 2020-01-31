@@ -1,67 +1,76 @@
-<div class="card-body" *ngIf="displayComponent">
-  <h3>Aggregated fixation point composition</h3>
-  <table class="table table-striped">
-    <thead>
-      <tr>
-        <td>
-          Attribute
-        </td>
-        <td>
-          Value
-        </td>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>
-          x
-        </td>
-        <td>
-          {{selectedPoint.getX()}}
-        </td>
-      </tr>
-      <tr>
-        <td>
-          y
-        </td>
-        <td>
-          {{selectedPoint.getY()}}
-        </td>
-      </tr>
-      <tr>
-        <td>
-          Duration
-        </td>
-        <td>
-          {{selectedPoint.getDuration()}}
-        </td>
-      </tr>
-      <tr>
-        <td>
-          Number of Points
-        </td>
-        <td>
-          {{selectedPoint.getNumPoints()}}
-        </td>
-      </tr>
-      <tr>
-        <td>
-          Timestamps n
-        </td>
-        <td>
-          Value
-        </td>
-      </tr>
-      <tr>
-        <div *ngFor="let timestamp of selectedPoint.getTimestamps()">
-          <td>
+<div class="card" *ngIf="displayComponent">
+  <div class="card-header">
+    <a class="d-inline-block" data-toggle="collapse" href="#collapseAttentionData" role="button" aria-expanded="false" aria-controls="collapseExample">
+      🌟 Statistics of the Selected Point
+    </a>
+  </div>
+  <div class="collapse" id="collapseAttentionData">
+    <div class="card-body" *ngIf="displayComponent">
+      <h3>Aggregated fixation point composition</h3>
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <td>
+              <b>Attribute</b>
+            </td>
+            <td>
+              <b>Value</b>
+            </td>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              x
+            </td>
+            <td>
+              {{selectedPoint.getX()}}
+            </td>
+          </tr>
+          <tr>
+            <td>
+              y
+            </td>
+            <td>
+              {{selectedPoint.getY()}}
+            </td>
+          </tr>
+          <tr>
+            <td>
+              Duration
+            </td>
+            <td>
+              {{selectedPoint.getDuration()}}
+            </td>
+          </tr>
+          <tr>
+            <td>
+              Number of Points
+            </td>
+            <td>
+              {{selectedPoint.getNumPoints()}}
+            </td>
+          </tr>
+          <tr>
+            <td>
+              Timestamps n
+            </td>
+            <td>
+              Value
+            </td>
+          </tr>
+          <tr>
+            <div *ngFor="let timestamp of selectedPoint.getTimestamps()">
+              <td>
 
-          </td>
-          <td>
-            {{timestamp}}
-          </td>
-        </div>
-      </tr>
-    </tbody>
-  </table>
+              </td>
+              <td>
+                {{timestamp}}
+              </td>
+            </div>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
 </div>
