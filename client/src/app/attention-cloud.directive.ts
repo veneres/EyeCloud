@@ -1,6 +1,6 @@
 import { Directive, Input, ElementRef, OnChanges } from '@angular/core';
 import * as d3 from 'd3';
-import { Thumbnail } from './attention-cloud/classes/Thumbnail';
+import { Thumbnail } from './classes/Thumbnail';
 import { Point } from './classes/Utilities';
 import { AttentionCloudService } from './attention-cloud.service';
 

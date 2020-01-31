@@ -17,6 +17,9 @@ import { NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import { DragScrollModule } from 'ngx-drag-scroll';
 import { MapInfoComponent } from './map-info/map-info.component';
 import { RawDataComponent } from './raw-data/raw-data.component';
+import { AttentionBarsChartComponent } from './attention-bars-chart/attention-bars-chart.component';
+import { AttentionDataComponent } from './attention-data/attention-data.component';
+import { AttentionBarsChartDirective } from './attention-bars-chart.directive';
 
 
 
@@ -31,7 +34,10 @@ import { RawDataComponent } from './raw-data/raw-data.component';
     GazeStripesComponent,
     GazeStripesDirective,
     MapInfoComponent,
-    RawDataComponent
+    RawDataComponent,
+    AttentionBarsChartComponent,
+    AttentionDataComponent,
+    AttentionBarsChartDirective
   ],
   imports: [
     BsDropdownModule.forRoot(),

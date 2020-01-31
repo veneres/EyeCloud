@@ -19,6 +19,10 @@ export class AggregatedFixationPoint {
     return this.xCoord;
   }
 
+  public getTimestamps(){
+    return this.timestamps;
+  }
+
   public getY() {
     return this.yCoord;
   }

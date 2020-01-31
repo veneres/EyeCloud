@@ -5,8 +5,7 @@ import { DisplayConfiguration } from '../classes/DisplayConfiguration';
 import { HeatmapService } from '../heatmap.service';
 import { Options } from 'ng5-slider';
 import { Point } from '../classes/Utilities';
-import { AggregatedFixationPoint } from '../classes/AggregatedFixationPoints';
-import { Thumbnail } from '../attention-cloud/classes/Thumbnail';
+import { Thumbnail } from '../classes/Thumbnail';
 
 @Component({
   selector: 'app-attention-heatmap',

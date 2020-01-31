@@ -1,5 +1,5 @@
 import { Component, OnInit} from '@angular/core';
-import { Thumbnail } from './classes/Thumbnail';
+import { Thumbnail } from '../classes/Thumbnail';
 import { FixationPoint } from '../classes/FixationPoint';
 import { User } from '../classes/User';
 import { AttentionCloudService } from '../attention-cloud.service';
