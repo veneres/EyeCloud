@@ -39,6 +39,7 @@ export class AttentionCloudDirective implements OnChanges {
         d3.select(`#thumbnail-${selectedId}`).attr('stroke', 'red').attr('stroke-width', '4');
         this.oldSelectedId = selectedId;
       }
+
     } else {
 
       this.oldThumbnailData = this.thumbnailData;
@@ -60,46 +61,9 @@ export class AttentionCloudDirective implements OnChanges {
           'name': thumbnail.id, 'r': Math.round(thumbnail.croppingSize),
           'x': thumbnail.positionX, 'y': thumbnail.positionY,
           'shiftX': thumbnail.styleX, 'shiftY': thumbnail.styleY,
-          'selected': thumbnail.selected
+          'selected': thumbnail.selected, 'color': thumbnail.getStrokeColor()
         });
       }
-
-      // convert color to hex code
-      const rgbToHex = function (rgb) {
-        let hex = Number(rgb).toString(16);
-        if (hex.length < 2) {
-          hex = "0" + hex;
-        }
-        return hex;
-      };
-
-      const fullColorHex = function(r, g, b) {
-        let red = rgbToHex(r);
-        let green = rgbToHex(g);
-        let blue = rgbToHex(b);
-        return red + green + blue;
-      };
-
-      const idToColor = function(ratio) {
-        let red = 0, green = 0, blue = 0;
-        // 3 quadrants: (255, 0, 0) -> (128, 0, 255) -> (0, 255, 255) -> (128, 255, 0)
-        if (ratio >= 0 && ratio < 0.3) {
-          red = (1 - ratio / 0.3) * (255 - 128) + 128;
-          green = 0;
-          blue = (ratio / 0.3) * 255;
-        }
-        else if (ratio >= 0.3 && ratio < 0.65) {
-          red = (1 - (ratio - 0.3) / 0.35) * 128;
-          green = (ratio - 0.3) / 0.35 * 255;
-          blue = 255;
-        }
-        else if (ratio >= 0.65 && ratio <= 1) {
-          red = (ratio - 0.65) / 0.35 * 128;
-          green = 255;
-          blue = (1 - (ratio - 0.65) / 0.35) * 255;
-        }
-        return fullColorHex(Math.round(red), Math.round(green), Math.round(blue));
-      };
 
       // create link data from thumbnail data if showLinks is true
       const linkData = [];
@@ -109,14 +73,13 @@ export class AttentionCloudDirective implements OnChanges {
         const thumbnail = sortedThumbnails[i];
         const nextThumbnail = sortedThumbnails[i + 1];
         let opacity = (1 - (i + 1) / totalSize) * 0.5 + 0.5;
-        let color = '#' + idToColor(i / totalSize);
         linkData.push({
           'id': i,
           'source': thumbnail.id,
           'target': nextThumbnail.id,
           'linewidth': this.linkWidth,
           'lineopacity': opacity,
-          'linecolor': color,
+          'linecolor': thumbnail.getStrokeColor(),
         });
       }
 
@@ -152,7 +115,7 @@ export class AttentionCloudDirective implements OnChanges {
     const attractForce = d3.forceManyBody().strength(50);
 
     const collisionForce = d3.forceCollide().radius(function (d: any) {
-      return d.r / 2 * 1.1;
+      return d.r / 2 * 1.2;
     }).iterations(10);
 
     // force simulation
@@ -181,7 +144,7 @@ export class AttentionCloudDirective implements OnChanges {
         return 'url(#pattern_' + d.name + ')';
       })
       .attr('id', function (d) { return 'thumbnail-' + d.name; })
-      .attr('stroke', 'gray')
+      .attr('stroke', "gray")
       .attr('stroke-width', '2')
       .on('click', (d) => {
         this.attentionCloudService.changeSelectedPoint(new Point(d.shiftX, d.shiftY));
