@@ -54,9 +54,9 @@ export class AggregatedFixationPoint {
     this.timestamps.push(timestamp);
   }
 
-  private getBinsOfTimestamps(binSize: number) {
+  public getBinsOfTimestamps(binSize: number) {
     const bins = {};
-    let numBins = Math.ceil(Math.max(...this.timestamps) / binSize);
+    let numBins = Math.floor(Math.max(...this.timestamps) / binSize);
     this.timestamps.forEach(timestamp => {
       let binIndex = Math.ceil(timestamp / binSize);
       if (binIndex in bins) {

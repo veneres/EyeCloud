@@ -1,76 +1,87 @@
 <div class="card" *ngIf="displayComponent">
   <div class="card-header">
-    <a class="d-inline-block" data-toggle="collapse" href="#collapseAttentionData" role="button" aria-expanded="false" aria-controls="collapseExample">
+    <a class="d-inline-block" data-toggle="collapse" href="#collapseAttentionData" role="button" aria-expanded="false" aria-controls="collapseAttentionData">
       🌟 Statistics of the Selected Point
     </a>
   </div>
   <div class="collapse" id="collapseAttentionData">
     <div class="card-body" *ngIf="displayComponent">
-      <h3>Aggregated fixation point composition</h3>
-      <table class="table table-striped">
-        <thead>
+      <div *ngIf="!displayStatistics">
+        <h5>
+          Please select a fixation point to view the statistics.
+        </h5>
+      </div>
+      <div *ngIf="displayStatistics">
+        <table class="table table-striped">
+          <tbody>
           <tr>
             <td>
-              <b>Attribute</b>
+              <b>Point Position</b>
             </td>
             <td>
-              <b>Value</b>
-            </td>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>
-              x
-            </td>
-            <td>
-              {{selectedPoint.getX()}}
+              ({{displayedData.X}}, {{displayedData.Y}})
             </td>
           </tr>
           <tr>
             <td>
-              y
+              <b>Fixation Duration</b>
             </td>
             <td>
-              {{selectedPoint.getY()}}
+              {{displayedData.Duration}}
             </td>
           </tr>
           <tr>
             <td>
-              Duration
+              <b>Fixation Timestamp</b>
             </td>
             <td>
-              {{selectedPoint.getDuration()}}
+              {{displayedData.ModeTimestamp}}
             </td>
           </tr>
           <tr>
             <td>
-              Number of Points
+              <b>Number of aggregated points</b>
             </td>
             <td>
-              {{selectedPoint.getNumPoints()}}
+              {{displayedData.NumPoints}}
             </td>
           </tr>
-          <tr>
-            <td>
-              Timestamps n
-            </td>
-            <td>
-              Value
-            </td>
-          </tr>
-          <tr>
-            <div *ngFor="let timestamp of selectedPoint.getTimestamps()">
-              <td>
-
-              </td>
-              <td>
-                {{timestamp}}
-              </td>
+          </tbody>
+        </table>
+        <div class="card">
+          <div class="card-header">
+            <a class="d-inline-block" data-toggle="collapse" href="#collapseTimestamps" role="button" aria-expanded="false" aria-controls="collapseTimestamps">
+              Raw Timestamps
+            </a>
+          </div>
+          <div class="collapse" id="collapseTimestamps">
+            <div class="card-body">
+              <table class="table table-striped">
+                <thead>
+                <tr>
+                  <th>Range</th>
+                  <th>Value(s)</th>
+                  <th>Count</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr *ngFor="let bin of displayedData.TimestampBins">
+                  <td>
+                    {{bin * 1000}} - {{bin * 1000 + 999}}
+                  </td>
+                  <td>
+                    {{displayedData.Timestamps[bin]}}
+                  </td>
+                  <td>
+                    {{displayedData.Timestamps[bin].length}}
+                  </td>
+                </tr>
+                </tbody>
+              </table>
             </div>
-          </tr>
-        </tbody>
-      </table>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </div>

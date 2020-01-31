@@ -12,17 +12,24 @@ import { AggregatedFixationPoint } from '../classes/AggregatedFixationPoints';
 export class AttentionDataComponent implements OnInit {
 
   displayComponent: boolean;
+  displayStatistics: boolean;
   clouds: Thumbnail[];
   selectedPoint: AggregatedFixationPoint;
+  displayedData;
 
   constructor(private attentionCloudService: AttentionCloudService) {
     this.displayComponent = false;
+    this.displayStatistics = false;
     this.clouds = [];
+    this.displayedData = {};
   }
   ngOnInit() {
     this.attentionCloudService.cloudsVisible.subscribe((clouds: Thumbnail[]) => {
       if (clouds) {
         this.clouds = clouds;
+        this.displayComponent = true;
+      } else {
+        this.displayComponent = false;
       }
     });
     this.attentionCloudService.currentSelectedPoint.subscribe((point: Point) => {
@@ -31,13 +38,26 @@ export class AttentionDataComponent implements OnInit {
           let cloud = this.clouds[i];
           if (cloud.styleX == point.x && cloud.styleY == point.y) {
             this.selectedPoint = cloud.getAggregatedFixationPoint();
+            this.updateDisplayedData();
             break;
           }
         }
-        this.displayComponent = !!this.selectedPoint;
+        this.displayStatistics = !!this.selectedPoint;
       } else {
-        this.displayComponent = false;
+        this.displayStatistics = false;
       }
     });
+  }
+
+  private updateDisplayedData() {
+    const d = this.displayedData;
+    const p = this.selectedPoint;
+    d.X = Math.round(p.getX());
+    d.Y = Math.round(p.getY());
+    d.Duration = Math.round(p.getDuration());
+    d.ModeTimestamp = p.getModeTimestamp(1000);
+    d.Timestamps = p.getBinsOfTimestamps(1000);
+    d.TimestampBins = Object.keys(d.Timestamps);
+    d.NumPoints = p.getNumPoints();
   }
 }
