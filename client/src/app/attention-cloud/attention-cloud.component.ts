@@ -1,5 +1,5 @@
 import { Component, OnInit} from '@angular/core';
-import { Thumbnail } from './classes/Thumbnail';
+import { Thumbnail } from '../classes/Thumbnail';
 import { FixationPoint } from '../classes/FixationPoint';
 import { User } from '../classes/User';
 import { AttentionCloudService } from '../attention-cloud.service';
@@ -52,6 +52,13 @@ export class AttentionCloudComponent implements OnInit {
     step: 10,
     showSelectionBar: true,
   };
+  linkWidth = 5;
+  linkWidthOptions: Options = {
+    floor: 0,
+    ceil: 20,
+    step: 2,
+    showSelectionBar: true,
+  };
   selectedPoint: Point;
 
   constructor(private attentionCloudService: AttentionCloudService) {
@@ -66,7 +73,7 @@ export class AttentionCloudComponent implements OnInit {
         return;
       }
       // check if all the parameters are present otherwise skip the updating
-      if (conf.getUsers().length === 0 || conf.getTimeStampStart() === NaN || conf.getTimeStampEnd() === NaN) {
+      if (conf.getUsers().length === 0 || isNaN(conf.getTimeStampStart()) || isNaN(conf.getTimeStampEnd())) {
         this.displayComponent = false;
         return;
       }
@@ -95,6 +102,7 @@ export class AttentionCloudComponent implements OnInit {
           const aggregateFixationPoints = Utilities.clusterFixationPoints(this.fixationPoints, this.clusterRadiusValue);
           this.thumbnails = Thumbnail.get_thumbnails_for_attention_cloud(aggregateFixationPoints,
             this.maxCroppingSizeValue, this.minCroppingSizeValue, this.numPointsValue);
+          this.attentionCloudService.changeCloudsVisible(this.thumbnails);
           this.selectedPoint = undefined;
         });
       this.imageURL = this.attentionCloudService.getStimulusURL(this.stimulusName).toString();
@@ -112,7 +120,8 @@ export class AttentionCloudComponent implements OnInit {
     generate() {
       const aggregateFixationPoints = Utilities.clusterFixationPoints(this.fixationPoints, this.clusterRadiusValue);
       this.thumbnails = Thumbnail.get_thumbnails_for_attention_cloud(aggregateFixationPoints,
-        this.maxCroppingSizeValue, this.minCroppingSizeValue, this.numPointsValue);
+      this.maxCroppingSizeValue, this.minCroppingSizeValue, this.numPointsValue);
+      this.attentionCloudService.changeCloudsVisible(this.thumbnails);
       this.selectedPoint = undefined;
     }
 }

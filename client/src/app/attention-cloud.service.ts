@@ -5,6 +5,7 @@ import * as Rx from 'rxjs';
 import { Url } from 'url';
 import { DisplayConfiguration } from './classes/DisplayConfiguration';
 import {Point} from './classes/Utilities';
+import { Thumbnail } from './classes/Thumbnail';
 
 class FixationDataRequest {
   users: User[];
@@ -29,7 +30,8 @@ class HeatmapRequest extends FixationDataRequest {
   providedIn: 'root',
 })
 export class AttentionCloudService {
-  baseUrl = 'http://127.0.0.1:5000';
+  //baseUrl = 'http://127.0.0.1:5000'; // localhost
+  baseUrl = 'http://192.168.99.102:5000'; // docker machine ip
   private postHeader = {
     headers: new HttpHeaders({
       'Content-Type': 'application/json',
@@ -40,6 +42,8 @@ export class AttentionCloudService {
   currentConf = this.commonConfBehavior.asObservable();
   private selectedPoint = new Rx.BehaviorSubject(undefined);
   currentSelectedPoint = this.selectedPoint.asObservable();
+  private clouds = new Rx.BehaviorSubject(undefined);
+  cloudsVisible = this.clouds.asObservable();
 
   constructor(private http: HttpClient) {
 
@@ -49,6 +53,9 @@ export class AttentionCloudService {
   }
   public changeSelectedPoint(point: Point) {
     this.selectedPoint.next(point);
+  }
+  public changeCloudsVisible(clouds: Thumbnail[]) {
+    this.clouds.next(clouds);
   }
 
   public getAllStations() {

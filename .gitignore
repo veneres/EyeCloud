@@ -17,6 +17,7 @@
 *.launch
 .settings/
 *.sublime-workspace
+server/\.idea/
 
 # IDE - VSCode
 .vscode/*
@@ -46,11 +47,12 @@ Thumbs.db
 # Client ignore
 client/node_modules
 
-#Ignore pychache
+# Ignore pychache
 __pycache__
 
 # Ignore docker compose due to a problem on mounting volumes on Windows
-server/docker-compose.yml
+docker-compose.yml
+
+# Ignore server logs
 server/output\.log
 
-server/\.idea/
