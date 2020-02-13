@@ -4,6 +4,7 @@ from flask import request, jsonify
 from app import app, mongo
 import logger
 import math
+from PIL import Image
 
 ROOT_PATH = os.environ.get('ROOT_PATH')
 LOG = logger.get_root_logger(
@@ -341,3 +342,29 @@ def max_timestamp(stimulus_name):
             "max": max_fix
         }
         return jsonify(res)
+
+@app.route('/rgb_distribution/stimulus=<string:stimulus_name>/', methods=['GET'])
+def rgb_distribution(stimulus_name):
+    image_path = os.path.join(ROOT_PATH, "app", "dist", "stimuli", "{}.jpg".format(stimulus_name))
+    if os.path.exists(image_path):
+        im = Image.open(image_path)
+        pix = im.load()
+        tl = (int(request.args.get('tlx', 0)), int(request.args.get('tly', 0)))
+        br = (int(request.args.get('brx', im.size[0])), int(request.args.get('bry', im.size[1])))
+        red_value = 0
+        green_value = 0
+        blue_value = 0
+        tot_pixel = (br[0] - tl[0]) * (br[1] - tl[1])
+        for row in range(tl[0], br[0]):
+            for column in range(tl[1], br[1]):
+                red_value += pix[row,column][0]
+                green_value += pix[row,column][1]
+                blue_value += pix[row,column][2]
+        res = {
+            "red": red_value / tot_pixel,
+            "green": green_value / tot_pixel,
+            "blu": blue_value / tot_pixel
+        }
+        return jsonify(res)
+    else:
+        return jsonify({'ok': False, 'message': 'Bad stimulus name'})
