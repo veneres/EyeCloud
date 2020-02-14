@@ -243,4 +243,6 @@ export class AttentionCloudDirective implements OnChanges {
     // start simulation
     simulation.on('tick', ticked);
   }
+
+
 }
