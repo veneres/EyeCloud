@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import { User } from './classes/User';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 import * as Rx from 'rxjs';
 import { Url } from 'url';
 import { DisplayConfiguration } from './classes/DisplayConfiguration';
-import {Point} from './classes/Utilities';
+import { Point } from './classes/Utilities';
 import { Thumbnail } from './classes/Thumbnail';
 
 class FixationDataRequest {
@@ -26,12 +26,27 @@ class HeatmapRequest extends FixationDataRequest {
   }
 }
 
+export class Pixel {
+  id: number;
+  tlx: number;
+  tly: number;
+  brx: number;
+  bry: number;
+  constructor(id: number, tlx: number, tly: number, brx: number, bry: number) {
+    this.id = id;
+    this.tlx = Math.round(tlx);
+    this.tly = Math.round(tly);
+    this.brx = Math.round(brx);
+    this.bry = Math.round(bry);
+  }
+}
+
 @Injectable({
   providedIn: 'root',
 })
 export class AttentionCloudService {
-  baseUrl = 'http://127.0.0.1:5000'; // localhost
-  //baseUrl = 'http://192.168.99.102:5000'; // docker machine ip
+  //baseUrl = 'http://127.0.0.1:5000'; // localhost
+  baseUrl = 'http://192.168.99.102:5000'; // docker machine ip
   private postHeader = {
     headers: new HttpHeaders({
       'Content-Type': 'application/json',
@@ -97,4 +112,9 @@ export class AttentionCloudService {
     return this.http.post(endpoint, users, this.postHeader);
   }
 
+  public getRgbDistribution(stimulus: string, pixels: Pixel[]) {
+    const stimulusNameCleaned = stimulus.substring(0, stimulus.length - 4);
+    const endpoint = `${this.baseUrl}/rgb_distribution/stimulus=${stimulusNameCleaned}`;
+    return this.http.post(endpoint, pixels, this.postHeader);
+  }
 }
