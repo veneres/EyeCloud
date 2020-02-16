@@ -24,6 +24,10 @@
           <h6 class="col-md-5 padding-up">link width</h6>
           <ng5-slider *ngIf="displayComponent" class="col-md-6" [(value)]="linkWidth" [options]="linkWidthOptions"></ng5-slider>
         </div>
+        <div class="row padding-side">
+          <h6 class="col-md-5 padding-up">number of cluster</h6>
+          <ng5-slider *ngIf="displayComponent" class="col-md-6" [(value)]="numCluster" [options]="numClusterOptions"></ng5-slider>
+        </div>
         <div class="dropdown-divider"></div>
         <div class="row">
           <div class="col-md-7"></div>
@@ -33,9 +37,9 @@
     </div>
   </div>
   <div class="card-body">
-    <svg id="svg-attention-cloud" appAttentionCloud [attr.width]="500" [attr.height]="400" [thumbnailData]="thumbnails"
+    <svg id="svg-attention-cloud" appAttentionCloud [thumbnailData]="thumbnails"
          [imageUrl]="imageURL" [selectedPoint] = "selectedPoint" [imageWidth]="imageWidth" [imageHeight]="imageHeight"
-         [linkWidth]="linkWidth" [clusterReady]="clusterReady">
+         [linkWidth]="linkWidth" [numCluster]="numCluster">
     </svg>
   </div>
 </div>
