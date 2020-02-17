@@ -19,7 +19,7 @@ export class AttentionCloudDirective implements OnChanges {
   private oldThumbnailData: Thumbnail[];
   private oldSelectedId: any;
 
-  constructor(private el: ElementRef, private attentionCloudService: AttentionCloudService) { 
+  constructor(private el: ElementRef, private attentionCloudService: AttentionCloudService) {
   }
 
   ngOnChanges() {
@@ -44,12 +44,11 @@ export class AttentionCloudDirective implements OnChanges {
 
     } else if (this.numCluster !== 0) {
 
-
       this.oldThumbnailData = this.thumbnailData;
-      let padding = 50;
+      const padding = 50;
       const svg = d3.select('#svg-attention-cloud');
-      const width = parseInt(svg.node().parentNode.getBoundingClientRect().width, 10) - padding;
-      const height = parseInt(svg.node().parentNode.getBoundingClientRect().height , 10) - padding;
+      const width = parseInt((<any>svg.node()).parentNode.getBoundingClientRect().width, 10) - padding;
+      const height = parseInt((<any>svg.node()).parentNode.getBoundingClientRect().height , 10) - padding;
       console.log(width);
       console.log(height);
 
@@ -80,7 +79,7 @@ export class AttentionCloudDirective implements OnChanges {
       for (let i = 0; i < totalSize - 1; i++) {
         const thumbnail = sortedThumbnails[i];
         const nextThumbnail = sortedThumbnails[i + 1];
-        let opacity = (1 - (i + 1) / totalSize) * 0.5 + 0.5;
+        const opacity = (1 - (i + 1) / totalSize) * 0.5 + 0.5;
         linkData.push({
           'id': i,
           'source': thumbnail.id,
@@ -111,11 +110,11 @@ export class AttentionCloudDirective implements OnChanges {
         .attr('transform', function (d) {
           return 'translate(' + (-d.shiftX + d.r / 2) + ',' + (-d.shiftY + d.r / 2) + ')';
         });
-      // Elect clusters master nodes
-      let clusters = new Array(this.numCluster);
 
+      // Elect clusters master nodes
+      const clusters = new Array(this.numCluster);
       nodeData.map(function (node) {
-        if (!clusters[node.cluster] || (node.r > clusters[node.cluster].radius)) clusters[node.cluster] = node;
+        if (!clusters[node.cluster] || (node.r > clusters[node.cluster].radius)) { clusters[node.cluster] = node; }
       });
       this.generateForceSimulation(svg, nodeData, linkData, width, height, clusters);
     }
@@ -135,7 +134,7 @@ export class AttentionCloudDirective implements OnChanges {
     const simulation = d3.forceSimulation(nodeData).alphaDecay(0.1)
       .force('center', d3.forceCenter(width / 2, height / 2))
       // cluster by section
-      .force("link", d3.forceLink().links(linkData)
+      .force('link', d3.forceLink().links(linkData)
         .strength(0).id(function id(d: any) { return d.id; }))
       // .force('attractForce', attractForce)
       .force('collisionForce', collisionForce)
@@ -143,11 +142,11 @@ export class AttentionCloudDirective implements OnChanges {
 
     // produce links from link data
     // must produce links before nodes to make sure links appear behind thumbnails
-    const link = svg.selectAll("line").data(linkData)
+    const link = svg.selectAll('line').data(linkData)
       .enter().append('line')
-      .attr("stroke", d => d.linecolor)
-      .attr("stroke-opacity", d => d.lineopacity)
-      .attr("stroke-width", d => d.linewidth)
+      .attr('stroke', d => d.linecolor)
+      .attr('stroke-opacity', d => d.lineopacity)
+      .attr('stroke-width', d => d.linewidth)
       .attr('id', function (d) { return 'link-' + d.id; });
 
     // produce nodes from node data
@@ -160,7 +159,7 @@ export class AttentionCloudDirective implements OnChanges {
         return 'url(#pattern_' + d.id + ')';
       })
       .attr('id', function (d) { return 'thumbnail-' + d.id; })
-      .attr('stroke', "gray")
+      .attr('stroke', 'gray')
       .attr('stroke-width', '2')
       .on('click', (d) => {
         this.attentionCloudService.changeSelectedPoint(new Point(d.shiftX, d.shiftY));
@@ -171,7 +170,7 @@ export class AttentionCloudDirective implements OnChanges {
         .on('end', dragended));
 
     function dragstarted(d) {
-      if (!d3.event.active) simulation.alphaTarget(0.3).restart();
+      if (!d3.event.active) { simulation.alphaTarget(0.3).restart(); }
       d.fx = d.x;
       d.fy = d.y;
     }
@@ -182,7 +181,7 @@ export class AttentionCloudDirective implements OnChanges {
     }
 
     function dragended(d) {
-      if (!d3.event.active) simulation.alphaTarget(0);
+      if (!d3.event.active) { simulation.alphaTarget(0); }
       d.fx = null;
       d.fy = null;
     }
@@ -190,37 +189,35 @@ export class AttentionCloudDirective implements OnChanges {
     function ticked() {
       // update link positions
       link
-        .attr("x1", d => { return Math.max(0, Math.min(width, d.source.x)); })
-        .attr("y1", d => { return Math.max(0, Math.min(height, d.source.y)); })
-        .attr("x2", d => { return Math.max(0, Math.min(width, d.target.x)); })
-        .attr("y2", d => { return Math.max(0, Math.min(height, d.target.y)); });
+        .attr('x1', d => Math.max(0, Math.min(width, d.source.x)))
+        .attr('y1', d => Math.max(0, Math.min(height, d.source.y)))
+        .attr('x2', d => Math.max(0, Math.min(width, d.target.x)))
+        .attr('y2', d => Math.max(0, Math.min(height, d.target.y)));
 
       // update node positions
       node
         .attr('cx', function (d) {
-          let newX = Math.max(d.r / 2, Math.min(width - d.r / 2, d.x));
+          const newX = Math.max(d.r / 2, Math.min(width - d.r / 2, d.x));
           return isNaN(newX) ? width / 2 : newX;
-          //return d.x;
         }).attr('cy', function (d) {
-          let newY = Math.max(d.r / 2, Math.min(height - d.r / 2, d.y));
+          const newY = Math.max(d.r / 2, Math.min(height - d.r / 2, d.y));
           return isNaN(newY) ? height / 2 : newY;
-          //return d.y;
         });
     }
     // cluster force simulation proposed by: https://bl.ocks.org/ericsoco/c3fdb4c844a88101f606e9db08e66845
     function cluster() {
-      var nodes, strength = 0.1;
+      let nodes, strength = 0.1;
       function force(alpha: number) {
         // scale + curve alpha value
         alpha *= strength * alpha;
         nodes.forEach(function (d) {
-          var cluster = clusters[d.cluster];
-          if (cluster === d) return;
+          let cluster = clusters[d.cluster];
+          if (cluster === d) { return; }
           let x = d.x - cluster.x,
             y = d.y - cluster.y,
             l = Math.sqrt(x * x + y * y),
             r = d.r + cluster.r;
-          if (l != r) {
+          if (l !== r) {
             l = (l - r) / l * alpha;
             d.x -= x *= l;
             d.y -= y *= l;

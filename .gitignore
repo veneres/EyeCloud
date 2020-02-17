@@ -50,9 +50,5 @@ client/node_modules
 # Ignore pychache
 __pycache__
 
-# Ignore docker compose due to a problem on mounting volumes on Windows
-docker-compose.yml
-
 # Ignore server logs
 server/output\.log
-
