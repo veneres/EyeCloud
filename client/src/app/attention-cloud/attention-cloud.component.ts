@@ -61,7 +61,13 @@ export class AttentionCloudComponent implements OnInit {
     showSelectionBar: true,
   };
   selectedPoint: Point;
-  numClusters = 5;
+  numCluster = 1;
+  numClusterOptions: Options = {
+    floor: 1,
+    ceil: 10,
+    step: 1,
+    showSelectionBar: true,
+  };
   clusterReady = false;
 
   constructor(private attentionCloudService: AttentionCloudService) {
@@ -141,7 +147,7 @@ export class AttentionCloudComponent implements OnInit {
         this.thumbnails[i].updateRgbDistribution(rgb);
       }
       // cluster thumbnails
-      this.thumbnails = this.clusterThumbnailsByRgb(this.thumbnails, this.numClusters, 100);
+      this.thumbnails = this.clusterThumbnailsByRgb(this.thumbnails, this.numCluster, 100);
       this.clusterReady = true;
     });
     this.attentionCloudService.changeCloudsVisible(this.thumbnails);
