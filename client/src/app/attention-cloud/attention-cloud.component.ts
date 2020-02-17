@@ -68,6 +68,7 @@ export class AttentionCloudComponent implements OnInit {
     step: 1,
     showSelectionBar: true,
   };
+  numClusterForDirective = 1;
   clusterReady = false;
 
   constructor(private attentionCloudService: AttentionCloudService) {
@@ -87,7 +88,7 @@ export class AttentionCloudComponent implements OnInit {
     // initialize centroids to random, and clusters to empty
     let centroids = new Array(numClusters);
     for (let i = 0; i < numClusters; i++) {
-      centroids[i] = thumbnails[i].rgbDistribution;
+      centroids[i] = thumbnails[Math.floor(Math.random() * (thumbnails.length - 1))].rgbDistribution;
     }
 
     for (let i = 0; i < numIterations; i++) {
@@ -148,6 +149,12 @@ export class AttentionCloudComponent implements OnInit {
       }
       // cluster thumbnails
       this.thumbnails = this.clusterThumbnailsByRgb(this.thumbnails, this.numCluster, 100);
+      let distribution = new Array(this.numCluster).fill(0);
+      this.thumbnails.forEach((elem) =>{
+        distribution[elem.rgbCluster] += 1;
+      })
+      console.log(distribution);
+      this.numClusterForDirective = this.numCluster;
       this.clusterReady = true;
     });
     this.attentionCloudService.changeCloudsVisible(this.thumbnails);

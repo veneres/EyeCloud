@@ -16,6 +16,7 @@ export class AttentionCloudDirective implements OnChanges {
   @Input() selectedPoint: Point;
   @Input() linkWidth: number;
   @Input() numCluster: number;
+  @Input() clusterReady: boolean;
   private oldThumbnailData: Thumbnail[];
   private oldSelectedId: any;
 
@@ -42,15 +43,13 @@ export class AttentionCloudDirective implements OnChanges {
         this.oldSelectedId = selectedId;
       }
 
-    } else if (this.numCluster !== 0) {
+    } else if (this.clusterReady) {
 
       this.oldThumbnailData = this.thumbnailData;
       const padding = 50;
       const svg = d3.select('#svg-attention-cloud');
       const width = parseInt((<any>svg.node()).parentNode.getBoundingClientRect().width, 10) - padding;
       const height = parseInt((<any>svg.node()).parentNode.getBoundingClientRect().height , 10) - padding;
-      console.log(width);
-      console.log(height);
 
       // reset svg
       svg.selectAll('*').remove();
@@ -128,17 +127,17 @@ export class AttentionCloudDirective implements OnChanges {
 
     const collisionForce = d3.forceCollide().radius(function (d: any) {
       return d.r / 2 * 1.2;
-    }).strength(0.3).iterations(10);
+    }).strength(0.5).iterations(10);
 
     // force simulation
     const simulation = d3.forceSimulation(nodeData).alphaDecay(0.1)
       .force('center', d3.forceCenter(width / 2, height / 2))
       // cluster by section
       .force('link', d3.forceLink().links(linkData)
-        .strength(0).id(function id(d: any) { return d.id; }))
+      .strength(0).id(function id(d: any) { return d.id; }))
       // .force('attractForce', attractForce)
       .force('collisionForce', collisionForce)
-      .force('cluster', cluster().strength(0.7));
+      .force('cluster', cluster().strength(1));
 
     // produce links from link data
     // must produce links before nodes to make sure links appear behind thumbnails
