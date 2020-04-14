@@ -15,7 +15,7 @@ services:
     ports:
       - "5000:5000"
     volumes:
-      - ./server:/app
+      - ./server:/usr/src/app
     environment:
       - ENV=development
       - PORT=5000
@@ -29,7 +29,7 @@ services:
     restart: always
     build: ./client
     volumes:
-      - ./client/src:/app/src
+      - ./client/src:/usr/src/app/src
     ports:
       - "4200:4200"
     depends_on:
@@ -49,4 +49,3 @@ services:
     ports:
       - 27017:27017
     command: mongod --logpath=/dev/null # --quiet
-

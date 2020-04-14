@@ -4,11 +4,11 @@
 }
 
 .card-body {
+  height: 100%;
   min-height: 440px;
 }
 
 canvas, .img-heatmap-container {
-  position: absolute;
   margin-right: 15px;
   margin-left: 15px;
   top: 90px;
@@ -42,12 +42,16 @@ canvas, .img-heatmap-container {
 }
 
 canvas {
-  max-width: calc(100% - 30px);
-  ;
+  max-width: calc(100% - 70px);
 }
 
 .heatmap-container {
   width: 100%;
+}
+#heatmap, #map-mask{
+  position: absolute;
+  left: 20px;
+  top: 85px;
 }
 
 #dropdownContent {

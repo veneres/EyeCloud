@@ -16,6 +16,8 @@ export class Thumbnail {
   fixationDuration: number;
   modeTimestamp: number;
   strokeColor: string;
+  rgbDistribution: number[];
+  rgbCluster: number;
 
   constructor(id: number, fixationPoint: AggregatedFixationPoint, croppingSize: number,
               positionX: number, positionY: number) {
@@ -32,12 +34,23 @@ export class Thumbnail {
     this.positionY = positionY;
     // color initialized to hex code of "dark gray"
     this.strokeColor = "#3a3a3a";
+    // rgbDistribution and rgbCluster initialized to 0
+    this.rgbDistribution = [0, 0, 0];
+    this.rgbCluster = 0;
   }
 
   public updateThumbnailData(croppingSize: number, positionX: number, positionY: number) {
     this.croppingSize = croppingSize;
     this.positionX = positionX;
     this.positionY = positionY;
+  }
+
+  public updateRgbCluster(value: number) {
+    this.rgbCluster = value;
+  }
+
+  public updateRgbDistribution(rgb: number[]) {
+    this.rgbDistribution = rgb;
   }
 
   public getFixationDuration(): number {

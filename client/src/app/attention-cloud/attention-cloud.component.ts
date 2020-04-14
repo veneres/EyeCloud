@@ -7,6 +7,7 @@ import { DisplayConfiguration } from '../classes/DisplayConfiguration';
 import { Utilities } from '../classes/Utilities';
 import { Options } from 'ng5-slider';
 import { Point } from '../classes/Utilities';
+import { Pixel } from '../attention-cloud.service'
 
 @Component({
   selector: 'app-attention-cloud',
@@ -41,7 +42,7 @@ export class AttentionCloudComponent implements OnInit {
   numPointsValue = 20;
   numPointsOptions: Options = {
     floor: 10,
-    ceil: 50,
+    ceil: 1000,
     step: 5,
     showSelectionBar: true,
   };
@@ -60,9 +61,103 @@ export class AttentionCloudComponent implements OnInit {
     showSelectionBar: true,
   };
   selectedPoint: Point;
+  numCluster = 1;
+  numClusterOptions: Options = {
+    floor: 1,
+    ceil: 10,
+    step: 1,
+    showSelectionBar: true,
+  };
+  numClusterForDirective = 1;
+  clusterReady = false;
 
   constructor(private attentionCloudService: AttentionCloudService) {
     this.selectedPoint = undefined;
+  }
+
+  private clusterThumbnailsByRgb(thumbnails: Thumbnail[], numClusters: number, numIterations: number) {
+    // helper function to get distance
+    let getDistance = function(x, y) {
+      let sum = 0;
+      for (let i = 0; i < x.length; i++) {
+        sum += Math.pow(x[i] - y[i], 2);
+      }
+      return Math.sqrt(sum);
+    };
+
+    // initialize centroids to random, and clusters to empty
+    let centroids = new Array(numClusters);
+    for (let i = 0; i < numClusters; i++) {
+      centroids[i] = thumbnails[Math.floor(Math.random() * (thumbnails.length - 1))].rgbDistribution;
+    }
+
+    for (let i = 0; i < numIterations; i++) {
+      // assign thumbnails to clusters
+      thumbnails.forEach(thumbnail => {
+        let nearestCentroidIndex = 0;
+        let counter = 0;
+        centroids.forEach(x => {
+          if (getDistance(x, thumbnail.rgbDistribution) < getDistance(centroids[nearestCentroidIndex], thumbnail.rgbDistribution)) {
+            nearestCentroidIndex = counter;
+          }
+          counter++;
+        });
+        thumbnail.updateRgbCluster(nearestCentroidIndex);
+      });
+
+      // update centroids by mean distances of points
+      let sum_centroids = [];
+      for (let k = 0; k < numClusters; k++) {
+        sum_centroids.push([0, 0, 0]);
+      }
+      let count = new Array(numClusters).fill(0);
+      thumbnails.forEach(thumbnail => {
+        for (let n = 0; n < 3; n++) {
+          sum_centroids[thumbnail.rgbCluster][n] = sum_centroids[thumbnail.rgbCluster][n] + thumbnail.rgbDistribution[n];
+        }
+        count[thumbnail.rgbCluster]++;
+      });
+      for (let n = 0; n < numClusters; n++) {
+        if (count[n] > 0) {
+          for (let k = 0; k < 3; k++) {
+            centroids[n][k] = sum_centroids[n][k] / count[n];
+          }
+        }
+      }
+    }
+
+    return thumbnails;
+  }
+
+  private updateThumbnails() {
+    this.clusterReady = false;
+    const aggregateFixationPoints = Utilities.clusterFixationPoints(this.fixationPoints, this.clusterRadiusValue);
+    this.thumbnails = Thumbnail.get_thumbnails_for_attention_cloud(aggregateFixationPoints,
+      this.maxCroppingSizeValue, this.minCroppingSizeValue, this.numPointsValue);
+    // update thumbnails' rgb distribution
+    const pixels = [];
+    this.thumbnails.forEach(thumbnail => {
+      let cx = thumbnail.styleX;
+      let cy = thumbnail.styleY;
+      let r = thumbnail.croppingSize;
+      pixels.push(new Pixel(thumbnail.id, cx - r, cy - r, cx + r, cy + r));
+    });
+    this.attentionCloudService.getRgbDistribution(this.stimulusName, pixels).subscribe((res: any) => {
+      for (let i = 0; i < res.length; i++) {
+        let rgb = [Math.floor(parseFloat(res[i].red)), Math.floor(parseFloat(res[i].green)), Math.floor(parseFloat(res[i].blue))];
+        this.thumbnails[i].updateRgbDistribution(rgb);
+      }
+      // cluster thumbnails
+      this.thumbnails = this.clusterThumbnailsByRgb(this.thumbnails, this.numCluster, 100);
+      let distribution = new Array(this.numCluster).fill(0);
+      this.thumbnails.forEach((elem) =>{
+        distribution[elem.rgbCluster] += 1;
+      })
+      console.log(distribution);
+      this.numClusterForDirective = this.numCluster;
+      this.clusterReady = true;
+    });
+    this.attentionCloudService.changeCloudsVisible(this.thumbnails);
   }
 
   ngOnInit() {
@@ -98,11 +193,10 @@ export class AttentionCloudComponent implements OnInit {
               }
             }
           }
+
           this.fixationPoints = fixationPoints;
-          const aggregateFixationPoints = Utilities.clusterFixationPoints(this.fixationPoints, this.clusterRadiusValue);
-          this.thumbnails = Thumbnail.get_thumbnails_for_attention_cloud(aggregateFixationPoints,
-            this.maxCroppingSizeValue, this.minCroppingSizeValue, this.numPointsValue);
-          this.attentionCloudService.changeCloudsVisible(this.thumbnails);
+          this.numPointsOptions.ceil = this.fixationPoints.length;
+          this.updateThumbnails();
           this.selectedPoint = undefined;
         });
       this.imageURL = this.attentionCloudService.getStimulusURL(this.stimulusName).toString();
@@ -118,10 +212,8 @@ export class AttentionCloudComponent implements OnInit {
     }
 
     generate() {
-      const aggregateFixationPoints = Utilities.clusterFixationPoints(this.fixationPoints, this.clusterRadiusValue);
-      this.thumbnails = Thumbnail.get_thumbnails_for_attention_cloud(aggregateFixationPoints,
-      this.maxCroppingSizeValue, this.minCroppingSizeValue, this.numPointsValue);
-      this.attentionCloudService.changeCloudsVisible(this.thumbnails);
+      this.updateThumbnails();
       this.selectedPoint = undefined;
     }
 }
+
