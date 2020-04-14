@@ -126,7 +126,7 @@ export class AttentionCloudDirective implements OnChanges {
     const attractForce = d3.forceManyBody().strength(50);
 
     const collisionForce = d3.forceCollide().radius(function (d: any) {
-      return d.r / 2 * 1.2;
+      return d.r / 2 + 1;
     }).strength(0.5).iterations(10);
 
     // force simulation

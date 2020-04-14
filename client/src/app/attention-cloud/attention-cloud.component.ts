@@ -42,7 +42,7 @@ export class AttentionCloudComponent implements OnInit {
   numPointsValue = 20;
   numPointsOptions: Options = {
     floor: 10,
-    ceil: 300,
+    ceil: 1000,
     step: 5,
     showSelectionBar: true,
   };
@@ -193,7 +193,9 @@ export class AttentionCloudComponent implements OnInit {
               }
             }
           }
+
           this.fixationPoints = fixationPoints;
+          this.numPointsOptions.ceil = this.fixationPoints.length;
           this.updateThumbnails();
           this.selectedPoint = undefined;
         });
